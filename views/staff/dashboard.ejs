@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+	
+	<link rel="stylesheet" href="../css/dashboard.css">
+	<% if (staff) { %>
+		<title><%= staff.first_name %> <%= staff.last_name %> | Lagman Qualicare Family Clinic</title>
+</head>
+<body>
+	
+	<!-- SIDEBAR -->
+	<section id="sidebar">
+		
+		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
+		<ul class="side-menu">
+			<li><a href="/dashboard" class="active"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
+			<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications<span class="badge">3</span></a></li>
+			<li class="divider" data-text="main">Main</li>
+			
+			<li><a href="/appointments"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
+			<li><a href="/patients"><i class='bx bxs-user icon' ></i> Patients</a></li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+
+	<!-- NAVBAR -->
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			<i class='bx bx-menu toggle-sidebar'></i>
+			<form action="#">
+			</form>
+			<span class="divider"></span>
+			<div class="profile">
+				
+				<% if(!staff.img.contentType){ %>.
+					<img src="files/male-avatar.png" alt="User Img">
+				<% } else { %>
+					<img src="data:image/<%=staff.img.contentType%>;base64,<%=staff.img.data.toString(base)%>" alt="User Img">
+				<% } %>
+				<ul class="profile-link">
+					<form action="/profile" method="GET">
+						<li><button type="submit"><i class='bx bxs-user-circle icon' ></i> Profile</button></li>
+					</form>
+					<form action="/settings" method="GET">
+						<li><button type="submit"><i class='bx bxs-cog' ></i> Settings</button></li>
+					</form>
+					<form action="/logout?_method=DELETE" method="POST">
+						<li><button type="submit"><i class='bx bxs-log-out-circle' ></i> Logout</button></li>
+					</form>
+				</ul>
+			</div>
+		</nav>
+		<!-- NAVBAR -->
+
+		<!-- MAIN -->
+		<main>
+			<section class="ftco-section">
+				
+			<div class="container">
+					
+			<h1 class="title">Dashboard</h1>
+
+				<div class="row">
+					<div class="col-md-7">
+						<div class="card p-4 mb-4">
+							<div class="d-flex justify-content-between mb-4">
+								<div class="user-info">
+									<div class="user-info__img">
+										<% if(!staff.img.contentType){ %>
+											<img src="files/male-avatar.png" alt="User Img">
+										<% } else { %>
+											<img src="data:image/<%=staff.img.contentType%>;base64,<%=staff.img.data.toString(base)%>" alt="User Img">
+										<% } %>
+									</div>
+									<div class="user-info__basic">
+										<h5 class="text-highlight mb-0"><%= staff.first_name %> <%= staff.last_name %></h5>
+										<p class="text-muted mb-0">Staff</p>
+									</div>
+								</div>
+								<div class="dropdown open">
+									<a href="#!" class="px-2" id="triggerId1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<i class="fa fa-ellipsis-v"></i>
+									</a>
+									<div class="dropdown-menu" aria-labelledby="triggerId1">
+										<a class="dropdown-item" href="/settings"><i class="fa fa-edit mr-1"></i>Edit Profile</a>
+									</div>
+								</div>
+							</div>
+								<p><%= staff.bio %></p>
+							<h6>Assigned Branch</h6>
+							<div class="row">
+								<div class="col-md-12">
+										<p><%= staff.branch %></p>
+									</div>
+							</div>
+							<hr>
+							<div class="d-flex justify-content-between">
+								<a href="/profile" class="text-primary font-weight-bold">View Profile</a>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="card p-3 mb-4">
+
+									<div class="digital_clock_wrapper">
+										<div id="digit_clock_date"></div>
+										<div id="digit_clock_time"></div>
+									</div>
+
+									
+								</div>
+							</div>      
+								<div class="col-md-6">
+									<div class="card p-3 mb-4">
+										
+										<div class="widget-info">
+											<h6>Pending Appointments for Today</h6>
+											<h5><%= appointment %></h5>
+										</div>
+
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="card p-3 mb-4">
+										
+										<div class="widget-info">
+											<h6>Cancelled Appointments for Today</h6>
+											<h5>0</h5>
+										</div>
+
+									</div>
+								</div>
+						</div>
+					</div>      
+				</div>
+			</section>
+		</main>
+	<% } %> 
+
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+	<script src="assets/js/global.js"></script>
+	<script src="assets/js/script.js"></script>
+
+
+	<!-- Patients JS -->
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+
+	<script type="text/javascript">
+		function currentTime() {
+		  var date = new Date(); /* creating object of Date class */
+		  var hour = date.getHours();
+		  var min = date.getMinutes();
+		  var sec = date.getSeconds();
+		  var midday = "AM";
+		  midday = (hour >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+		  hour = (hour == 0) ? 12 : ((hour > 12) ? (hour - 12): hour); /* assigning hour in 12-hour format */
+		  hour = changeTime(hour);
+		  min = changeTime(min);
+		  sec = changeTime(sec);
+		  document.getElementById("digit_clock_time").innerText = hour + " : " + min + " : " + sec + " " + midday; /* adding time to the div */
+		
+		  var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		  var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+		
+		  var curWeekDay = days[date.getDay()]; // get day
+		  var curDay = date.getDate();  // get date
+		  var curMonth = months[date.getMonth()]; // get month
+		  var curYear = date.getFullYear(); // get year
+		  var date = curWeekDay+", "+curDay+" "+curMonth+" "+curYear; // get full date
+		  document.getElementById("digit_clock_date").innerHTML = date;
+		
+		  var t = setTimeout(currentTime, 1000); /* setting timer */
+		}
+		
+		function changeTime(k) { /* appending 0 before time elements if less than 10 */
+		  if (k < 10) {
+			return "0" + k;
+		  }
+		  else {
+			return k;
+		  }
+		}
+		
+		currentTime();
+		
+		</script> 
+
+<script>
+	window.onload = function(){
+		var el = document.getElementsByClassName('toggle-sidebar');
+		for (var i=0;i<el.length; i++) {
+		el[i].click();
+	}
+	
+	}
+	</script>
+
+</body>
+</html>

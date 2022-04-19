@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <% if (patient) { %>
+		<title><%= patient.first_name %> <%= patient.last_name %> | Lagman Qualicare Family Clinic</title>
+
+  <link rel="stylesheet" href="../css/booking-style.css">
+
+	<link href="../js/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+	<link href="../js/vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+  <link rel="stylesheet" href="../js/multi-step/bd-wizard.css">
+
+  <link href="../js/vendor/select2/slimselect.min.css" rel="stylesheet" media="all">
+	<link href="../js/vendor/select2/select2.min.css" rel="stylesheet" media="all">
+	<link href="../js/vendor/datepicker/daterangepicker.css" rel="stylesheet" media="all">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+  
+</head>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-sm navbar-light bg-white">
+        <img src="../../assets/images/logo/logo.png" class="navbar-brand" width="150" alt="logo">
+      
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard">< Go Back</a>
+            </li>
+          </ul>
+    </nav>
+
+
+  </header>
+  <form action="/set-appointment" method="POST">
+  <main class="d-flex">
+    
+    <div class="container">
+      <div class="card">
+        <div id="wizard">
+          <% if(typeof alert != 'undefined') { %>
+            <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            <p class="error-msg"><%= alert %></p>
+            </div>
+   
+          <% } %>
+          <h3>Branch Location</h3>
+          <section>
+                <h5 class="bd-wizard-step-title">Step: 1 of 2</h5>
+                <h2 class="section-heading">Branch Location</h2>
+                <p>Select a branch location where you'd like to have your appointment.</p>
+                
+                
+                <div class="purpose-radios-wrapper">
+                  
+                  <% branch.forEach(function(branches){ %>
+                    
+                      <div class="purpose-radio">
+                        <input type="radio" name="branch" id="branch<%= branches.id %>" class="purpose-radio-input" value="<%= branches.branch_name %>" data-toggle="modal" data-target="#a<%= branches._id %>">
+                        <label for="branch<%= branches.id %>" class="purpose-radio-label">
+                        <span class="label-text"><%= branches.branch_name %> </span>
+                        <span class="label-text-address"><%= branches.address %> </span>
+                      </label>
+                    </div>
+
+                     <!--Modal-->
+                      <div class="modal fade" id="a<%= branches._id %>" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <div class="col-md-12 text-center">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                                <img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
+                            </div>
+                            </div>
+                            <div class="modal-body text-center">
+                              <h3>Date & Time</h3>
+                            <section class="text-center">
+                              <div class="card-container">
+                                    <p>Select the date and time for your appointment.</p>
+                                    <div class="row row-space">
+                                      <div class="col-md-12">
+                                        <div class="text-group">
+                                           <label class="label">Date</label>
+                                           <div class="input-group-icon">
+                                              <input class="input--style-4 js-datepicker" id="date-no-past<%= branches._id %>" type="date" name="date">
+                                           </div>
+
+                                           <script>
+                                            var today = new Date();
+                                            var dd = String(today.getDate()).padStart(2, "0");
+                                            var mm = String(today.getMonth() + 1).padStart(2, "0");
+                                            var yyyy = today.getFullYear();
+                                            today = yyyy + "-" + mm + "-" + dd;
+                                            $("#date-no-past<%= branches._id %>").attr("min", today);
+                                          </script>
+                                          <script>
+                                            document.getElementById("date-no-past<%= branches._id %>").addEventListener("input", function (e) {
+                                                var day = new Date(this.value).getUTCDay();
+                                                if ([6, 0].includes(day)) {
+                                                    e.preventDefault();
+                                                    this.value = "";
+                                                    $("#alert").modal("show");
+                                                }
+                                            });
+                                          </script>
+
+                                        </div>
+                                     </div>
+                                    </div>
+                                    <label>Time</label>
+                                      <div class="row time text-center mx-0">
+                                       <!--INSERT TIME DATABASE-->
+                                       <% for(var i=0; i<branches.set_time.length; i++) {%>
+                                          <div class="col-md-4 col-4 my-1 px-2 radio-toolbar">
+                                            <input type="radio" name="time" id="time<%= branches.id %><%= branches.set_time[i] %>" value="<%= branches.set_time[i] %>" >
+                                            <label for="time<%= branches.id %><%= branches.set_time[i] %>" class="cell py-1 rounded-lg">
+                                              <%= branches.set_time[i] %>
+                                              </label>
+                                          </div>
+                                        <% } %> 
+                                        
+                                      </div>
+                  
+                                  <i class="bd-wizard-btn" data-step="previous">Previous</i> <i class="bd-wizard-btn" data-step="next" data-dismiss="modal" aria-label="Close">Next</i>
+                                </div>
+                            </section>
+                            </div>
+                            </div>
+                          </div>
+                        </div>
+                <% }); %> 
+                  
+                
+              </div>
+
+              
+          </section>
+
+          <h3>Symptoms</h3>
+          <section>
+            <div class="card-container">
+              <h5 class="bd-wizard-step-title">Step: 2 of 2</h5>
+              <h2 class="section-heading">Input Symptoms</h2>
+              <p>In order for us to Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.</p>
+                    
+              <div class="row row-space"> 
+                <div class="col-md-12">
+                      <label>Symptoms</label>
+                      <select id="symptoms-database" name="exp_symptoms" multiple >
+                        <!--insert symptoms database-->
+                        <option value="Headache" >Headache</option>
+                        <option value="Fever">Fever</option>
+                        <option value="Cough">Cough</option>
+                        <option value="Tiredness">Tiredness</option>
+                        <option value="Loss of Taste or Smell">Loss of Taste or Smell</option>
+                        <option value="Sore Throat">Sore Throat</option>
+                        <option value="Aches and Pains">Aches and Pains</option>
+                        <option value="Diarrhoea">Diarrhoea</option>
+                        <option value="Shortness of breath">Shortness of breath</option>
+                        <option value="Vomiting">Vomiting</option>
+                        <option value="Cognitive Impairment">Cognitive Impairment</option>
+                        <option value="Confusion">Confusion</option>
+                        <option value="Decline in memory or other thinking skills">Decline in memory or other thinking skills</option>
+                        <option value="Memory Loss">Memory Loss</option>
+                        <option value="Sore Eye">Sore Eye</option>
+                        <option value="Nose bleed">Nose bleed</option>
+                        <option value="Itchy Throat">Itchy Throat</option>
+                        <option value="Neck hurts">Neck hurts</option>
+                        <option value="Colds">Colds</option>
+                        <option value="Sore Eye">Sore Eye</option>
+                        <option value="Nausea">Nausea</option>
+                        <option value="Reflux">Reflux</option>
+                        <option value="Stomach pain lower left side">Stomach pain lower left side</option>
+                        <option value="Stomach pain lower right side">Stomach pain lower right side</option>
+                        <option value="Blood in urine">Blood in urine</option>
+                        <option value="Difficult to pee">Difficult to pee</option>
+                        <option value="Genital pain">Genital pain</option>
+                        <option value="Chills">Chills</option>
+                        <option value="Anxiety">Anxiety</option>
+                        <option value="Fatigue">Fatigue</option>
+                        <option value="Self injury">Self injury</option>
+                        <option value="Wound">Wound</option>
+                        <option value="Shaking">Shaking</option>
+                        <option value="Nervousness">Nervousness</option>
+                        <option value="Anal bleeding">Anal bleeding</option>
+                        <option value="Constipation">Constipation</option>
+                        <option value="Nausea">Nausea</option>
+                        <option value="Other symptoms..">Other symptoms..</option>
+                      </select>
+
+                      <div class="my-5">
+
+                        <body onload="disableSubmit()">
+                          <p><input type="checkbox" name="terms" id="terms" onchange="activateButton(this)">
+                          By booking an Appointment, I herebey accept the 
+                          <a href="/terms-conditions" target="_blank">Terms and Conditions</a></p>
+  
+                        <i class="bd-wizard-btn" data-step="previous">Previous</i>
+                        <input type="submit" class="bd-wizard-btn" name="Done" id="submit">
+                        
+                         </body>
+                      </div>
+                </div>
+            </div>
+            </div>
+          </section>
+
+          
+
+          
+        </div>
+      </div>
+    </div>
+    <% } %> 
+    <!--Modal-->
+  <div class="modal fade" id="alert" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="col-md-12 text-center">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
+         </div>
+        </div>
+        <div class="modal-body text-center">
+          Sorry to say but our clinic is closed on Saturday and Sunday.
+        </div>
+        </div>
+      </div>
+    </div>
+  <!---->
+  </main>
+  </form>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <script src="../js/multi-step/jquery.steps.min.js"></script>
+  <script src="../js/multi-step/bd-wizard.js"></script>
+	<script src="../js/vendor/select2/select2.min.js"></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.21.0/slimselect.js'></script>
+
+
+
+	<script>
+		new SlimSelect({
+		  select: '#symptoms-database'
+		  });
+	</script>
+
+<script>
+  function disableSubmit() {
+   document.getElementById("submit").disabled = true;
+  }
+ 
+   function activateButton(element) {
+ 
+       if(element.checked) {
+         document.getElementById("submit").disabled = false;
+        }
+        else  {
+         document.getElementById("submit").disabled = true;
+       }
+ 
+   }
+ </script>
+
+
+<script src="../js/global.js"></script>
+
+<script>
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, "0");
+  var mm = String(today.getMonth() + 1).padStart(2, "0");
+  var yyyy = today.getFullYear();
+  today = yyyy + "-" + mm + "-" + dd;
+  $("#date-no-past").attr("min", today);
+</script>
+<script>
+  const picker = document.getElementById("date-no-past");
+  picker.addEventListener("input", function (e) {
+      var day = new Date(this.value).getUTCDay();
+      if ([6, 0].includes(day)) {
+          e.preventDefault();
+          this.value = "";
+          $("#alert").modal("show");
+      }
+  });
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+<script type='text/javascript' src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js'></script>
+<script type='text/javascript' src=''></script>
+<script type='text/javascript' src=''></script>
+<script type='text/Javascript'>$(document).ready(function(){
+
+$('.datepicker').datepicker({
+format: 'dd-mm-yyyy',
+autoclose: true,
+startDate: '0d'
+});
+
+$('.cell').click(function(){
+$('.cell').removeClass('select');
+$(this).addClass('select');
+});
+
+});</script>
+
+</body>
+</html>

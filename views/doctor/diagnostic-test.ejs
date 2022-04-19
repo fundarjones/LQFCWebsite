@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" nonce="24f0b5642beb4f209ae416660ec" src="//local.adguard.org?ts=1649834217589&amp;type=content-script&amp;dmn=cdn.fbsbx.com&amp;app=msedge.exe&amp;css=1&amp;js=1&amp;gcss=1&amp;rel=1&amp;rji=1&amp;sbe=0"></script>
+<script type="text/javascript" nonce="24f0b5642beb4f209ae416660ec" src="//local.adguard.org?ts=1649834217589&amp;name=AdGuard%20Popup%20Blocker&amp;name=AdGuard%20Extra&amp;type=user-script"></script><link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/settings.css">
+
+	<link href="../js/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+	<link href="../js/vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+
+	<link href="../js/vendor/select2/select2.min.css" rel="stylesheet" media="all">
+	<link href="../js/vendor/datepicker/daterangepicker.css" rel="stylesheet" media="all">
+
+	<% if (doctor) { %>
+		<title><%= doctor.first_name %> <%= doctor.last_name %> | Lagman Qualicare Family Clinic</title>
+</head>
+<body>
+	
+	<!-- SIDEBAR -->
+	<section id="sidebar">
+		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
+		<ul class="side-menu">
+			<li><a href="/dashboard" ><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
+			<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications<span class="badge">3</span></a></li>
+			<li class="divider" data-text="main">Main</li>
+			<li><a href="/appointments" class="active"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
+			<li><a href="/diagnosed-records"><i class='bx bxs-book-content icon' ></i>Diagnosed<br>Records</a></li>
+			<li><a href="/patients"><i class='bx bxs-user icon' ></i> Patients</a></li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+
+	<!-- NAVBAR -->
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			<i class='bx bx-menu toggle-sidebar'></i>
+			<form action="#">
+			</form>
+			<span class="divider"></span>
+			<div class="profile">
+				
+				<img src="../uploads/<%= doctor.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+				<ul class="profile-link">
+					<form action="/profile" method="GET">
+						<li><button type="submit"><i class='bx bxs-user-circle icon' ></i> Profile</button></li>
+					</form>
+					<form action="/settings" method="GET">
+						<li><button type="submit"><i class='bx bxs-cog' ></i> Settings</button></li>
+					</form>
+					<form action="/logout?_method=DELETE" method="POST">
+						<li><button type="submit"><i class='bx bxs-log-out-circle' ></i> Logout</button></li>
+					</form>
+					
+				</ul>
+			</div>
+		</nav>
+		<!-- NAVBAR -->
+
+		<!-- MAIN -->
+		<main>
+			<section class="ftco-section">
+				
+				<div class="container">
+					<% } %> 
+					<% if (diagnose)  { %>
+					<h1 class="title inline">Diagnose Patient:</h1> 
+					<h1 class="title inline dark-color"><%= diagnose.first_name %> <%= diagnose.last_name %></h1>
+					<div class="bg-white shadow rounded-lg d-block d-sm-flex">
+						<div class="profile-tab-nav border-right">
+							<div class="p-4">
+								<center>
+								<div class="avatar-upload">
+									<div class="avatar-preview">
+										<div id="imagePreview" style="background-image: url('../uploads/<%= diagnose.img_id %>.png')">
+										</div>
+									</div>
+								</div>
+							</center>
+							</div>
+							<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+								<a class="nav-link active" id="account-tab" data-toggle="pill" href="#account" role="tab" aria-controls="account" aria-selected="true">
+									<i class="fa fa-info text-center mr-1"></i> 
+									Diagnosis Information
+								</a>
+								<a class="nav-link" id="password-tab" data-toggle="pill" href="#password" role="tab" aria-controls="password" aria-selected="false">
+									<i class="fa fa-check text-center mr-1"></i> 
+									Confirmation
+								</a>
+							</div>
+						</div>
+						<form action="/diagnose-patient" method="POST">
+
+							<input type="text" name="id" value="<%= diagnose.id %>" hidden>
+							<input type="text" name="img_id" value="<%= diagnose.img_id %> " hidden>
+							<input type="text" name="first_name" value="<%= diagnose.first_name%>" hidden>
+							<input type="text" name="last_name" value="<%= diagnose.last_name %>" hidden>
+							<input type="text" name="branch" value="<%= diagnose.branch %>" hidden>
+							<input type="text" name="date" value="<%= diagnose.date %>" hidden>
+							<input type="text" name="time" value="<%= diagnose.time %>" hidden>
+							<input type="text" name="sex" value="<%= diagnose.sex %>" hidden>
+							<input type="text" name="age" value="<%= diagnose.age %>" hidden>
+							<input type="text" name="status" value="<%= diagnose.status %>" hidden>
+							<input type="text" name="phone" value="<%= diagnose.phone %>" hidden>
+							<input type="text" name="email" value="<%= diagnose.email %>" hidden>
+							<input type="text" name="approved_staff" value="<%= diagnose.approved_staff %>" hidden>
+							<input type="text" name="exp_symptoms" value="<%= diagnose.exp_symptoms %>" hidden>
+							<input type="text" name="pre_diagnose_result" value="<%= diagnose.pre_diagnose_result %>" hidden>
+
+							<div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
+								<div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
+									<h3 class="mb-4">Information Settings</h3>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="text-group">
+												  <label>Diagnosed Diseases</label>
+												<textarea name="diagnosed_disease" class="form-control" rows="5" required></textarea>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="text-group">
+												  <label>Medicines</label>
+												<textarea name="medicine" class="form-control" rows="5" required></textarea>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="text-group">
+												  <label>Laboratory</label>
+												<textarea name="laboratory" class="form-control" rows="5" required></textarea>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="text-group">
+											   <label>In need of follow-up checkup?</label>
+											   <div class="p-t-10">
+												  <label class="radio-container m-r-45">Yes
+												  <input type="radio" checked="checked" name="next_checkup" value="Yes" required>
+												  <span class="checkmark"></span>
+												  </label>
+												  <label class="radio-container">No
+												  <input type="radio" name="next_checkup" value="No" required>
+												  <span class="checkmark"></span>
+												  </label>
+											   </div>
+											   <textarea name="next_checkup_note" class="form-control" rows="5"></textarea>
+											</div>
+										 </div>
+										<div class="col-md-12">
+											<div class="text-group">
+												  <label>Additional Notes</label>
+												<textarea name="notes" class="form-control" rows="5" required></textarea>
+											</div>
+										</div>
+										 
+									</div>
+								</div>
+								<div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
+									<h3 class="mb-4">Confirmation</h3>
+									<div class="row">
+									   <div class="col-md-12">
+										  <div class="text-group">
+											 <p>Is the diagnosis report finished and finalized?</p>
+										  </div>
+									   </div>
+									</div>
+									<div>
+									   <input type="submit" class="btn btn__primary btn__rounded ml-30" value="Submit Diagnosis Report"> 
+								</div>
+								
+								
+								
+							</div>
+						</div>
+						</form>
+				</div>
+				<% } %> 
+
+
+			</section>
+		</main>
+		
+	<!-- NAVBAR -->
+
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+	<script src="../js/script.js"></script>
+
+	<!-- Patients JS -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+	<!-- Settings JS -->
+	<script src="../js/vendor/jquery/jquery.min.js"></script>
+	<script src="../js/vendor/select2/select2.min.js"></script>
+	<script src="../js/vendor/datepicker/moment.min.js"></script>
+	<script src="../js/vendor/datepicker/daterangepicker.js"></script>
+	<script src="../js/global.js"></script>
+	
+
+	 
+	 <script>
+
+		function readURL(input) {
+			if (input.files && input.files[0]) {
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					$('#imagePreview').css('background-image', 'url('+e.target.result +')');
+					$('#imagePreview').hide();
+					$('#imagePreview').fadeIn(650);
+				}
+				reader.readAsDataURL(input.files[0]);
+			}
+		}
+		$("#imageUpload").change(function() {
+			readURL(this);
+		});
+		
+		 </script>
+		 
+		 <script>
+			window.onload = function(){
+				var el = document.getElementsByClassName('toggle-sidebar');
+				for (var i=0;i<el.length; i++) {
+				el[i].click();
+			}
+			}
+			</script>
+
+			
+</body>
+</html>
