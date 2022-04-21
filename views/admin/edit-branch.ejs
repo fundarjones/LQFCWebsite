@@ -50,7 +50,8 @@
 			<span class="divider"></span>
 			<div class="profile">
 				
-				<img src="data:image/<%=admin.img.contentType%>;base64,<%=admin.img.data.toString(base)%>"alt=""><ul class="profile-link">
+				<img src="../uploads/<%= admin.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='../files/male-avatar.png';">
+				<ul class="profile-link">
 					<form action="/profile" method="GET">
 						<li><button type="submit"><i class='bx bxs-user-circle icon' ></i> Profile</button></li>
 					</form>
@@ -132,6 +133,8 @@
 												</div>
 											</div>
 									</div>
+									<br>
+									<button class="btn btn__primary btn__rounded ml-30">Update</button>
 								</div>
 							</div>
 							<div class="tab-pane fade" id="timeslots" role="tabpanel" aria-labelledby="application-tab">
@@ -191,6 +194,8 @@
 										<option value="9:00PM">9:00PM</option>
 									</select>
 									</div>
+									<br>
+									<button class="btn btn__primary btn__rounded ml-30">Update</button>
 		
 								   </div>
 								</div>
@@ -211,7 +216,7 @@
 									<div class="col-md-12">
 										<label>Assigned Staffs</label>
 										<select id="branches" multiple>
-											<option value="1" >Staff 1</option>
+											<option value="1">Staff 1</option>
 											<option value="2">Staff 1</option>
 											<option value="3">Staff 3</option>
 											<option value="4">Staff 4</option>

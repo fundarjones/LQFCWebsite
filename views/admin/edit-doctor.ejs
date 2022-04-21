@@ -50,7 +50,8 @@
 			<span class="divider"></span>
 			<div class="profile">
 				
-				<img src="data:image/<%=admin.img.contentType%>;base64,<%=admin.img.data.toString(base)%>"alt=""><ul class="profile-link">
+				<img src="../uploads/<%= admin.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='../files/male-avatar.png';">
+				<ul class="profile-link">
 					<form action="/profile" method="GET">
 						<li><button type="submit"><i class='bx bxs-user-circle icon' ></i> Profile</button></li>
 					</form>
@@ -176,6 +177,7 @@
 									</div>
 								</div>
 								<div>
+									<input type="text" name="usertype" value="<%= edit.usertype %>" hidden>
 									<br>
 									<input type="submit" class="btn btn__primary btn__rounded ml-30" value="Update Information">
 								</div>

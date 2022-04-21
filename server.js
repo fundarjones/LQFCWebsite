@@ -236,6 +236,56 @@ app.get('/add-staff', checkAuthenticated, async (req, res) => {
   
 })
 
+app.get('/edit-branch', checkAuthenticated, async (req, res) => {
+  const user_id = req.user._id
+  const patients = await User.findById(user_id)
+  const doctors = await Doctor.findById(user_id)
+  const admins = await Admin.findById(user_id)
+  const staffs = await Staff.findById(user_id)
+  const branches = await Branch.find();
+  if (req.user.usertype == "patient") {
+    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+  }
+  else if (req.user.usertype == "doctor"){
+    res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64'  })
+  }
+  else if (req.user.usertype == "staff"){
+    res.render('staff/dashboard.ejs', { staff: staffs, base: 'base64'  })
+  }
+  else if (req.user.usertype == "admin"){
+    res.render('admin/dashboard.ejs', { branch: branches, admin: admins, base: 'base64' })
+  }
+  else{
+    res.render('404.ejs')
+  }
+  
+})
+
+app.get('/edit-branch/:_id', checkAuthenticated, async (req, res) => {
+  const user_id = req.user._id
+  const patients = await User.findById(user_id)
+  const doctors = await Doctor.findById(user_id)
+  const admins = await Admin.findById(user_id)
+  const edit_id = req.params._id
+  const edit_branch = await Branch.findById(edit_id)
+  if (req.user.usertype == "patient") {
+    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+  }
+  else if (req.user.usertype == "doctor"){
+    res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64'  })
+  }
+  else if (req.user.usertype == "staff"){
+    res.render('staff/dashboard.ejs', { staff: staffs, base: 'base64'  })
+  }
+  else if (req.user.usertype == "admin"){
+    res.render('admin/edit-branch.ejs', { edit: edit_branch, admin: admins, base: 'base64' })
+  }
+  else{
+    res.render('404.ejs')
+  }
+  
+})
+
 app.get('/edit-doctor', checkAuthenticated, async (req, res) => {
   const doc = await Doctor.find();
   const user_id = req.user._id
@@ -282,6 +332,59 @@ app.get('/edit-doctor/:_id', checkAuthenticated, async (req, res) => {
   }
   else if (req.user.usertype == "admin"){
     res.render('admin/edit-doctor.ejs', { branch: branches, edit: edit_doctor,doctors: doc, admin: admins , base: 'base64'})
+  }
+  else{
+    res.render('404.ejs')
+  }
+  
+})
+
+app.get('/edit-staff', checkAuthenticated, async (req, res) => {
+  const staff = await Doctor.find();
+  const user_id = req.user._id
+  const patients = await User.findById(user_id)
+  const doctors = await Doctor.findById(user_id)
+  const admins = await Admin.findById(user_id)
+  const staffs = await Staff.findById(user_id)
+  if (req.user.usertype == "patient") {
+    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+  }
+  else if (req.user.usertype == "staff"){
+    res.render('staff/dashboard.ejs', { staff: staffs, base: 'base64' })
+  }
+  else if (req.user.usertype == "doctor"){
+    res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64' })
+  }
+  else if (req.user.usertype == "admin"){
+    res.render('admin/dashboard.ejs', { admin: admins , base: 'base64'})
+  }
+  else{
+    res.render('404.ejs')
+  }
+  
+})
+
+app.get('/edit-staff/:_id', checkAuthenticated, async (req, res) => {
+  const doc = await Doctor.find();
+  const user_id = req.user._id
+  const patients = await User.findById(user_id)
+  const doctors = await Doctor.findById(user_id)
+  const admins = await Admin.findById(user_id)
+  const staffs = await Staff.findById(user_id)
+  const edit_id = req.params._id
+  const edit_staff = await Staff.findById(edit_id)
+  const branches = await Branch.find()
+  if (req.user.usertype == "patient") {
+    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+  }
+  else if (req.user.usertype == "staff"){
+    res.render('staff/dashboard.ejs', { staff: staffs, base: 'base64' })
+  }
+  else if (req.user.usertype == "doctor"){
+    res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64' })
+  }
+  else if (req.user.usertype == "admin"){
+    res.render('admin/edit-staff.ejs', { branch: branches, edit: edit_staff, admin: admins , base: 'base64'})
   }
   else{
     res.render('404.ejs')
@@ -402,26 +505,7 @@ app.get('/branches', checkAuthenticated, async (req, res) => {
   
 })
 
-app.get('/edit-branch', checkAuthenticated, async (req, res) => {
-  const user_id = req.user._id
-  const patients = await User.findById(user_id)
-  const doctors = await Doctor.findById(user_id)
-  const admins = await Admin.findById(user_id)
-  const branches = await Branch.find();
-  if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
-  }
-  else if (req.user.usertype == "doctor"){
-    res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64'  })
-  }
-  else if (req.user.usertype == "admin"){
-    res.render('admin/edit-branch.ejs', { branch: branches, admin: admins, base: 'base64' })
-  }
-  else{
-    res.render('404.ejs', { fname: req.user.first_name, lname: req.user.last_name , base: 'base64' })
-  }
-  
-})
+
 
 app.get('/add-branches', checkAuthenticated, async (req, res) => {
   const doc = await Doctor.find();
@@ -1075,7 +1159,7 @@ app.put('/edit-info', checkAuthenticated, urlencodedParser,[
     .isEmail()
     .normalizeEmail()
 ], async (req, res) => {
-  const { email, first_name, last_name, birthday, bio, sex, status, phone, _id} = req.body
+  const { email, first_name, last_name, birthday, bio, sex, status, phone, _id, usertype} = req.body
   const errors = validationResult(req)
   if(!errors.isEmpty()) {
     const alert = errors.array()
@@ -1088,22 +1172,41 @@ app.put('/edit-info', checkAuthenticated, urlencodedParser,[
   try {
     let n = Date.now();
     let d = new Date(birthday);
-    const doctor = await Doctor.findById(_id)
-    doctor.email = email
-    doctor.first_name = first_name
-    doctor.last_name = last_name
-    doctor.birthday = birthday
-    doctor.age = getYears(n - d)
-    doctor.sex = sex
-    doctor.status = status
-    doctor.phone = phone
-    doctor.bio = bio
-    await doctor.save()
-    const response = doctor
-    res.redirect('/doctors')
-    console.log('Doctor information updated successfully: ', response) 
-    
-    
+    if (usertype == "doctor") {
+      const doctor = await Doctor.findById(_id)
+      doctor.email = email
+      doctor.first_name = first_name
+      doctor.last_name = last_name
+      doctor.birthday = birthday
+      doctor.age = getYears(n - d)
+      doctor.sex = sex
+      doctor.status = status
+      doctor.phone = phone
+      doctor.bio = bio
+      await doctor.save()
+      const response = doctor
+      res.redirect('/doctors')
+      console.log('Doctor information updated successfully: ', response) 
+    } else if (usertype == "staff") {
+      const staff = await Staff.findById(_id)
+      staff.email = email
+      staff.first_name = first_name
+      staff.last_name = last_name
+      staff.birthday = birthday
+      staff.age = getYears(n - d)
+      staff.sex = sex
+      staff.status = status
+      staff.phone = phone
+      staff.bio = bio
+      await staff.save()
+      const response = staff
+      res.redirect('/staffs')
+      console.log('staff information updated successfully: ', response) 
+    }
+    else{
+      console.log("Usertype not found")
+      res.redirect('/dashboard')
+    }
   } catch {
     res.redirect('/dashboard')
   }
@@ -1123,6 +1226,20 @@ app.put('/edit-doctor-roles', checkAuthenticated, async (req, res) => {
     const response = doctor
     res.redirect('/doctors')
     console.log('Doctor roles updated successfully: ', response) 
+  } catch {
+    res.redirect("/dashboard")
+  }
+})
+
+app.put('/edit-staff-role', checkAuthenticated, async (req, res) => {
+  const { branch, _id } = req.body
+  try {
+    const staff = await Staff.findById(_id)
+    staff.branch = branch
+    await staff.save()
+    const response = staff
+    res.redirect('/staffs')
+    console.log('Staff role updated successfully: ', response) 
   } catch {
     res.redirect("/dashboard")
   }
@@ -1169,23 +1286,89 @@ app.put('/edit-security', checkAuthenticated,urlencodedParser,[
     }),
 ],
   async (req, res) => {
-  const { password: plainTextPassword, _id } = req.body
+  const { password: plainTextPassword, _id , usertype} = req.body
   const password = await bcrypt.hash(plainTextPassword, 10)
   const errors = validationResult(req)
   if(!errors.isEmpty()) {
-    const alert = errors.array()
-    const user_id = req.user._id
-    const doc = await Doctor.find();
-    const admins = await Admin.findById(user_id)
-    res.render('admin/doctors.ejs', { doctors: doc, alert, admin: admins, base: 'base64' })
+    if (usertype == "doctor" && req.user.usertype == "admin") {
+      const alert = errors.array()
+      const user_id = req.user._id
+      const doc = await Doctor.find();
+      const admins = await Admin.findById(user_id)
+      res.render('admin/doctors.ejs', { doctors: doc, alert, admin: admins, base: 'base64' })
+    }
+    else if (usertype == "staff" && req.user.usertype == "admin") {
+      const alert = errors.array()
+      const user_id = req.user._id
+      const staffs = await Staff.find();
+      const admins = await Admin.findById(user_id)
+      res.render('admin/staffs.ejs', { staff: staffs, alert, admin: admins, base: 'base64' })
+    } else if (usertype == "doctor" && req.user.usertype == "doctor") {
+      const alert = errors.array()
+      const user_id = req.user._id
+      const doc = await Doctor.find();
+      const doctors = await Doctor.findById(user_id)
+      res.render('doctor/settings.ejs', { doctors: doc, alert, doctor: doctors, base: 'base64' })
+    }
+    else if (usertype == "staff" && req.user.usertype == "staff") {
+      const alert = errors.array()
+      const user_id = req.user._id
+      const staffs = await Staff.findById(user_id)
+      res.render('staff/settings.ejs', { staff: staffs, alert, staff: staffs, base: 'base64' })
+    }
+    else if (req.user.usertype == "patient") {
+      const alert = errors.array()
+      const user_id = req.user._id
+      const user = await User.findById(user_id)
+      res.render('patient/settings.ejs', { patient: user, alert, base: 'base64' })
+    }
+    else if (req.user.usertype == "admin" && usertype == "admin") {
+      const alert = errors.array()
+      const user_id = req.user._id
+      const admins = await Admin.findById(user_id)
+      res.render('patient/settings.ejs', { admin: admins, alert, base: 'base64' })
+    }
+    else{
+      res.redirect("/dashboard")
+    }
     return
   }
-    const doctor = await Doctor.findById(_id)
-    doctor.password = password
-    await doctor.save()
-    const response = doctor
-    res.redirect('/doctors')
-    console.log('Doctor password updated successfully: ', response) 
+    if (usertype == "doctor") {
+      const doctor = await Doctor.findById(_id)
+      doctor.password = password
+      await doctor.save()
+      const response = doctor
+      res.redirect('/doctors')
+      console.log('Doctor password updated successfully: ', response) 
+    }
+    else if (usertype == "staff") {
+      const staff = await Staff.findById(_id)
+      staff.password = password
+      await staff.save()
+      const response = staff
+      res.redirect('/staffs')
+      console.log('Staff password updated successfully: ', response) 
+    }
+    else if (usertype == "admin") {
+      const admin = await Admin.findById(_id)
+      admin.password = password
+      await admin.save()
+      const response = admin
+      res.redirect('/profile')
+      console.log('Admin password updated successfully: ', response) 
+    }
+    else if (usertype == "patient") {
+      const patient = await User.findById(_id)
+      patient.password = password
+      await patient.save()
+      const response = patient
+      res.redirect('/profile')
+      console.log('Patient password updated successfully: ', response) 
+    }
+    else{
+      console.log("Usertype not found")
+      res.redirect("/dashboard")
+    }
 })
 
 app.put('/cancel-appointment', checkAuthenticated, async (req, res) => {

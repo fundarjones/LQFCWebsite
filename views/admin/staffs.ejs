@@ -71,6 +71,15 @@
 				<div class="container">
 					
 			<h1 class="title">Staffs</h1>
+			<% if(typeof alert != 'undefined') { %>
+				<% alert.forEach(function(error) { %>
+			  <div class="alert">
+				<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+				<p class="error-msg"><%= error.msg %></p>
+			  </div>
+
+		   <% }) %>
+			<% } %>
 					<div class="row">
 						<div class="col-sm-6 col-md-6">
 							<form action="#">
@@ -129,7 +138,7 @@
 										<i class="fa fa-ellipsis-v"></i>
 									</a>
 									<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= staffs.id %>">
-										<a class="dropdown-item" href="/edit-staff"><i class="fa fa-edit mr-1"></i>Edit</a>
+										<a class="dropdown-item" href="/edit-staff/<%= staffs._id %>"><i class="fa fa-edit mr-1"></i>Edit</a>
 									</div>
 								</div>
 							</div>
@@ -170,7 +179,7 @@
 											<i class="fa fa-ellipsis-v"></i>
 										</a>
 										<div class="dropdown-menu dropdown-menu-right" aria-labelledby="a<%= staffs.id %>">
-											<a class="dropdown-item" href="/edit-staff"><i class="fa fa-edit mr-1"></i>Edit</a>
+											<a class="dropdown-item" href="/edit-staff/<%= staffs._id %>"><i class="fa fa-edit mr-1"></i>Edit</a>
 										</div>
 									</div>
 								</div>
