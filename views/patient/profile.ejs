@@ -33,7 +33,7 @@
 			<span class="divider"></span>
 			<div class="profile">
 				
-				<% if(!patient.img.contentType){ %>.
+				<% if(!patient.img.contentType){ %>
 					<img src="files/male-avatar.png" alt="User Img">
 				<% } else { %>
 					<img src="data:image/<%=patient.img.contentType%>;base64,<%=patient.img.data.toString(base)%>" alt="User Img">

@@ -37,7 +37,7 @@
 			<span class="divider"></span>
 			<div class="profile">
 				
-				<% if(!staff.img.contentType){ %>.
+				<% if(!staff.img.contentType){ %>
 					<img src="files/male-avatar.png" alt="User Img">
 				<% } else { %>
 					<img src="data:image/<%=staff.img.contentType%>;base64,<%=staff.img.data.toString(base)%>" alt="User Img">
@@ -68,9 +68,9 @@
 				<div class="row g-0">
 					<div class="col-sm-5">
 						<% if(!staff.img.contentType){ %>.
-							<img src="files/male-avatar.png" alt="User Img">
+							<img src="files/male-avatar.png" class="card-img" alt="User Img">
 						<% } else { %>
-							<img src="data:image/<%=staff.img.contentType%>;base64,<%=staff.img.data.toString(base)%>" alt="User Img">
+							<img src="data:image/<%=staff.img.contentType%>;base64,<%=staff.img.data.toString(base)%>" class="card-img" alt="User Img">
 						<% } %>
 					</div>
 					<div class="col-sm-7">
@@ -82,7 +82,7 @@
 									</div>
 									<a href="/settings" class="text-primary font-weight-bold">Edit Profile</a>
 								</div>
-								<h6>Staff</h6>
+								<h6>Doctor</h6>
 								<p><%= staff.bio %></p>
 								<hr>
 								<div class="row about-list">
@@ -123,6 +123,7 @@
 									<div class="col-md-12">
 											<p><%= staff.branch %></p>
 										</div>
+									
 								</div>
 
 							</div>

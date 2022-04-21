@@ -49,7 +49,7 @@
 			<span class="divider"></span>
 			<div class="profile">
 				
-				<img src="data:image/<%=admin.img.contentType%>;base64,<%=admin.img.data.toString(base)%>"alt=""><ul class="profile-link">
+				<img src="uploads/<%= admin.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';"><ul class="profile-link">
 					<form action="/profile" method="GET">
 						<li><button type="submit"><i class='bx bxs-user-circle icon' ></i> Profile</button></li>
 					</form>
@@ -106,7 +106,11 @@
 						<div class="col-sm-6 col-md-6 col-lg-4">
 							<div class="searchhide">
 							<div class="card">
-								<img class="card-img-top" src="data:image/<%=branches.img.contentType%>;base64,<%=branches.img.data.toString(base)%>" alt="Card image cap">
+								<% if(!branches.img.contentType) {%> 
+								<img src="files/male-avatar.png" alt="User Img">
+								<% } else {%>
+									<img class="card-img-top" src="data:image/<%=branches.img.contentType%>;base64,<%=branches.img.data.toString(base)%>" alt="Card image cap">
+								<% } %>  
 								<div class="card-body">
 									<div class="d-flex justify-content-between mb-4">
 										<div class="user-info">
@@ -124,8 +128,6 @@
 											</div>
 										</div>
 									</div>
-									<h6 class="mb-0">Assigned Doctor:</h6>
-										<p><%= branches.assigned_doctor%></p>
 									<hr>
 									<div class="d-flex justify-content-between">
 										<div>

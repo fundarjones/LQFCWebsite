@@ -9392,3 +9392,10 @@ nav .profile .profile-link button:hover {
   body{
     overflow: unset !important;
   }
+
+  .email-disabled{
+    padding-top: 5px;
+    font-size: 0.8rem;
+    line-height: 15px;
+    font-style: italic;
+  }

@@ -68,7 +68,7 @@ app.get('/dashboard', checkAuthenticated, async (req, res) => {
   const doctors = await Doctor.findById(user_id)
   const staffs = await Staff.findById(user_id)
   if (req.user.usertype == "patient") {
-    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+    Appointment.countDocuments({img_id: req.user.id}, function (err, appointments) {
       if (err){
           console.log(err)
       }else{
@@ -76,7 +76,8 @@ app.get('/dashboard', checkAuthenticated, async (req, res) => {
           if (err){
               console.log(err)
           }else{
-            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+            const ttl = appointments + diagnosed
+            res.render('patient/dashboard.ejs', { total: ttl, patient: patients, base: 'base64' })
           }
         })
       }
@@ -167,10 +168,11 @@ app.get('/appointments', checkAuthenticated, async (req, res) => {
   const admins = await Admin.findById(user_id)
   const staffs = await Staff.findById(user_id)
   const appointments = await Appointment.find()
-  const patient_appointments = await Appointment.findOne({ img_id: req.user.id })
-  const diagnosis = await Diagnose.findOne({ img_id: req.user.id })
+  const patient_appointments = await Appointment.find({ img_id: req.user.id })
+  const diagnosis = await Diagnose.find({ img_id: req.user.id })
 
   if (req.user.usertype == "patient") {
+    console.log(patient_appointments)
     res.render('patient/appointments.ejs', { diagnose: diagnosis, appointment: patient_appointments, patient: patients, base: 'base64' })
   }
   else if (req.user.usertype == "doctor"){
@@ -198,7 +200,19 @@ app.get('/add-doctors', checkAuthenticated, async (req, res) => {
   const staffs = await Staff.findById(user_id)
   
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "doctor"){
     res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64' })
@@ -222,7 +236,19 @@ app.get('/add-staff', checkAuthenticated, async (req, res) => {
   const admins = await Admin.findById(user_id)
   const branches = await Branch.find()
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "doctor"){
     res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64' })
@@ -244,7 +270,19 @@ app.get('/edit-branch', checkAuthenticated, async (req, res) => {
   const staffs = await Staff.findById(user_id)
   const branches = await Branch.find();
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "doctor"){
     res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64'  })
@@ -269,7 +307,19 @@ app.get('/edit-branch/:_id', checkAuthenticated, async (req, res) => {
   const edit_id = req.params._id
   const edit_branch = await Branch.findById(edit_id)
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "doctor"){
     res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64'  })
@@ -294,7 +344,19 @@ app.get('/edit-doctor', checkAuthenticated, async (req, res) => {
   const admins = await Admin.findById(user_id)
   const staffs = await Staff.findById(user_id)
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "staff"){
     res.render('staff/dashboard.ejs', { staff: staffs, base: 'base64' })
@@ -322,7 +384,19 @@ app.get('/edit-doctor/:_id', checkAuthenticated, async (req, res) => {
   const edit_doctor = await Doctor.findById(edit_id)
   const branches = await Branch.find()
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "staff"){
     res.render('staff/dashboard.ejs', { staff: staffs, base: 'base64' })
@@ -347,7 +421,19 @@ app.get('/edit-staff', checkAuthenticated, async (req, res) => {
   const admins = await Admin.findById(user_id)
   const staffs = await Staff.findById(user_id)
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "staff"){
     res.render('staff/dashboard.ejs', { staff: staffs, base: 'base64' })
@@ -375,7 +461,19 @@ app.get('/edit-staff/:_id', checkAuthenticated, async (req, res) => {
   const edit_staff = await Staff.findById(edit_id)
   const branches = await Branch.find()
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "staff"){
     res.render('staff/dashboard.ejs', { staff: staffs, base: 'base64' })
@@ -400,7 +498,19 @@ app.get('/diagnose-patient', checkAuthenticated, async (req, res) => {
   const admins = await Admin.findById(user_id)
   const staffs = await Staff.findById(user_id)
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "doctor"){
     res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64' })
@@ -427,7 +537,19 @@ app.get('/diagnose-patient/:_id', checkAuthenticated, async (req, res) => {
     const diagnose_patient = await Appointment.findById(appointment_id)
     
     if (req.user.usertype == "patient") {
-      res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+      rAppointment.countDocuments({img_id: req.user.id}, function (err, total) {
+        if (err){
+            console.log(err)
+        }else{
+          Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+            if (err){
+                console.log(err)
+            }else{
+              res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+            }
+          })
+        }
+      })
     }
     else if (req.user.usertype == "doctor"){
       res.render('doctor/diagnostic-test.ejs', { diagnose: diagnose_patient, doctor: doctors, base: 'base64' })
@@ -447,7 +569,19 @@ app.get('/doctors', checkAuthenticated, async (req, res) => {
   const doctors = await Doctor.findById(user_id)
   const admins = await Admin.findById(user_id)
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "doctor"){
     res.render('doctor/dashboard.ejs', { doctor: doctors, patients: users, base: 'base64'  })
@@ -468,7 +602,19 @@ app.get('/staffs', checkAuthenticated, async (req, res) => {
   const admins = await Admin.findById(user_id)
   const staffs = await Staff.find();
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "doctor"){
     res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64'  })
@@ -491,13 +637,25 @@ app.get('/branches', checkAuthenticated, async (req, res) => {
   const doctors = await Doctor.findById(user_id)
   const admins = await Admin.findById(user_id)
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "doctor"){
     res.render('doctor/dashboard.ejs', { doctor: doctors , base: 'base64' })
   }
   else if (req.user.usertype == "admin"){
-    res.render('admin/branches.ejs', { branches: branch , admin: admins , base: 'base64'})
+    res.render('admin/branches.ejs', {  branches: branch , admin: admins , base: 'base64'})
   }
   else{
     res.render('404.ejs')
@@ -515,7 +673,19 @@ app.get('/add-branches', checkAuthenticated, async (req, res) => {
   const doctors = await Doctor.findById(user_id)
   const admins = await Admin.findById(user_id)
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs', { patient: patients, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "doctor"){
     res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64' })
@@ -593,7 +763,19 @@ app.get('/patients', checkAuthenticated, async (req, res) => {
   const staffs = await Staff.findById(user_id)
   const patient = await User.find();
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs',{ patient: patients, base: 'base64'})
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "doctor") {
     res.render('doctor/patients.ejs', { doctor: doctors, patients: patient, base: 'base64'  })
@@ -642,7 +824,7 @@ app.get('/notification', checkAuthenticated, async (req, res) => {
   const appointments = await Appointment.find()
   const patient_appointments = await Appointment.find({ img_id: req.user.id })
   if (req.user.usertype == "patient") {
-    
+    console.log(patient_appointments)
     res.render('patient/notifications.ejs',{ appointment: patient_appointments,branch: branches, patient: patients, base: 'base64'})
   }
   else if (req.user.usertype == "doctor") {
@@ -668,7 +850,19 @@ app.get('/diagnosed-records', checkAuthenticated, async (req, res) => {
   const staffs = await Staff.findById(user_id)
   const diagnosis = await Diagnose.find()
   if (req.user.usertype == "patient") {
-    res.render('patient/dashboard.ejs',{ patient: patients, base: 'base64'})
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
   }
   else if (req.user.usertype == "doctor") {
     res.render('doctor/records.ejs', { diagnose: diagnosis, doctor: doctors, base: 'base64'  })
@@ -752,8 +946,8 @@ app.post('/register', checkNotAuthenticated, urlencodedParser,[
     .matches(/^[A-Za-z0-9 .,'!&]+$/),
   check('last_name', 'There must be no special characters in the last name')
     .matches(/^[A-Za-z0-9 .,'!&]+$/),
-  check('birthday','Invalid Date of Birth')
-    .isISO8601(),
+  check('phone', 'Phone number must include 11 digits')
+    .isLength({min:11, max:11}),
   check('email', 'Email is not valid')
     .isEmail()
     .normalizeEmail()
@@ -770,8 +964,10 @@ app.post('/register', checkNotAuthenticated, urlencodedParser,[
         });
       });
     }),
-  check('password', 'Password too small. Should be atleast 6 characters')
-    .isLength({min:6}),
+  check('password', 'Password must include one lowercase character, one uppercase character, a number, and a special character.')
+  .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, "i"),
+  check('password', 'Password must be greater than 6 characters.')
+  .isLength({min:6}),
   check('confirm_password')
     .custom(async (confirm_password, {req}) => {
       const password = req.body.password
@@ -976,11 +1172,8 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
     .matches(/^[A-Za-z0-9 .,'!&]+$/),
   check('last_name', 'There must be no special characters in the last name')
     .matches(/^[A-Za-z0-9 .,'!&]+$/),
-  check('birthday','Invalid Date of Birth')
-    .isISO8601(),
-  check('email', 'Email is not valid')
-    .isEmail()
-    .normalizeEmail()
+  check('phone', 'Phone number must include 11 digits')
+    .isLength({min:11, max:11})
 ], async (req, res) => {
   const user_id = req.user._id
   const { email, first_name, last_name, birthday, bio, sex, status, phone } = req.body
@@ -998,9 +1191,14 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
           res.render('doctor/settings.ejs', { doctor: users,
             alert, base: 'base64' })
         }
+        else if (req.user.usertype == "staff") {
+          const users = await Staff.findById(user_id)
+          res.render('staff/settings.ejs', { staff: users,
+            alert, base: 'base64' })
+        }
         else if (req.user.usertype == "admin") {
           const users = await Admin.findById(user_id)
-          res.render('admin/settings.ejs', { patient: users,
+          res.render('admin/settings.ejs', { admin: users,
             alert, base: 'base64' })
         }
     }
@@ -1073,31 +1271,8 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
             console.log('User updated successfully: ', response)
           }
           
-        } catch (err) {
-          const user_id = req.user._id
-          if (req.user.usertype == "patient") {
-            const users = await User.findById(user_id)
-            res.render('patient/settings.ejs', { 
-              admin: users, alert: err, base: 'base64'
-                })
-          } else if (req.user.usertype == "doctor") {
-            const users = await Doctor.findById(user_id)
-            res.render('doctor/settings.ejs', { 
-              admin: users, alert: err, base: 'base64'
-                })
-          } else if (req.user.usertype == "staff") {
-            const users = await Staff.findById(user_id)
-            res.render('staff/settings.ejs', { 
-              staff: users, alert: err, base: 'base64'
-                })
-          } else if (req.user.usertype == "admin") {
-            const users = await Admin.findById(user_id)
-            res.render('admin/settings.ejs', { 
-              admin: users, alert: err, base: 'base64'
-                })
-          } else { 
-            res.render('404.ejs')
-          }
+        } catch {
+          res.redirect("/dashboard")
         }
         
       
@@ -1107,13 +1282,12 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
 })
 
 app.put('/approve-appointment', checkAuthenticated, async (req, res) => {
-    const id = req.body._id
-    console.log(id)
+    const user_id = req.body._id
     let date_ob = new Date();
 let set_date = ("0" + date_ob.getDate()).slice(-2);
 let year = date_ob.getFullYear();
 let hours = date_ob.getHours();
-let min = date_ob.getMinutes().toString()
+let min = ("0" + date_ob.getMinutes()).slice(-2);
 var midday = "AM";
 midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
 hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours);
@@ -1124,15 +1298,35 @@ const approved_time = hours + ":" + min + " " + midday
 const approved_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
 const approved_staff = req.user.first_name + " " + req.user.last_name
     try {
-      const appointment = await Appointment.findById(id)
-      appointment.appointment_status = "Approved"
-      appointment.approved_time = approved_time
-      appointment.approved_date = approved_date
-      appointment.approved_staff = approved_staff
-      await appointment.save()
-      const response = appointment
-      res.redirect('/appointments')
-      console.log('Appointment Approved successfully: ', response) 
+      const approve = await Appointment.findById(user_id)
+      const response = new Appointment({
+        id: approve.id,
+        img_id: approve.img_id,
+        first_name: approve.first_name,
+        last_name: approve.last_name,
+        branch: approve.branch,
+        time: approve.time,
+        date: approve.date,
+        exp_symptoms: approve.exp_symptoms,
+        date_timestamp: approve.date_timestamp,
+        time_timestamp: approve.time_timestamp,
+        age: approve.age,
+        sex: approve.sex,
+        status: approve.status,
+        phone: approve.phone,
+        email: approve.email,
+        symptoms_detected: approve.symptoms_detected,
+        pre_diagnose_result: approve.pre_diagnose_result,
+        appointment_status: "Approved",
+        approved_time,
+        approved_date,
+        approved_staff
+    })
+await response.save()
+const delete_response = await Appointment.deleteOne({_id: user_id})
+res.redirect('/appointments')
+console.log('Pending appointment deleted successfully: ', delete_response)
+console.log('Appointment approved successfully: ', response)
       
       
     } catch (err) {
@@ -1153,8 +1347,8 @@ app.put('/edit-info', checkAuthenticated, urlencodedParser,[
     .matches(/^[A-Za-z0-9 .,'!&]+$/),
   check('last_name', 'There must be no special characters in the last name')
     .matches(/^[A-Za-z0-9 .,'!&]+$/),
-  check('birthday','Invalid Date of Birth')
-    .isISO8601(),
+    check('phone', 'Phone number must include 11 digits')
+    .isLength({min:11, max:11}),
   check('email', 'Email is not valid')
     .isEmail()
     .normalizeEmail()
@@ -1260,28 +1454,46 @@ app.post('/deactivate', checkAuthenticated, async (req, res) => {
       res.redirect('/staffs')
       console.log('Staff removed successfully: ', response) 
     }
+    else if (usertype == "patient") {
+      const patient = await User.deleteOne({id: id})
+      const response = patient
+      res.redirect('/patients')
+      console.log('Patient removed successfully: ', response) 
+    }
+    else if (req.user.usertype == "staff" || req.user.usertype == "doctor") {
+      const appointment = await Appointment.deleteOne({id: id})
+      const response = appointment
+      res.redirect('/appointments')
+      console.log('Appointment removed successfully: ', response) 
+    }
+    else{
+      console.log("Usertype not found")
+      res.redirect("/dashboard")
+    }
+    
   } catch {
     res.redirect("/dashboard")
   }
 })
 
 app.put('/edit-security', checkAuthenticated,urlencodedParser,[
-  check('password', 'Password too small. Should be atleast 6 characters')
-    .isLength({min:6}),
-  check('old_password')
-    .custom(async (old_password, {req}) => {
-      const password = req.body.old_pass
-      const checker = await bcrypt.compare(old_password, password)
-      console.log(checker)
-      if (checker == false) {
-        throw new Error('Old Password not matched')
-      }
-    }),
+  check('password', 'Password must include one lowercase character, one uppercase character, a number, and a special character.')
+  .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, "i"),
+  check('password', 'Password must be greater than 6 characters.')
+  .isLength({min:6}),
   check('confirm_password')
     .custom(async (confirm_password, {req}) => {
       const password = req.body.password
       if(password !== confirm_password){
         throw new Error('Passwords must be same')
+      }
+    }),
+  check('old_password')
+    .custom(async (old_password, {req}) => {
+      const password = req.body.old_pass
+      const checker = await bcrypt.compare(old_password, password)
+      if (checker == false) {
+        throw new Error('Old Password not matched')
       }
     }),
 ],
@@ -1303,14 +1515,14 @@ app.put('/edit-security', checkAuthenticated,urlencodedParser,[
       const staffs = await Staff.find();
       const admins = await Admin.findById(user_id)
       res.render('admin/staffs.ejs', { staff: staffs, alert, admin: admins, base: 'base64' })
-    } else if (usertype == "doctor" && req.user.usertype == "doctor") {
+    } else if (req.user.usertype == "doctor") {
       const alert = errors.array()
       const user_id = req.user._id
       const doc = await Doctor.find();
       const doctors = await Doctor.findById(user_id)
       res.render('doctor/settings.ejs', { doctors: doc, alert, doctor: doctors, base: 'base64' })
     }
-    else if (usertype == "staff" && req.user.usertype == "staff") {
+    else if (req.user.usertype == "staff") {
       const alert = errors.array()
       const user_id = req.user._id
       const staffs = await Staff.findById(user_id)
@@ -1326,7 +1538,7 @@ app.put('/edit-security', checkAuthenticated,urlencodedParser,[
       const alert = errors.array()
       const user_id = req.user._id
       const admins = await Admin.findById(user_id)
-      res.render('patient/settings.ejs', { admin: admins, alert, base: 'base64' })
+      res.render('admin/settings.ejs', { admin: admins, alert, base: 'base64' })
     }
     else{
       res.redirect("/dashboard")
@@ -1347,6 +1559,22 @@ app.put('/edit-security', checkAuthenticated,urlencodedParser,[
       await staff.save()
       const response = staff
       res.redirect('/staffs')
+      console.log('Staff password updated successfully: ', response) 
+    }
+    else if (req.user.usertype == "doctor") {
+      const doctor = await Doctor.findById(_id)
+      doctor.password = password
+      await doctor.save()
+      const response = doctor
+      res.redirect('/profile')
+      console.log('Doctor password updated successfully: ', response) 
+    }
+    else if (req.user.usertype == "staff") {
+      const staff = await Staff.findById(_id)
+      staff.password = password
+      await staff.save()
+      const response = staff
+      res.redirect('/profile')
       console.log('Staff password updated successfully: ', response) 
     }
     else if (usertype == "admin") {
@@ -1372,12 +1600,12 @@ app.put('/edit-security', checkAuthenticated,urlencodedParser,[
 })
 
 app.put('/cancel-appointment', checkAuthenticated, async (req, res) => {
-  const id = req.body._id
+  const user_id = req.body._id
   let date_ob = new Date();
   let set_date = ("0" + date_ob.getDate()).slice(-2);
   let year = date_ob.getFullYear();
   let hours = date_ob.getHours();
-  let min = date_ob.getMinutes().toString()
+  let min = ("0" + date_ob.getMinutes()).slice(-2)
   var midday = "AM";
   midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
   hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours);
@@ -1387,23 +1615,53 @@ app.put('/cancel-appointment', checkAuthenticated, async (req, res) => {
   const time_cancelled = hours + ":" + min + " " + midday
   const date_cancelled = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
   try {
-    const cancel = await Appointment.findById(id)
-    cancel.appointment_status = "Cancelled"
-    cancel.time_cancelled = time_cancelled
-    cancel.email = " "
-    cancel.date_cancelled = date_cancelled
-    await cancel.save()
-    const response = cancel
-    res.redirect('/appointments')
-    console.log('Appointment cancelled successfully: ', response) 
+    const cancel = await Appointment.findById(user_id)
+      const response = new Appointment({
+        id: cancel.id,
+        img_id: cancel.img_id,
+        first_name: cancel.first_name,
+        last_name: cancel.last_name,
+        branch: cancel.branch,
+        time: cancel.time,
+        date: cancel.date,
+        exp_symptoms: cancel.exp_symptoms,
+        date_timestamp: cancel.date_timestamp,
+        time_timestamp: cancel.time_timestamp,
+        age: cancel.age,
+        sex: cancel.sex,
+        status: cancel.status,
+        phone: cancel.phone,
+        email: cancel.email,
+        symptoms_detected: cancel.symptoms_detected,
+        pre_diagnose_result: cancel.pre_diagnose_result,
+        appointment_status: "Cancelled",
+        approved_staff: cancel.approved_staff,
+        time_cancelled,
+        date_cancelled
+    })
+await response.save()
+const cancel_response = await Appointment.deleteOne({_id: user_id})
+res.redirect('/appointments')
+console.log('Pending or Approved Appointment deleted successfully: ', cancel_response)
+console.log('Appointment cancelled successfully: ', response)
     
     
   } catch (err) {
     const user_id = req.user._id
     const users = await User.findById(user_id)
-    const appointments = await Appointment.find()
-    res.render('patient/dashboard.ejs', { appointment: appointments, patient: users,
-      alert: err, base: 'base64' })
+    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            res.render('patient/dashboard.ejs', { alert: err, diagnose: diagnosed , total: total, patient: users, base: 'base64' })
+          }
+        })
+      }
+    })
   }
       
 
@@ -1672,7 +1930,7 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
         let set_date = ("0" + date_ob.getDate()).slice(-2);
         let year = date_ob.getFullYear();
         let hours = date_ob.getHours();
-        let min = date_ob.getMinutes().toString()
+        let min = ("0" + date_ob.getMinutes()).slice(-2);
         var midday = "AM";
 		    midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
 		    hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */

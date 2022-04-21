@@ -71,7 +71,7 @@
 					<div class="row">
 						<div class="col-sm-12 col-md-12 col-lg-12">
 							
-							<% appointment.forEach(function(appointments){ %>
+							<% appointment.reverse().forEach(function(appointments){ %>
 								<% if( appointments.appointment_status == "Approved" && doctor.branch == appointments.branch ) { %> 
 									<div class="card p-3 mb-4">
 										<h4 class="mb-0 m-2"><%= appointments.approved_date %> </h4>
@@ -81,7 +81,7 @@
 										<div class="d-flex justify-content-between mb-4">
 											<div class="user-info">
 												<div class="user-info__img m-2">
-													<img src="files/male-avatar.png" alt="User Img">
+													<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';"><ul class="profile-link">
 												</div>
 												<div class="user-info__basic">
 													<h4 class="text-highlight"><%= appointments.first_name%> <%= appointments.last_name %></h4>
@@ -94,7 +94,7 @@
 										</div>
 										<!---->
 									</div>
-									<% } else if (appointments.appointment_status == "Cancelled" && doctor.branch == appointments.branch){ %> 
+									<% } else if (appointments.appointment_status == "Cancelled" && doctor.branch == appointments.branch && appointments.approved_staff ){ %> 
 										<div class="card p-3 mb-4">
 											<h4 class="mb-0 m-2"><%= appointments.date_cancelled %> </h4>
 	

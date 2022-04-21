@@ -103,17 +103,20 @@
 							</a>
 							</div>
 						</div>
-						<form action="/update-info?_method=PUT" method="POST">
+						
 							<div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
 								<div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
 									<h3 class="mb-4">Information Settings</h3>
-									<% if(typeof alert != 'undefined') { %>
-									  <div class="alert">
-										<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-										<p class="error-msg"><%= alert %></p>
-									  </div>
-				   
-									<% } %>
+									<form action="/update-info?_method=PUT" method="POST">
+										<% if(typeof alert != 'undefined') { %>
+											<% alert.forEach(function(error) { %>
+										  <div class="alert">
+											<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+											<p class="error-msg"><%= error.msg %></p>
+										  </div>
+					   
+									   <% }) %>
+										<% } %>
 									<div class="row">
 										<div class="col-md-6">
 											<div class="text-group">
@@ -188,39 +191,43 @@
 										<br>
 										<input type="submit" class="btn btn__primary btn__rounded ml-30" value="Update">
 									</div>
+								</form>
 								</div>
 								<div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
 									<h3 class="mb-4">Security Settings</h3>
-									<div class="row">
-										<div class="col-md-6">
-											<div class="text-group">
-												  <label>Old password</label>
-												  <input type="password" class="form-control">
+									<form action="/edit-security?_method=PUT" method="POST">
+										<div class="row">
+											<input type="text" name="_id" value="<%= doctor._id %>" hidden>
+											<input type="text" name="old_pass" value="<%= doctor.password %>" hidden>
+											<div class="col-md-6">
+												<div class="text-group">
+													  <label>Old password</label>
+													  <input type="password" name="old_password" class="form-control" required>
+												</div>
 											</div>
 										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<div class="text-group">
-												  <label>New password</label>
-												  <input type="password" class="form-control">
+										<div class="row">
+											<div class="col-md-6">
+												<div class="text-group">
+													  <label>New password</label>
+													  <input type="password" name="password" class="form-control" required>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="text-group">
+													  <label>Confirm new password</label>
+													  <input type="password" name="confirm_password" class="form-control" required>
+												</div>
 											</div>
 										</div>
-										<div class="col-md-6">
-											<div class="text-group">
-												  <label>Confirm new password</label>
-												  <input type="password" class="form-control">
-											</div>
+										<div>
+											<br>
+											<input type="submit" class="btn btn__primary btn__rounded ml-30" value="Update Password">
 										</div>
-									</div>
-									<div>
-										<br>
-										<input type="submit" class="btn btn__primary btn__rounded ml-30" value="Update">
-									</div>
+									</form>
 								</div>
 							</div>
 						
-						</form>
 
 					</div>
 				

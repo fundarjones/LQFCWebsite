@@ -49,7 +49,7 @@
 			<span class="divider"></span>
 			<div class="profile">
 				
-				<img src="data:image/<%=admin.img.contentType%>;base64,<%=admin.img.data.toString(base)%>"alt=""><ul class="profile-link">
+				<img src="uploads/<%= admin.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';"><ul class="profile-link">
 					<form action="/profile" method="GET">
 						<li><button type="submit"><i class='bx bxs-user-circle icon' ></i> Profile</button></li>
 					</form>
@@ -115,11 +115,7 @@
 							<div class="d-flex justify-content-between mb-4">
 								<div class="user-info">
 									<div class="user-info__img">
-										<% if(!staffs.img.contentType){ %>
-											<img src="files/male-avatar.png" alt="User Img">
-										<% } else { %>
-											<img src="data:image/<%=staffs.img.contentType%>;base64,<%=staffs.img.data.toString(base)%>" alt="User Img">
-										<% } %>
+										<img src="uploads/<%= staffs.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
 									</div>
 									<div class="user-info__basic">
 										<h5 class="text-highlight mb-0"><%= staffs.first_name %> <%= staffs.last_name %></h5>
@@ -163,11 +159,7 @@
 								<div class="d-flex justify-content-between mb-4">
 									<div class="user-info">
 										<div class="user-info__img">
-											<% if(!staffs.img.contentType){ %>.
-												<img src="files/male-avatar.png" alt="User Img">
-											<% } else { %>
-												<img src="data:image/<%=staffs.img.contentType%>;base64,<%=staffs.img.data.toString(base)%>" alt="User Img">
-											<% } %>
+											<img src="uploads/<%= staffs.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
 										</div>
 										<div class="user-info__basic">
 											<h2 class="text-highlight mb-0"><%= staffs.first_name %> <%= staffs.last_name %></h5>

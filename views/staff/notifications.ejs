@@ -45,7 +45,7 @@
 			<span class="divider"></span>
 			<div class="profile">
 				
-				<% if(!staff.img.contentType){ %>.
+				<% if(!staff.img.contentType){ %>
 					<img src="files/male-avatar.png" alt="User Img">
 				<% } else { %>
 					<img src="data:image/<%=staff.img.contentType%>;base64,<%=staff.img.data.toString(base)%>" alt="User Img">
@@ -75,7 +75,7 @@
 					<div class="row">
 						<div class="col-sm-12 col-md-12 col-lg-12">
 							
-							<% appointment.forEach(function(appointments){ %>
+							<% appointment.reverse().forEach(function(appointments){ %>
 								<% if( appointments.appointment_status == "Pending" && staff.branch == appointments.branch ) { %> 
 									<div class="card p-3 mb-4">
 										<h4 class="mb-0 m-2"><%= appointments.date_timestamp %> </h4>
