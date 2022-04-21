@@ -8803,3 +8803,6 @@ nav .profile .profile-link button:hover {
 	background: var(--grey);
 
 }
+.searchhide{
+  margin: auto !important;
+}

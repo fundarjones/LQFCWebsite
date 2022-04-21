@@ -3917,7 +3917,6 @@ main .btn-send:hover {
    background-color: #fff;
    background-clip: border-box;
    max-width: 300px;
-   margin: auto !important;
    box-shadow: 4px 4px 16px rgba(0, 0, 0, .1);
    border-radius: 15px; }
    .card > hr {
@@ -8779,3 +8778,20 @@ nav .profile .profile-link button:hover {
       padding-top: 3.4px;
       font-size: 15px;
     }
+
+    .error-msg{
+      text-align: center;
+    }
+    
+    .alert {
+      padding: 7px;
+      margin-bottom: 20px;
+      background-color: #f44336;
+      color: white;
+      }
+      
+      .searchhide{
+        width: 300px;
+        height: auto;
+        margin: auto !important;
+      }

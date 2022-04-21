@@ -74,74 +74,77 @@
 					<div class="row">
 						<div class="col-sm-12 col-md-12 col-lg-12">
 							
+							<% appointment.forEach(function(appointments){ %>
+								<% if( appointments.appointment_status == "Pending") { %> 
+									<div class="card p-3 mb-4">
+										<h4 class="mb-0 m-2"><%= appointments.date_timestamp %> </h4>
+
+										<!--Notif Content-->
+										<hr>
+										<div class="d-flex justify-content-between mb-4">
+											<div class="user-info">
+												<div class="user-info__img m-2">
+													<img src="files/male-avatar.png" alt="User Img">
+												</div>
+												<div class="user-info__basic">
+													<h4 class="text-highlight">You</h4>
+													<p class="inline">set an appointment for <%= appointments.date %> at <%= appointments.time %>.</p>
+													<br>
+													<medium class="text-muted mb-0"><%= appointments.time_timestamp %></medium>
+												</div>
+										</div>
+										<!---->
+									</div>
+									<% } else if (appointments.appointment_status == "Cancelled"){ %> 
+										<div class="card p-3 mb-4">
+											<h4 class="mb-0 m-2"><%= appointments.date_cancelled %> </h4>
+	
+											<!--Notif Content-->
+											<hr>
+											<div class="d-flex justify-content-between mb-4">
+												<div class="user-info">
+													<div class="user-info__img m-2">
+														<img src="files/male-avatar.png" alt="User Img">
+													</div>
+													<div class="user-info__basic">
+														<h4 class="text-highlight">Your</h4>
+														<p class="inline">appointment for <%= appointments.date %> at <%= appointments.time %> has been cancelled.</p>
+														<br>
+														<medium class="text-muted mb-0"><%= appointments.time_cancelled %></medium>
+													</div>
+												</div>
+													
+											</div>
+											<!---->
+										</div>
+										<% } else if (appointments.appointment_status == "Approved"){ %> 
+											<div class="card p-3 mb-4">
+												<h4 class="mb-0 m-2"><%= appointments.approved_date %> </h4>
+			
+												<!--Notif Content-->
+												<hr>
+												<div class="d-flex justify-content-between mb-4">
+													<div class="user-info">
+														<div class="user-info__img m-2">
+															<img src="files/male-avatar.png" alt="User Img">
+														</div>
+														<div class="user-info__basic">
+															<h4 class="text-highlight">Your</h4>
+															<p class="inline">appointment for <%= appointments.date %> at <%= appointments.time %> has been approved.</p>
+															<br>
+															<medium class="text-muted mb-0"><%= appointments.approved_time %></medium>
+														</div>
+													</div>
+														
+												</div>
+												<!---->
+											</div>
+										<% } %> 
+								<% }); %> 
 							
-							<div class="card p-3 mb-4">
-								<h4 class="mb-0 m-2">April 04, 2022</h4>
-
-								<!--Notif Content-->
-								<hr>
-								<div class="d-flex justify-content-between mb-4">
-									<div class="user-info">
-										<div class="user-info__img m-2">
-											<img src="files/male-avatar.png" alt="User Img">
-										</div>
-										<div class="user-info__basic">
-											<h4 class="text-highlight">You</h4>
-											<p class="inline">cancelled an appointment for April 14, 2022 at 3:30PM.</p>
-											<br>
-											<medium class="text-muted mb-0">7:30PM</medium>
-										</div>
-									</div>
-										<a href="#!" class="px-2">
-											<i class="fa fa-close"></i>
-										</a>
-								</div>
-								<div class="d-flex justify-content-between mb-4">
-									<div class="user-info">
-										<div class="user-info__img m-2">
-											<img src="files/male-avatar.png" alt="User Img">
-										</div>
-										<div class="user-info__basic">
-											<h4 class="text-highlight">You</h4>
-											<p class="inline">set an appointment for April 14, 2022 at 3:30PM.</p>
-											<br>
-											<medium class="text-muted mb-0">7:00PM</medium>
-										</div>
-									</div>
-										<a href="#!" class="px-2">
-											<i class="fa fa-close"></i>
-										</a>
-								</div>
-								<!---->
-
 
 							</div>
 
-							<div class="card p-3 mb-4">
-								<h4 class="mb-0 m-2">April 03, 2022</h4>
-
-								<!--Notif Content-->
-								<hr>
-								<div class="d-flex justify-content-between mb-4">
-									<div class="user-info">
-										<div class="user-info__img m-2">
-											<img src="files/male-avatar.png" alt="User Img">
-										</div>
-										<div class="user-info__basic">
-											<h4 class="text-highlight">You</h4>
-											<p class="inline">set an appointment for April 16, 2022 at 9:30AM.</p>
-											<br>
-											<medium class="text-muted mb-0">11:30AM</medium>
-										</div>
-									</div>
-										<a href="#!" class="px-2">
-											<i class="fa fa-close"></i>
-										</a>
-								</div>
-								<!---->
-
-								
-							</div>
 						</div>
 						
 					</div>

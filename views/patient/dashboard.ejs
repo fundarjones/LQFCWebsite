@@ -117,7 +117,13 @@
 										
 										<div class="widget-info">
 											<h6>Your Total Appointments</h6>
-											<h5>1</h5>
+											<% if (total != 0){ %>
+												<h5><%= total %></h5> 
+											<% } else if (diagnose != 0){ %> 
+											<h5><%= diagnose %></h5>
+											<% } else {%> 
+											<h5>0</h5>
+											<% } %> 
 										</div>
 
 									</div>

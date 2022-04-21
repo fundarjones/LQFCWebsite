@@ -44,7 +44,7 @@
 			<span class="divider"></span>
 			<div class="profile">
 				
-				<img src="../uploads/<%= doctor.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+				<img src="../uploads/<%= doctor.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='../files/male-avatar.png';">
 				<ul class="profile-link">
 					<form action="/profile" method="GET">
 						<li><button type="submit"><i class='bx bxs-user-circle icon' ></i> Profile</button></li>
@@ -96,7 +96,7 @@
 						<form action="/diagnose-patient" method="POST">
 
 							<input type="text" name="id" value="<%= diagnose.id %>" hidden>
-							<input type="text" name="img_id" value="<%= diagnose.img_id %> " hidden>
+							<input type="text" name="img_id" value="<%= diagnose.img_id %>" hidden>
 							<input type="text" name="first_name" value="<%= diagnose.first_name%>" hidden>
 							<input type="text" name="last_name" value="<%= diagnose.last_name %>" hidden>
 							<input type="text" name="branch" value="<%= diagnose.branch %>" hidden>
@@ -186,7 +186,7 @@
 	<!-- NAVBAR -->
 
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-	<script src="../js/script.js"></script>
+	<script src="../assets/js/script.js"></script>
 
 	<!-- Patients JS -->
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
@@ -194,11 +194,11 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 	<!-- Settings JS -->
-	<script src="../js/vendor/jquery/jquery.min.js"></script>
-	<script src="../js/vendor/select2/select2.min.js"></script>
-	<script src="../js/vendor/datepicker/moment.min.js"></script>
-	<script src="../js/vendor/datepicker/daterangepicker.js"></script>
-	<script src="../js/global.js"></script>
+	<script src="../assets/js/vendor/jquery/jquery.min.js"></script>
+	<script src="../assets/js/vendor/select2/select2.min.js"></script>
+	<script src="../assets/js/vendor/datepicker/moment.min.js"></script>
+	<script src="../assets/js/vendor/datepicker/daterangepicker.js"></script>
+	<script src="../assets/js/global.js"></script>
 	
 
 	 
@@ -220,15 +220,18 @@
 		});
 		
 		 </script>
+
+
+<script>
+	window.onload = function(){
+		var el = document.getElementsByClassName('toggle-sidebar');
+		for (var i=0;i<el.length; i++) {
+		el[i].click();
+	}
+	
+	}
+	</script>
 		 
-		 <script>
-			window.onload = function(){
-				var el = document.getElementsByClassName('toggle-sidebar');
-				for (var i=0;i<el.length; i++) {
-				el[i].click();
-			}
-			}
-			</script>
 
 			
 </body>

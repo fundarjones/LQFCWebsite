@@ -183,10 +183,11 @@
 										</div>
 										<br><br><br>
 										<div class="col-md-12">
-											<label>Assigned Branches</label>
-											<select id="branches" name="branches" multiple required>
-												<option value="Angeles City Branch" >Angeles City Branch</option>
-												<option value="Magalang Branch">Magalang Branch</option>
+											<label>Assigned Branch</label>
+											<select id="branches" name="branch" required>
+												<% branch.forEach(function(branches){ %>
+												<option value="<%= branches.branch_name %>" ><%= branches.branch_name %></option>
+												<% }); %> 
 											</select>
 											</div>
 									</div>
@@ -237,7 +238,7 @@
 	<!-- NAVBAR -->
 
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-	<script src="assets/js/script.js"></script>
+	<script src="../assets/js/script.js"></script>
 
 	<!-- Patients JS -->
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
@@ -246,9 +247,9 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 	<!-- Settings JS -->
-	<script src="assets/js/vendor/jquery/jquery.min.js"></script>
-	<script src="assets/js/vendor/select2/select2.min.js"></script>
-	<script src="assets/js/global.js"></script>
+	<script src="../assets/js/vendor/jquery/jquery.min.js"></script>
+	<script src="../assets/js/vendor/select2/select2.min.js"></script>
+	<script src="../assets/js/global.js"></script>
 	
 	<!-- Multiple Select JS-->
 

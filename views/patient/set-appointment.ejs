@@ -114,7 +114,29 @@
                                         </div>
                                      </div>
                                     </div>
+                                    <button type="button" id="getValueInput<%= branches.id %>"> 
+                                      click me!! 
+                                  </button> 
+                                  <p id="dateInput<%= branches._id %>"></p>
+                                  <script>
+                                    
+                                  </script>
                                     <label>Time</label>
+                                    <div>
+                                      <% appointment.forEach(function(appointments){ %>
+                                        
+                                          <p id="valueInput<%= appointments.id%><%= branches._id %>"></p>
+                                        
+                                        <script>
+                                          var date_ob = new Date('<%= appointments.date%>');
+                                          var year = date_ob.getFullYear();
+                                          var month = ("0" + (date_ob.getMonth()+1)).slice(-2);
+                                          var date = ("0" + date_ob.getDate()).slice(-2);
+                                          var appointed_dates = year + "-"+ month+"-"+ date; 
+                                          document.getElementById("valueInput<%= appointments.id%><%= branches._id %>").innerHTML = appointed_dates
+                                        </script>
+                                        <% }) %> 
+                                      </div>
                                       <div class="row time text-center mx-0">
                                        <!--INSERT TIME DATABASE-->
                                        <% for(var i=0; i<branches.set_time.length; i++) {%>
@@ -127,6 +149,9 @@
                                         <% } %> 
                                         
                                       </div>
+                                      
+                                      
+                                      
                   
                                   <i class="bd-wizard-btn" data-step="previous">Previous</i> <i class="bd-wizard-btn" data-step="next" data-dismiss="modal" aria-label="Close">Next</i>
                                 </div>

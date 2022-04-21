@@ -8735,3 +8735,9 @@ nav .profile .profile-link button:hover {
       padding-top: 3.4px;
       font-size: 15px;
     }
+
+    .searchhide{
+      width: 300px;
+      height: auto;
+      margin: auto !important;
+    }

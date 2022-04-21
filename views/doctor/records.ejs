@@ -68,7 +68,7 @@
 
 		<main>
 			<section class="ftco-section">
-				<div class="container">
+	<div class="container">
 					
 			<h1 class="title">Daignosed Records</h1>
 					<div class="row">
@@ -96,222 +96,273 @@
 					</div>
 					<br>
 
-					<div class="row">
 
-						<div class="card-columns2 m-2">
-
-							<div class="card p-4 mb-4">
-								<div class="d-flex justify-content-between mb-4">
-									<div class="user-info">
-										<div class="user-info__img">
-											<img src="../patient/files/placeholder.jpg" alt="User Img">
+				<div class="tabs">
+  
+						<input type="radio" id="tab1" name="tab-control" checked>
+						<input type="radio" id="tab2" name="tab-control">
+						<hr>
+						<ul>
+						  <li title="normal"><label for="tab1" role="button"><span>On Going</span></label></li>
+						  <li title="positive"><label for="tab2" role="button"><span>Done</span></label></li>
+						</ul>
+						<hr>
+		
+					<div class="content">
+		
+							<!-- ON GOING SECTION-->
+						  <section>
+							<div class="row">
+								<% diagnose.forEach(function(diagnosis){ %>
+									<% if( diagnosis.appointment_status == "Follow Up" && diagnosis.branch == doctor.branch) { %> 
+								<div class="card-columns2 m-2">
+									<div class="card p-4 mb-4">
+										<div class="d-flex justify-content-between mb-4">
+											<div class="user-info">
+												<div class="user-info__img">
+													<img src="uploads/<%= diagnosis.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+												</div>
+												<div class="user-info__basic">
+													<h6 class="mb-0"><%= diagnosis.img_id %></h6>
+													<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %></h5>
+													<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %> | <%= diagnosis.phone %></p>
+												</div>
+											</div>
+											<div class="dropdown open">
+												<a href="#!" class="px-2" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis.id %>" aria-haspopup="true" aria-expanded="false">
+													<i class="fa fa-expand"></i>
+												</a>
+											</div>
 										</div>
-										<div class="user-info__basic">
-											<h6 class="mb-0">Appointment # 8</h6>
-											<h5 class="text-highlight mb-0">Sandeep Hegde</h5>
-											<p class="text-muted mb-0">28 yrs | Female | 09563520905</p>
+										
+										<div id="records-dropdown">
+											<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
+											data-toggle="collapse" href="#record<%= diagnosis.id %>" role="button">
+											  <div class="position-relative">
+												<small class="ml-1 font-weight-bold">Record Created: <%= diagnosis.date_timestamp %>, <%= diagnosis.time_timestamp %></small>
+												<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
+												  <i class="fa fa-plus"></i>
+												</div>
+											  </div>
+											</a>
+											<div class="collapse" id="record<%= diagnosis.id %>">
+												<div class="row">
+													<div class="col-lg-6">
+														<h6>Symptoms:</h6>
+														<p><%= diagnosis.exp_symptoms %></p>
+													</div>
+													<div class="col-lg-6">
+														<h6>Medicines:</h6>
+														<p><%= diagnosis.medicine %></p>
+													</div>
+												</div>	
+												<hr>
+												<div class="row">
+													<div class="col-lg-6">
+														<h6>Laboratory:</h6>
+														<p><%= diagnosis.laboratory %></p>
+													</div>
+													<div class="col-lg-6">
+														<h6>Follow-up Checkup:</h6>
+														<p><%= diagnosis.next_checkup_note %></p>
+													</div>
+												</div>	
+												<hr>
+												<div class="row">
+													<div class="col-lg-12 mb-4">
+														<h6>Adittional Notes:</h6>
+														<p><%= diagnosis.notes %></p>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-lg-12 mb-4">
+													<small class="ml-1 font-weight-bold">End of Record</small>
+														</div>
+												</div>
+											</div>
 										</div>
 									</div>
-									<div class="dropdown open">
-										<a href="#!" class="px-2" id="triggerId1" data-toggle="modal" data-target="#diagnose-patient" aria-haspopup="true" aria-expanded="false">
-											<i class="fa fa-expand"></i>
-										</a>
-									</div>
+
 								</div>
-								
-								<section id="records-dropdown">
-									<!--DITO MAG START LOOP NG DROPDOWN RECORDS-->
-									<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
-									data-toggle="collapse" href="#record-1" role="button">
-									  <div class="position-relative">
-										<small class="ml-1 font-weight-bold">Repord Created: Feb 3 2021, 11:30 AM</small>
-										<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
-										  <i class="fa fa-plus"></i>
-										</div>
-									  </div>
-									</a>
-									<div class="collapse" id="record-1">
-										<div class="row">
-											<div class="col-lg-6">
-												<h6>Symptoms:</h6>
-												<p>Abcs</p>
-											</div>
-											<div class="col-lg-6">
-												<h6>Medicines:</h6>
-												<p>Adgfesres</p>
-											</div>
-										</div>	
-										<hr>
-										<div class="row">
-											<div class="col-lg-6">
-												<h6>Laboratory:</h6>
-												<p>Jajajanja</p>
-											</div>
-											<div class="col-lg-6">
-												<h6>Follow-up Checkup:</h6>
-												<p>In three weeks</p>
-											</div>
-										</div>	
-										<hr>
-										<div class="row">
-											<div class="col-lg-12 mb-4">
-												<h6>Adittional Notes:</h6>
-												<p>Lorem ipsum dolor sit amet, consecteLorem ipsum dolor sit amet.</p>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-lg-12 mb-4">
-											<small class="ml-1 font-weight-bold">End of Record</small>
-												</div>
-										</div>
-									</div>
-									<!--END NG LOOP-->
-									
-									<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
-									data-toggle="collapse" href="#record-2" role="button">
-									  <div class="position-relative">
-										<small class="ml-1 font-weight-bold">Repord Created: Feb 2 2021, 9:30 AM</small>
-										<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
-										  <i class="fa fa-plus"></i>
-										</div>
-									  </div>
-									</a>
-									<div class="collapse" id="record-2">
-										<div class="row">
-											<div class="col-lg-6">
-												<h6>Symptoms:</h6>
-												<p>absd</p>
-											</div>
-											<div class="col-lg-6">
-												<h6>Medicines:</h6>
-												<p>adsasdade</p>
-											</div>
-										</div>	
-										<hr>
-										<div class="row">
-											<div class="col-lg-6">
-												<h6>Laboratory:</h6>
-												<p>Jajajanja</p>
-											</div>
-											<div class="col-lg-6">
-												<h6>Follow-up Checkup:</h6>
-												<p>In two weeks</p>
-											</div>
-										</div>	
-										<hr>
-										<div class="row">
-											<div class="col-lg-12 mb-4">
-												<h6>Adittional Notes:</h6>
-												<p>Lorem ipsum dolor sit amet, consecteLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliquaLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliquaLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliquaLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliquatur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-lg-12 mb-4">
-											<small class="ml-1 font-weight-bold">End of Record</small>
-												</div>
-										</div>
-									</div>
-								</section>
+								<% } %> 
+								<% }); %> 
 							</div>
+						 </section>
+							 <!-- END OF ON GOING SECTION-->
+							
+		
+							<!-- DONE SECTION-->
+						<section>
+							<div class="row">
 
+								<div class="card-columns2 m-2">
 
+									<div class="card p-4 mb-4">
+										<div class="d-flex justify-content-between mb-4">
+											<div class="user-info">
+												<div class="user-info__img">
+													<img src="../patient/files/placeholder.jpg" alt="User Img">
+												</div>
+												<div class="user-info__basic">
+													<h6 class="mb-0">Appointment # 14</h6>
+													<h5 class="text-highlight mb-0">IU</h5>
+													<p class="text-muted mb-0">28 yrs | Female | 09563520905</p>
+												</div>
+											</div>
+											<div class="dropdown open">
+													<i class="fa fa-expand"></i>
+												</a>
+											</div>
+										</div>
+										
+										<div id="records-dropdown">
+											<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
+											data-toggle="collapse" href="#record-4" role="button">
+											  <div class="position-relative">
+												<small class="ml-1 font-weight-bold">Record Created: Feb 8 2021, 11:30 AM</small>
+												<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
+												  <i class="fa fa-plus"></i>
+												</div>
+											  </div>
+											</a>
+											<div class="collapse" id="record-4">
+												<div class="row">
+													<div class="col-lg-6">
+														<h6>Symptoms:</h6>
+														<p>asdasdsasdassd</p>
+													</div>
+													<div class="col-lg-6">
+														<h6>Medicines:</h6>
+														<p>Adgfesres</p>
+													</div>
+												</div>	
+												<hr>
+												<div class="row">
+													<div class="col-lg-6">
+														<h6>Laboratory:</h6>
+														<p>Jajajanja</p>
+													</div>
+													<div class="col-lg-6">
+														<h6>Follow-up Checkup:</h6>
+														<p>In three weeks</p>
+													</div>
+												</div>	
+												<hr>
+												<div class="row">
+													<div class="col-lg-12 mb-4">
+														<h6>Adittional Notes:</h6>
+														<p>Lorem ipsum dolor sit amet, consecteLorem ipsum dolor sit amet.</p>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-lg-12 mb-4">
+													<p class="font-weight-bold end">End of Record</p>
+														</div>
+												</div>
+											</div>
+										</div>
+									</div>
 
+								</div>
 
-
-						</div>
-
-				
-						    
-					</div>
-
-
-
+							</div>
+						</section>
+		
 					</div>
 				</div>
-			</section>
-		</main>
+
+					
+
+
+
+	</div>
+		</div>
+	</section>
+</main>
 		
 	<!-- NAVBAR -->
+	
 	
 	
 	<!-- ============================
         Zoom Card
     ============================== -->
 
-
-    <div class="modal fade" id="diagnose-patient" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-		  <div class="modal-content">
-			<div class="p-4">
-				<div class="d-flex justify-content-between mb-4">
-					<div class="user-info">
-						<div class="user-info__img">
-							<img src="../patient/files/placeholder.jpg" alt="User Img">
+	<% diagnose.forEach(function(diagnosis){ %>
+		<div class="modal fade" id="zoom<%= diagnosis.id %>" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+			  <div class="modal-content">
+				<div class="p-4">
+					<div class="d-flex justify-content-between mb-4">
+						<div class="user-info">
+							<div class="user-info__img">
+								<img src="../patient/files/placeholder.jpg" alt="User Img">
+							</div>
+							<div class="user-info__basic">
+								<h6 class="mb-0">Appointment # 3</h6>
+								<h5 class="text-highlight mb-0">sadasdasd Hegde</h5>
+								<p class="text-muted mb-0">2asdasd | asdasd | 09563520905</p>
+							</div>
 						</div>
-						<div class="user-info__basic">
-							<h6 class="mb-0">Appointment # 3</h6>
-							<h5 class="text-highlight mb-0">sadasdasd Hegde</h5>
-							<p class="text-muted mb-0">2asdasd | asdasd | 09563520905</p>
+						<div class="dropdown open">
+							
 						</div>
 					</div>
-					<div class="dropdown open">
-						<a href="#!" class="px-2" id="triggerId1" data-toggle="modal" data-target="#diagnose-patient" aria-haspopup="true" aria-expanded="false">
-							<i class="fa fa-expand"></i>
+					
+					<section id="records-dropdown">
+						<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
+						data-toggle="collapse" href="#record-1" role="button">
+						  <div class="position-relative">
+							<small class="ml-1 font-weight-bold">Record Created: Feb 1 2021, 12:30 PM</small>
+							<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
+							  <i class="fa fa-plus"></i>
+							</div>
+						  </div>
 						</a>
-					</div>
-				</div>
-				
-				<section id="records-dropdown">
-					<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
-					data-toggle="collapse" href="#record-1" role="button">
-					  <div class="position-relative">
-						<small class="ml-1 font-weight-bold">Repord Created: Feb 1 2021, 12:30 PM</small>
-						<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
-						  <i class="fa fa-plus"></i>
-						</div>
-					  </div>
-					</a>
-					<div class="collapse" id="record-1">
-						<div class="row">
-							<div class="col-lg-6">
-								<h6>Symptoms:</h6>
-								<p>Fever, Vomiting</p>
-							</div>
-							<div class="col-lg-6">
-								<h6>Medicines:</h6>
-								<p>Biogesic</p>
-							</div>
-						</div>	
-						<hr>
-						<div class="row">
-							<div class="col-lg-6">
-								<h6>Laboratory:</h6>
-								<p>Jajajanja</p>
-							</div>
-							<div class="col-lg-6">
-								<h6>Follow-up Checkup:</h6>
-								<p>In three weeks</p>
-							</div>
-						</div>	
-						<hr>
-						<div class="row">
-							<div class="col-lg-12 mb-4">
-								<h6>Adittional Notes:</h6>
-								<p>Lorem ipsum.</p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-lg-12 mb-4">
-							<small class="ml-1 font-weight-bold">End of Record</small>
+						<div class="collapse" id="record-1">
+							<div class="row">
+								<div class="col-lg-6">
+									<h6>Symptoms:</h6>
+									<p>Fever, Vomiting</p>
 								</div>
+								<div class="col-lg-6">
+									<h6>Medicines:</h6>
+									<p>Biogesic</p>
+								</div>
+							</div>	
+							<hr>
+							<div class="row">
+								<div class="col-lg-6">
+									<h6>Laboratory:</h6>
+									<p>Jajajanja</p>
+								</div>
+								<div class="col-lg-6">
+									<h6>Follow-up Checkup:</h6>
+									<p>In three weeks</p>
+								</div>
+							</div>	
+							<hr>
+							<div class="row">
+								<div class="col-lg-12 mb-4">
+									<h6>Adittional Notes:</h6>
+									<p>Lorem ipsum.</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-12 mb-4">
+								<small class="ml-1 font-weight-bold">End of Record</small>
+									</div>
+							</div>
 						</div>
-					</div>
-				</section>
-
-			</div>
+					</section>
+	
+				</div>
+				</div>
 			</div>
 		</div>
-	</div>   
+	<% }); %> 
+      
+	  
 	<% } %> 
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
