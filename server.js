@@ -949,7 +949,7 @@ app.get('/services', checkNotAuthenticated, (req,res) => {
 
 const sendResetEmail = async(email,token) =>{
 
-  var url = "http://localhost:3000/reset-password?token="+token
+  var url = "https://lqfclinic.herokuapp.com/reset-password?token="+token
 
   var mailOptions = {
     from: "lqfclinic@gmail.com",
@@ -1329,7 +1329,7 @@ const sendResetEmail = async(email,token) =>{
 
 const sendVerifyEmail = async (email, token) =>{
   // var url = path.join(__dirname, '/verifyEmail?token='+token);
-  var url = "http://localhost:3000/verifyEmail?token="+token
+  var url = "http://lqfclinic.herokuapp.com/verifyEmail?token="+token
 
   var mailOptions = {
     from: "lqfclinic@gmail.com",
