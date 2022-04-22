@@ -8799,3 +8799,43 @@ nav .profile .profile-link button:hover {
   font-weight: 700;
   color: #8D8D8D;
 }
+
+.error-msg{
+  margin-top: 15px;
+	text-align: center;
+}
+
+.alert {
+	padding: 7px;
+	margin-bottom: 20px;
+	background-color: #ffc107;
+	color: white;
+  }
+
+  .error-msg a{
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    color: #17a2b8;
+    transition: 0.3s;
+  }
+
+  .error-msg a:hover{
+    color: #004997;
+  }
+
+  .closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+    }
+    
+    .closebtn:hover {
+    color: black;
+    }
+  

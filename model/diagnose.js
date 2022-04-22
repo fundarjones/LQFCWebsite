@@ -15,7 +15,7 @@ const DiagnoseSchema = new mongoose.Schema(
 		date_timestamp: { type: String, required: true },
 		time_timestamp: { type: String, required: true },
 		phone: { type: String, required: true },
-		email: { type: String, required: true, unique: true },
+		email: { type: String, required: true },
 		exp_symptoms: { type: String, required: true },
 		pre_diagnose_result: { type: String, required: true },
 		appointment_status: { type: String, required: true },

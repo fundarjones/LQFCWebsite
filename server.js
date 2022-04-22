@@ -11,8 +11,10 @@ const flash = require('express-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
 const mongoose = require('mongoose')
+const crypto = require('crypto')
 const User = require('./model/user')
 const Doctor = require('./model/doctor')
+const resetToken = require('./model/resetTokens')
 const Admin = require('./model/admin')
 const Staff = require('./model/staff')
 const Branch = require('./model/branch')
@@ -20,12 +22,14 @@ const Appointment = require('./model/appointment')
 const Diagnose = require('./model/diagnose')
 const multer = require('multer')
 const fs = require("fs")
+const nodemailer = require("nodemailer");
 const connectlivereload = require('connect-livereload')
 
 const bodyParser = require('body-parser')
 const { check, validationResult } = require('express-validator')
 
 const livereload = require("livereload")
+const { Router } = require('express')
 
 const publicDirectory = path.join(__dirname, 'public')
 
@@ -45,6 +49,14 @@ useCreateIndex: true
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
+
+var transport = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.AUTH_EMAIL,
+    pass: process.env.AUTH_PASS
+  }
+})
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 app.use(express.urlencoded({ extended: false }))
@@ -77,7 +89,7 @@ app.get('/dashboard', checkAuthenticated, async (req, res) => {
               console.log(err)
           }else{
             const ttl = appointments + diagnosed
-            res.render('patient/dashboard.ejs', { total: ttl, patient: patients, base: 'base64' })
+            res.render('patient/dashboard.ejs', { verified: req.user.isVerified, total: ttl, patient: patients, base: 'base64' })
           }
         })
       }
@@ -824,7 +836,6 @@ app.get('/notification', checkAuthenticated, async (req, res) => {
   const appointments = await Appointment.find()
   const patient_appointments = await Appointment.find({ img_id: req.user.id })
   if (req.user.usertype == "patient") {
-    console.log(patient_appointments)
     res.render('patient/notifications.ejs',{ appointment: patient_appointments,branch: branches, patient: patients, base: 'base64'})
   }
   else if (req.user.usertype == "doctor") {
@@ -936,6 +947,898 @@ app.get('/services', checkNotAuthenticated, (req,res) => {
   res.render('services.ejs')
 })
 
+const sendResetEmail = async(email,token) =>{
+
+  var url = "http://localhost:3000/reset-password?token="+token
+
+  var mailOptions = {
+    from: "lqfclinic@gmail.com",
+    to: email,
+    subject: "LQFCLINIC: RESET YOUR PASSWORD",
+    text: `<!DOCTYPE html>
+    <html>
+    
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <style type="text/css">
+            @media screen {
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: normal;
+                    font-weight: 400;
+                    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: normal;
+                    font-weight: 700;
+                    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: italic;
+                    font-weight: 400;
+                    src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: italic;
+                    font-weight: 700;
+                    src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+                }
+            }
+    
+            /* CLIENT-SPECIFIC STYLES */
+            body,
+            table,
+            td,
+            a {
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+            }
+    
+            table,
+            td {
+                mso-table-lspace: 0pt;
+                mso-table-rspace: 0pt;
+            }
+    
+            img {
+                -ms-interpolation-mode: bicubic;
+            }
+    
+            /* RESET STYLES */
+            img {
+                border: 0;
+                height: auto;
+                line-height: 100%;
+                outline: none;
+                text-decoration: none;
+            }
+    
+            table {
+                border-collapse: collapse !important;
+            }
+    
+            body {
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+    
+            /* iOS BLUE LINKS */
+            a[x-apple-data-detectors] {
+                color: inherit !important;
+                text-decoration: none !important;
+                font-size: inherit !important;
+                font-family: inherit !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+            }
+    
+            /* MOBILE STYLES */
+            @media screen and (max-width:600px) {
+                h1 {
+                    font-size: 32px !important;
+                    line-height: 32px !important;
+                }
+            }
+    
+            /* ANDROID CENTER FIX */
+            div[style*="margin: 16px 0;"] {
+                margin: 0 !important;
+            }
+        </style>
+    </head>
+    
+    <body style="background-color: #d8eeff; margin: 0 !important; padding: 0 !important;">
+        <!-- HIDDEN PREHEADER TEXT -->
+        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> We're thrilled to have you here! Get ready to dive into your new account. </div>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <!-- LOGO -->
+            <tr>
+                <td bgcolor="#294a75" align="center">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#294a75" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+                                <h1 style="font-size: 48px; font-weight: 400; margin: 2;">Lagman Qualicare Family Clinic</h1> 
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;">We heard that you have lost your password. Just press the button below to reset your password.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="#ffffff" align="left">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
+                                            <table border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td align="center" style="border-radius: 3px;" bgcolor="#294a75"><a href="${url}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #1746e0; display: inline-block;">Reset Password</a></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr> <!-- COPY -->
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
+                            </td>
+                        </tr> <!-- COPY -->
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;"><a href="#" target="_blank" style="color: #1746e0;">${url}</a></p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 30px 10px 0px 10px;">
+                    
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    
+    </html>`,
+    html: `<!DOCTYPE html>
+    <html>
+    
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <style type="text/css">
+            @media screen {
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: normal;
+                    font-weight: 400;
+                    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: normal;
+                    font-weight: 700;
+                    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: italic;
+                    font-weight: 400;
+                    src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: italic;
+                    font-weight: 700;
+                    src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+                }
+            }
+    
+            /* CLIENT-SPECIFIC STYLES */
+            body,
+            table,
+            td,
+            a {
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+            }
+    
+            table,
+            td {
+                mso-table-lspace: 0pt;
+                mso-table-rspace: 0pt;
+            }
+    
+            img {
+                -ms-interpolation-mode: bicubic;
+            }
+    
+            /* RESET STYLES */
+            img {
+                border: 0;
+                height: auto;
+                line-height: 100%;
+                outline: none;
+                text-decoration: none;
+            }
+    
+            table {
+                border-collapse: collapse !important;
+            }
+    
+            body {
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+    
+            /* iOS BLUE LINKS */
+            a[x-apple-data-detectors] {
+                color: inherit !important;
+                text-decoration: none !important;
+                font-size: inherit !important;
+                font-family: inherit !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+            }
+    
+            /* MOBILE STYLES */
+            @media screen and (max-width:600px) {
+                h1 {
+                    font-size: 32px !important;
+                    line-height: 32px !important;
+                }
+            }
+    
+            /* ANDROID CENTER FIX */
+            div[style*="margin: 16px 0;"] {
+                margin: 0 !important;
+            }
+        </style>
+    </head>
+    
+    <body style="background-color: #d8eeff; margin: 0 !important; padding: 0 !important;">
+        <!-- HIDDEN PREHEADER TEXT -->
+        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> We're thrilled to have you here! Get ready to dive into your new account. </div>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <!-- LOGO -->
+            <tr>
+                <td bgcolor="#294a75" align="center">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#294a75" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+                                <h1 style="font-size: 48px; font-weight: 400; margin: 2;">Lagman Qualicare Family Clinic</h1> 
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;">We heard that you have lost your password. Just press the button below to reset your password.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="#ffffff" align="left">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
+                                            <table border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td align="center" style="border-radius: 3px;" bgcolor="#294a75"><a href="${url}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #1746e0; display: inline-block;">Reset Password</a></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr> <!-- COPY -->
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
+                            </td>
+                        </tr> <!-- COPY -->
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;"><a href="#" target="_blank" style="color: #1746e0;">${url}</a></p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 30px 10px 0px 10px;">
+                    
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    
+    </html>`
+  }
+
+  transport.sendMail(mailOptions, function(error,info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email has been sent")
+    }
+  })
+
+}
+
+const sendVerifyEmail = async (email, token) =>{
+  // var url = path.join(__dirname, '/verifyEmail?token='+token);
+  var url = "http://localhost:3000/verifyEmail?token="+token
+
+  var mailOptions = {
+    from: "lqfclinic@gmail.com",
+    to: email,
+    subject: "LQFCLINIC: VERIFY ACCOUNT",
+    text: `<!DOCTYPE html>
+    <html>
+    
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <style type="text/css">
+            @media screen {
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: normal;
+                    font-weight: 400;
+                    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: normal;
+                    font-weight: 700;
+                    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: italic;
+                    font-weight: 400;
+                    src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: italic;
+                    font-weight: 700;
+                    src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+                }
+            }
+    
+            /* CLIENT-SPECIFIC STYLES */
+            body,
+            table,
+            td,
+            a {
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+            }
+    
+            table,
+            td {
+                mso-table-lspace: 0pt;
+                mso-table-rspace: 0pt;
+            }
+    
+            img {
+                -ms-interpolation-mode: bicubic;
+            }
+    
+            /* RESET STYLES */
+            img {
+                border: 0;
+                height: auto;
+                line-height: 100%;
+                outline: none;
+                text-decoration: none;
+            }
+    
+            table {
+                border-collapse: collapse !important;
+            }
+    
+            body {
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+    
+            /* iOS BLUE LINKS */
+            a[x-apple-data-detectors] {
+                color: inherit !important;
+                text-decoration: none !important;
+                font-size: inherit !important;
+                font-family: inherit !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+            }
+    
+            /* MOBILE STYLES */
+            @media screen and (max-width:600px) {
+                h1 {
+                    font-size: 32px !important;
+                    line-height: 32px !important;
+                }
+            }
+    
+            /* ANDROID CENTER FIX */
+            div[style*="margin: 16px 0;"] {
+                margin: 0 !important;
+            }
+        </style>
+    </head>
+    
+    <body style="background-color: #d8eeff; margin: 0 !important; padding: 0 !important;">
+        <!-- HIDDEN PREHEADER TEXT -->
+        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> We're thrilled to have you here! Get ready to dive into your new account. </div>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <!-- LOGO -->
+            <tr>
+                <td bgcolor="#294a75" align="center">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#294a75" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+                                <h1 style="font-size: 48px; font-weight: 400; margin: 2;">Lagman Qualicare Family Clinic</h1> 
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;">Thanks for signing up with Lagman Qualicare Family Clinic! To activate your account please press the button below.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="#ffffff" align="left">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
+                                            <table border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td align="center" style="border-radius: 3px;" bgcolor="#294a75"><a href="${url}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #1746e0; display: inline-block;">Verify Account</a></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr> <!-- COPY -->
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
+                            </td>
+                        </tr> <!-- COPY -->
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;"><a href="${url}" target="_blank" style="color: #1746e0;">${url}</a></p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 30px 10px 0px 10px;">
+                    
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    
+    </html>`,
+    html: `<!DOCTYPE html>
+    <html>
+    
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <style type="text/css">
+            @media screen {
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: normal;
+                    font-weight: 400;
+                    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: normal;
+                    font-weight: 700;
+                    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: italic;
+                    font-weight: 400;
+                    src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: italic;
+                    font-weight: 700;
+                    src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+                }
+            }
+    
+            /* CLIENT-SPECIFIC STYLES */
+            body,
+            table,
+            td,
+            a {
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+            }
+    
+            table,
+            td {
+                mso-table-lspace: 0pt;
+                mso-table-rspace: 0pt;
+            }
+    
+            img {
+                -ms-interpolation-mode: bicubic;
+            }
+    
+            /* RESET STYLES */
+            img {
+                border: 0;
+                height: auto;
+                line-height: 100%;
+                outline: none;
+                text-decoration: none;
+            }
+    
+            table {
+                border-collapse: collapse !important;
+            }
+    
+            body {
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+    
+            /* iOS BLUE LINKS */
+            a[x-apple-data-detectors] {
+                color: inherit !important;
+                text-decoration: none !important;
+                font-size: inherit !important;
+                font-family: inherit !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+            }
+    
+            /* MOBILE STYLES */
+            @media screen and (max-width:600px) {
+                h1 {
+                    font-size: 32px !important;
+                    line-height: 32px !important;
+                }
+            }
+    
+            /* ANDROID CENTER FIX */
+            div[style*="margin: 16px 0;"] {
+                margin: 0 !important;
+            }
+        </style>
+    </head>
+    
+    <body style="background-color: #d8eeff; margin: 0 !important; padding: 0 !important;">
+        <!-- HIDDEN PREHEADER TEXT -->
+        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> We're thrilled to have you here! Get ready to dive into your new account. </div>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <!-- LOGO -->
+            <tr>
+                <td bgcolor="#294a75" align="center">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#294a75" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+                                <h1 style="font-size: 48px; font-weight: 400; margin: 2;">Lagman Qualicare Family Clinic</h1> 
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;">Thanks for signing up with Lagman Qualicare Family Clinic! To activate your account please press the button below.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="#ffffff" align="left">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
+                                            <table border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td align="center" style="border-radius: 3px;" bgcolor="#294a75"><a href="${url}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #1746e0; display: inline-block;">Verify Account</a></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr> <!-- COPY -->
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
+                            </td>
+                        </tr> <!-- COPY -->
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;"><a href="${url}" target="_blank" style="color: #1746e0;">${url}</a></p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 30px 10px 0px 10px;">
+                    
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    
+    </html>`
+  }
+
+  transport.sendMail(mailOptions, function(error,info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email has been sent")
+    }
+  })
+}
+
+app.get("/send-verification-email", checkAuthenticated, async(req,res) =>{
+  if (req.user.isVerified) {
+    console.log("User is verified")
+    res.redirect("/dashboard")
+  } else {
+    var token = crypto.randomBytes(32).toString('hex')
+    await resetToken({token:token, email: req.user.email}).save();
+    sendVerifyEmail(req.user.email, token)
+    const patients = await User.findById(req.user._id)
+    Appointment.countDocuments({img_id: req.user.id}, function (err, appointments) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            const ttl = appointments + diagnosed
+            res.render('patient/dashboard.ejs', { emailSent: true , total: ttl, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    })
+  }
+})
+
+app.get("/verifyEmail", async(req,res) =>{
+  const token = req.query.token;
+  if(token){
+    var check = await resetToken.findOne({ token: token })
+    if (check) {
+
+      var userData = await User.findOne({ email : check.email })
+      userData.isVerified = true
+      await userData.save()
+
+      const response = await resetToken.findOneAndDelete({ token: token })
+
+      console.log("User Verfication Successful", userData)
+      console.log("Token Reset Successful", response)
+      res.redirect("/dashboard")
+
+    } else {
+      const patients = await User.findById(req.user._id)
+    Appointment.countDocuments({img_id: req.user.id}, function (err, appointments) {
+      if (err){
+          console.log(err)
+      }else{
+        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+          if (err){
+              console.log(err)
+          }else{
+            const ttl = appointments + diagnosed
+            res.render('patient/dashboard.ejs', { err: "Invalid token or token expired", verified: req.user.isVerified, total: ttl, patient: patients, base: 'base64' })
+          }
+        })
+      }
+    }) 
+    }
+  } else {
+    res.redirect("/dashboard")
+  }
+})
+
+app.get("/reset-password", async(req,res) =>{
+  const token = req.query.token;
+  if(token){
+    var check = await resetToken.findOne({ token: token })
+    if (check) {
+
+      // const response = await resetToken.findOneAndDelete({ token: token })
+      res.render('forgot-password', { reset: true, email: check.email })
+      
+    } else {
+      res.render('forgot-password', { msg: "Invalid token or token expired", type: "danger"})
+    }
+  } else {
+    res.redirect("/")
+  }
+})
+
+app.post("/reset-password", urlencodedParser,[
+  check('password', 'Password must include one lowercase character, one uppercase character, a number, and a special character.')
+    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, "i"),
+    check('password', 'Password must be greater than 5 characters.')
+    .isLength({min:6}),
+    check('confirm_password')
+      .custom(async (confirm_password, {req}) => {
+        const password = req.body.password
+        if(password !== confirm_password){
+          throw new Error('Passwords must be same')
+        }
+      }),
+  ],
+  async (req,res) =>{
+    const { password: plainTextPassword, confirm_password, email } = req.body
+    const password = await bcrypt.hash(plainTextPassword, 10)
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) {
+      const alert = errors.array()
+      res.render('forgot-password', { reset: true, email: email , alert })
+    } else {
+      try {
+        const patient = await User.findOne({email: email})
+        patient.password = password
+        await patient.save()
+        const response = patient
+        console.log('User password reset successful: ', response) 
+        res.redirect('/patient-login')
+      } catch (error) {
+        console.log("An error has occured during the changing of password")
+        res.render("/")
+      }
+    }
+    
+})
+
+app.post("/forgot-password", async (req,res) =>{
+  const { email } = req.body
+  var userData = await User.findOne({ email: email })
+  if (userData) {
+
+    var token = crypto.randomBytes(32).toString('hex')
+
+    await resetToken({token:token, email: email}).save();
+    sendResetEmail( email, token)
+
+    res.render('forgot-password', { msg: "Password reset link sent", type: "success"})
+
+  } else {
+    res.render('forgot-password', { msg: "No user found with that email", type: "danger"})
+  }
+})
 
 function getYears(x) {
   return Math.floor(x / 1000 / 60 / 60 / 24 / 365);
@@ -966,7 +1869,7 @@ app.post('/register', checkNotAuthenticated, urlencodedParser,[
     }),
   check('password', 'Password must include one lowercase character, one uppercase character, a number, and a special character.')
   .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, "i"),
-  check('password', 'Password must be greater than 6 characters.')
+  check('password', 'Password must be greater than 5 characters.')
   .isLength({min:6}),
   check('confirm_password')
     .custom(async (confirm_password, {req}) => {
@@ -1479,7 +2382,7 @@ app.post('/deactivate', checkAuthenticated, async (req, res) => {
 app.put('/edit-security', checkAuthenticated,urlencodedParser,[
   check('password', 'Password must include one lowercase character, one uppercase character, a number, and a special character.')
   .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, "i"),
-  check('password', 'Password must be greater than 6 characters.')
+  check('password', 'Password must be greater than 5 characters.')
   .isLength({min:6}),
   check('confirm_password')
     .custom(async (confirm_password, {req}) => {
@@ -1938,6 +2841,7 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
         const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
         const date_timestamp = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
         var appointment_status = " "
+        console.log(next_checkup)
         if (next_checkup == "Yes") {
           appointment_status = "Follow Up"
         } else {
@@ -1972,7 +2876,8 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
             })
       await response.save()
       res.redirect('/appointments')
-      await Appointment.deleteOne({id: id})
+      const delete_response = await Appointment.deleteOne({id: id})
+      console.log( first_name," ",last_name,' appointment has been deleted successfully: ', delete_response)
       console.log( first_name," ",last_name,' has been diagnosed successfully: ', response)
     } catch (err) {
         res.redirect('/dashboard')
@@ -1980,6 +2885,8 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
     }
   
 })
+
+
 
 app.post('/patient-login', checkNotAuthenticated, passport.authenticate('patient-local', {
   successRedirect: '/dashboard',
