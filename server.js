@@ -82,7 +82,7 @@ app.get('/dashboard', checkAuthenticated, async (req, res) => {
   if (req.user.usertype == "patient") {
     Appointment.countDocuments({img_id: req.user.id}, function (err, appointments) {
       if (err){
-          console.log(err)
+          console.log(err)  
       }else{
         Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
           if (err){
@@ -1749,21 +1749,27 @@ app.get("/verifyEmail", async(req,res) =>{
       res.redirect("/dashboard")
 
     } else {
-      const patients = await User.findById(req.user._id)
-    Appointment.countDocuments({img_id: req.user.id}, function (err, appointments) {
-      if (err){
-          console.log(err)
-      }else{
-        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
-          if (err){
-              console.log(err)
-          }else{
-            const ttl = appointments + diagnosed
-            res.render('patient/dashboard.ejs', { err: "Invalid token or token expired", verified: req.user.isVerified, total: ttl, patient: patients, base: 'base64' })
-          }
-        })
+      try {
+        const patients = await User.findById(req.user._id)
+        Appointment.countDocuments({img_id: req.user.id}, function (err, appointments) {
+        if (err){
+            console.log(err)
+        }else{
+          Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
+            if (err){
+                console.log(err)
+            }else{
+              const ttl = appointments + diagnosed
+              res.render('patient/dashboard.ejs', { err: "Invalid token or token expired", verified: req.user.isVerified, total: ttl, patient: patients, base: 'base64' })
+            }
+          })
+        }
+      }) 
+      } catch (error) {
+        console.log(error)
+        res.redirect("/")
       }
-    }) 
+      
     }
   } else {
     res.redirect("/dashboard")
