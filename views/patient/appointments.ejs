@@ -148,11 +148,6 @@
 								<h6>Symptoms:</h6>
 									<p><%= appointments.exp_symptoms %></p>
 								<hr>
-								<h6>Prediagnostic COVID-19 Test Results:</h6>
-									<p class="text-danger font-weight-bold"><%= appointments.pre_diagnose_result %></p>
-									<% if (appointments.symptoms_detected > 2) { %>
-									<p>Detected Symptoms = <%= appointments.symptoms_detected %></p>
-									<% } %> 
 								<div class="d-flex justify-content-between mt-4">
 									<div>
 										<h5 class="mb-0"><%= appointments.time %>
@@ -205,8 +200,7 @@
 								<h6>Symptoms:</h6>
 									<p><%= appointments.exp_symptoms %></p>
 									<hr>
-									<h6>Prediagnostic COVID-19 Test Results:</h6>
-									<p class="severe"><%= appointments.pre_diagnose_result %></p>
+									
 								<div class="d-flex justify-content-between mt-4">
 									<div>
 									<h5 class="mb-0"><%= appointments.time %>
