@@ -3499,8 +3499,6 @@ main .btn-send:hover {
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;
-  width: 400px;
-  margin: auto;
   box-shadow: 4px 4px 16px rgba(0, 0, 0, .1);
   border-radius: 15px; }
    .card > hr {

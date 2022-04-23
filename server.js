@@ -2723,105 +2723,113 @@ app.post('/set-appointment', checkAuthenticated, async (req, res) => {
   var covid19symptoms = ['Headache', 'Fever', 'Cough', 'Tiredness', 'Loss of Taste or Smell', 'Sore Throat', 'Aches and Pains', 'Diarrhoea', 'Shortness of breath', 'Fatigue'];
 
   const temp_date = req.body.date
-
-  // const appointmentChecker = await Appointment.find()
-
-  // appointmentChecker.forEach(function(appointments) {
-  //   if (time == appointments.time) {
-  //     console.log("Appointment matched/////////////////////////////////////////////////////////////////////////////////////")
-  //   }
-  //   console.log(appointments.branch)
-  // });
-
-
-  function checkSymptom(value, arr) {
-    var status = 'Not Detected';
-
-    for (var i = 0; i < arr.length; i++) {
-        var name = arr[i];
-        if (name == value) {
-            status = 'Detected';
-            break;
-        }
-    }
-
-    return status;
-  }
-  var covid_status = 0
-  var pre_diagnose_result = " "
-  exp_symptoms.forEach(function(el, i) {
-    const covid_symptom_checker = checkSymptom(exp_symptoms[i], covid19symptoms) 
-    if (covid_symptom_checker == "Detected") {
-      covid_status += 1
-      console.log(covid_status," Symptom ",checkSymptom(exp_symptoms[i], covid19symptoms), " for COVID-19 ", "| ",exp_symptoms[i])
-    }
-  });
-  const symptoms_detected = covid_status
-  if (covid_status > 2) {
-    pre_diagnose_result = "Possible COVID-19"
-    covid_status = 0
-  }
-  else{
-    pre_diagnose_result = "Not COVID-19"
-    covid_status = 0
-  }
-        try{
-          
-          var input_date = " "
-          temp_date.forEach(function(el, i) {
-            if (temp_date[i] != "") {
-              input_date = temp_date[i]
-            }
-          });
-          const id = req.user._id
-          const img_id = req.user.id
-          const appointment_status = "Pending"
-          let date_ob = new Date();
-          let set_date = ("0" + date_ob.getDate()).slice(-2);
-          let year = date_ob.getFullYear();
-          let hours = date_ob.getHours();
-          let min = ("0" + date_ob.getMinutes()).slice(-2);
-          var b = input_date.split(/\D/);
-          var date_temp = new Date(b[0], --b[1], b[2]);
-          let set_date_appointment = ("0" + date_temp.getDate()).slice(-2);
-          let year_appointment = date_temp.getFullYear();
-          var midday = "AM";
-          midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
-          hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
-
-          const time_timestamp = hours + ":" + min + " " + midday
-          const monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-  const date_timestamp = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
-  const date = monthNames[date_temp.getMonth()] + " " + set_date_appointment + ", " + year_appointment
-          const response = new Appointment({
-                  id,
-                  img_id,
-                  first_name,
-                  last_name,
-                  branch,
-                  time,
-                  date,
-                  exp_symptoms,
-                  date_timestamp,
-                  time_timestamp,
-                  age,
-                  sex,
-                  status,
-                  phone,
-                  email,
-                  symptoms_detected,
-                  pre_diagnose_result,
-                  appointment_status
-              })
-        await response.save()
-        res.redirect('/appointments')
-        console.log('Appointment created successfully: ', response)
-      } catch (err) {
-          res.redirect('/dashboard')
-          console.log(err)
+  
+  if (!Date.parse(temp_date) || !time) {
+    const alert = "Please input a day and time of your appointment."
+    const patients = await User.findById(req.user._id) 
+    const branches = await Branch.find()
+    const appointments = await Appointment.find()
+    res.render('patient/set-appointment.ejs',{ alert: alert, appointment: appointments, branch: branches, patient: patients, base: 'base64'})
+    console.log(alert)
+  } else {
+    console.log(exp_symptoms)
+    function checkSymptom(value, arr) {
+      var status = 'Not Detected';
+  
+      for (var i = 0; i < arr.length; i++) {
+          var name = arr[i];
+          if (name == value) {
+              status = 'Detected';
+              break;
+          }
       }
+  
+      return status;
+    }
+    var covid_status = 0
+    var pre_diagnose_result = " "
+    console.log(Array.isArray(exp_symptoms))
+    if (Array.isArray(exp_symptoms) == true) {
+      exp_symptoms.forEach(function(el, i) {
+        const covid_symptom_checker = checkSymptom(exp_symptoms[i], covid19symptoms) 
+        if (covid_symptom_checker == "Detected") {
+          covid_status += 1
+          console.log(covid_status," Symptom ",checkSymptom(exp_symptoms[i], covid19symptoms), " for COVID-19 ", "| ",exp_symptoms[i])
+        }
+      });
+    } else {
+      console.log(exp_symptoms)
+    }
+    const symptoms_detected = covid_status
+    if (covid_status > 2) {
+      pre_diagnose_result = "Possible COVID-19"
+      covid_status = 0
+    }
+    else{
+      pre_diagnose_result = "Not COVID-19"
+      covid_status = 0
+    }
+          try{
+            
+            var input_date = " "
+            temp_date.forEach(function(el, i) {
+              if (temp_date[i] != "") {
+                input_date = temp_date[i]
+              }
+            });
+            const id = req.user._id
+            const img_id = req.user.id
+            const appointment_status = "Pending"
+            let date_ob = new Date();
+            let set_date = ("0" + date_ob.getDate()).slice(-2);
+            let year = date_ob.getFullYear();
+            let hours = date_ob.getHours();
+            let min = ("0" + date_ob.getMinutes()).slice(-2);
+            var b = input_date.split(/\D/);
+            var date_temp = new Date(b[0], --b[1], b[2]);
+            let set_date_appointment = ("0" + date_temp.getDate()).slice(-2);
+            let year_appointment = date_temp.getFullYear();
+            var midday = "AM";
+            midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+            hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+  
+            const time_timestamp = hours + ":" + min + " " + midday
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const date_timestamp = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+    const date = monthNames[date_temp.getMonth()] + " " + set_date_appointment + ", " + year_appointment
+            const response = new Appointment({
+                    id,
+                    img_id,
+                    first_name,
+                    last_name,
+                    branch,
+                    time,
+                    date,
+                    exp_symptoms,
+                    date_timestamp,
+                    time_timestamp,
+                    age,
+                    sex,
+                    status,
+                    phone,
+                    email,
+                    symptoms_detected,
+                    pre_diagnose_result,
+                    appointment_status
+                })
+          await response.save()
+          res.redirect('/appointments')
+          console.log('Appointment created successfully: ', response)
+        } catch (err) {
+            res.redirect('/dashboard')
+            console.log(err)
+        }
+
+  }
+
+  
     
   
 })

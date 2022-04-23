@@ -22,9 +22,11 @@
 		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
 		<ul class="side-menu">
 			<li><a href="/dashboard"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
-			<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications<span class="badge">3</span></a></li>
-			<li class="divider" data-text="main">Main</li>
-			<li><a href="/appointments" class="active"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
+			<% if(patient.isVerified == true) {%> 
+				<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications<span class="badge">3</span></a></li>
+				<li class="divider" data-text="main">Main</li>
+				<li><a href="/appointments"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
+			<% } %> 
 		</ul>
 	</section>
 	<!-- SIDEBAR -->
@@ -89,27 +91,14 @@
 						</div>
 
 						
-						
-						
-							<% if ( appointment.length == 0 ) {%> 
-								<div class="col-sm-6 col-md-3">
+								<div class="checkpending col-sm-6 col-md-3">
+									<% appointment.forEach(function(appointments){ %>
+										<p hidden><%= appointments.appointment_status %></p>
+									<% }) %> 
 									<form action="/set-appointment" method="GET">
 										<button class="button">Set Appointment</button>
 									</form>
 								</div>
-							<% } else {%> 
-								<% for (var l = appointment.length, i = 0; i < l; i++) { %>
-									<% object = appointment[i]%>
-									<% if(object.img_id == patient.id && object.appointment_status == "Cancelled") {%>
-										<div class="col-sm-6 col-md-3">
-											<form action="/set-appointment" method="GET">
-												<button class="button">Set Appointment</button>
-											</form>
-										</div>
-									<% break %> 
-									<% } %>
-								<% } %>
-							<% } %> 
 
 							
 					</div>
@@ -118,7 +107,7 @@
 
 					<div class="row">
 						<% appointment.forEach(function(appointments){ %>
-						<div class="searchhide">
+						<div class="searchhide" >
 
 							<div class="card p-3 mb-4">
 								<div class="d-flex justify-content-between mb-4">
@@ -232,8 +221,7 @@
 					</div>
 					<% }) %> 
 					<% diagnose.forEach(function(diagnosis){ %>
-					<div class="card-columns2 m-2">
-						<div class="searchhide">
+						<div class="searchhide" >
 							<div class="card p-4 mb-4">
 								<div class="d-flex justify-content-between mb-4">
 									<div class="user-info">
@@ -299,7 +287,6 @@
 										</div>
 									</div>
 								</div>
-							</div>
 
 						</div>
 						
@@ -433,6 +420,9 @@
 		
 		});
 	});
+
+	$('.checkpending:contains("Pending")').hide()
+
 
 	$.expr[":"].contains = $.expr.createPseudo(function(arg) {
 		return function( elem ) {

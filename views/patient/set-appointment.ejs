@@ -41,13 +41,14 @@
     <div class="container">
       <div class="card">
         <div id="wizard">
-          <% if(typeof alert != 'undefined') { %>
-            <div class="alert">
-            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-            <p class="error-msg"><%= alert %></p>
-            </div>
-   
-          <% } %>
+          <% if (typeof alert != "undefined"){ %> 
+            <% if (alert){%> 
+              <div class="alert alert-dismissible fade show" role="alert">
+                <%= alert %> 
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+              </div> 
+            <% } %> 
+            <% } %> 
           <h3>Branch Location</h3>
           <section>
                 <h5 class="bd-wizard-step-title">Step: 1 of 2</h5>
@@ -89,7 +90,7 @@
                                         <div class="text-group">
                                            <label class="label">Date</label>
                                            <div class="input-group-icon">
-                                              <input class="input--style-4 js-datepicker" id="date-no-past<%= branches._id %>" type="date" name="date">
+                                              <input class="input--style-4 js-datepicker" id="date-no-past<%= branches._id %>" type="date" name="date" onchange="empty()">
                                            </div>
 
                                            <script>
@@ -109,53 +110,92 @@
                                                     $("#alert").modal("show");
                                                 }
                                             });
+
                                           </script>
 
                                         </div>
                                      </div>
                                     </div>
-                                    <button type="button" id="getValueInput<%= branches.id %>"> 
-                                      click me!! 
-                                  </button> 
-                                  <p id="dateInput<%= branches._id %>"></p>
-                                  <script>
+                                    <label class="time">Time</label>
                                     
-                                  </script>
-                                    <label>Time</label>
-                                    <div>
-                                      <% appointment.forEach(function(appointments){ %>
-                                        
-                                          <p id="valueInput<%= appointments.id%><%= branches._id %>"></p>
-                                        
-                                        <script>
-                                          var date_ob = new Date('<%= appointments.date%>');
-                                          var year = date_ob.getFullYear();
-                                          var month = ("0" + (date_ob.getMonth()+1)).slice(-2);
-                                          var date = ("0" + date_ob.getDate()).slice(-2);
-                                          var appointed_dates = year + "-"+ month+"-"+ date; 
-                                          document.getElementById("valueInput<%= appointments.id%><%= branches._id %>").innerHTML = appointed_dates
-                                        </script>
-                                        <% }) %> 
-                                      </div>
-                                      <div class="row time text-center mx-0">
+                                    <div class="time text-center mx-0">
+                                    
                                        <!--INSERT TIME DATABASE-->
                                        <% for(var i=0; i<branches.set_time.length; i++) {%>
-                                          <div class="col-md-4 col-4 my-1 px-2 radio-toolbar">
+                                          <div class="col-md-4 col-4 my-1 px-2 purpose-radio radio-toolbar">
                                             <input type="radio" name="time" id="time<%= branches.id %><%= branches.set_time[i] %>" value="<%= branches.set_time[i] %>" >
                                             <label for="time<%= branches.id %><%= branches.set_time[i] %>" class="cell py-1 rounded-lg">
                                               <%= branches.set_time[i] %>
                                               </label>
                                           </div>
                                         <% } %> 
-                                        
                                       </div>
+                                        <div class="database-date" style="display:none;">
+                                          <% appointment.forEach(function(appointments){ %>
+                                            <% if(appointments.branch == branches.branch_name){ %> 
+                                              <p id="valueInput<%= appointments.id%><%= branches._id %>"></p>
+                                            
+                                            <script>
+                                              var date_ob = new Date('<%= appointments.date%>');
+                                              var year = date_ob.getFullYear();
+                                              var month = ("0" + (date_ob.getMonth()+1)).slice(-2);
+                                              var date = ("0" + date_ob.getDate()).slice(-2);
+                                              var appointed_dates = year + "-"+ month+"-"+ date; 
+                                              document.getElementById("valueInput<%= appointments.id%><%= branches._id %>").innerHTML = appointed_dates
+                                            </script>
+                                            
+                                            <div class="database-time" style="display:none;">
+                                              <p><%= appointments.time %></p>
+                                            </div>
+                                            <script>
+                                              $(document).ready(function(){
+                                          
+                                          $('#date-no-past<%= branches._id %>').on("keyup change", function(e){
+                                          var date = $(this).val();
+
+                                          if ($('.database-date').is(':contains("'+date+'")')) {
+                                            
+                                            var array = [];
+
+                                            $('.database-time').find('p').each(function(){
+                                              array.push($(this).text());
+                                            });
+
+                                          $(array ).each(function () {
+                                            $('.purpose-radio:contains("'+ this +'")').css({"color":"black", "pointer-events": "none", "opacity": 0.5}).attr("disabled", true);
+                                          });
+                                          } else {
+                                          }
+                                          
+                                          // Clear Array Elements
+                                          array = [];
+                                          //
+
+                                        });
+                                      });
+
+                                      $('.time').hide();
+                                      
+                                        function empty() {
+                                          $('.purpose-radio').css({"pointer-events": "all", "opacity": 1});
+                                          $('.time').show();
+                                      } 
+                                            </script>
+                                            <% } %> 
+                                          <% }) %> 
+                                          </div>
+
+                                      <script>
+                                        
+                                          
+                                      </script>
                                       
                                       
                                       
-                  
+                                  <br><br>
                                   <i class="bd-wizard-btn" data-step="previous">Previous</i> <i class="bd-wizard-btn" data-step="next" data-dismiss="modal" aria-label="Close">Next</i>
+                                  <br><br>
                                 </div>
-                            </section>
                             </div>
                             </div>
                           </div>
