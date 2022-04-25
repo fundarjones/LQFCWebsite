@@ -177,6 +177,116 @@
 						</div>
 						</form>
 				</div>
+				<% } else if (followup) { %> 
+				<h1 class="title inline">Diagnose Patient:</h1> 
+					<h1 class="title inline dark-color"><%= followup.first_name %> <%= followup.last_name %></h1>
+					<div class="bg-white shadow rounded-lg d-block d-sm-flex">
+						<div class="profile-tab-nav border-right">
+							<div class="p-4">
+								<center>
+								<div class="avatar-upload">
+									<div class="avatar-preview">
+										<div id="imagePreview" style="background-image: url('../uploads/<%= followup.img_id %>.png')">
+										</div>
+									</div>
+								</div>
+							</center>
+							</div>
+							<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+								<a class="nav-link active" id="account-tab" data-toggle="pill" href="#account" role="tab" aria-controls="account" aria-selected="true">
+									<i class="fa fa-info text-center mr-1"></i> 
+									Diagnosis Information
+								</a>
+								<a class="nav-link" id="password-tab" data-toggle="pill" href="#password" role="tab" aria-controls="password" aria-selected="false">
+									<i class="fa fa-check text-center mr-1"></i> 
+									Confirmation
+								</a>
+							</div>
+						</div>
+						<form action="/follow-up-diagnose?_method=PUT" method="POST">
+
+							<input type="text" name="id" value="<%= followup.id %>" hidden>
+							<input type="text" name="img_id" value="<%= followup.img_id %>" hidden>
+							<input type="text" name="first_name" value="<%= followup.first_name%>" hidden>
+							<input type="text" name="last_name" value="<%= followup.last_name %>" hidden>
+							<input type="text" name="branch" value="<%= followup.branch %>" hidden>
+							<input type="text" name="date" value="<%= followup.date %>" hidden>
+							<input type="text" name="time" value="<%= followup.time %>" hidden>
+							<input type="text" name="sex" value="<%= followup.sex %>" hidden>
+							<input type="text" name="age" value="<%= followup.age %>" hidden>
+							<input type="text" name="status" value="<%= followup.status %>" hidden>
+							<input type="text" name="phone" value="<%= followup.phone %>" hidden>
+							<input type="text" name="email" value="<%= followup.email %>" hidden>
+							<input type="text" name="approved_staff" value="<%= followup.approved_staff %>" hidden>
+							<input type="text" name="exp_symptoms" value="<%= followup.exp_symptoms %>" hidden>
+							<input type="text" name="pre_diagnose_result" value="<%= followup.pre_diagnose_result %>" hidden>
+
+							<div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
+								<div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
+									<h3 class="mb-4">Information Settings</h3>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="text-group">
+												  <label>Diagnosed Diseases</label>
+												<textarea name="diagnosed_disease" class="form-control" rows="5" required></textarea>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="text-group">
+												  <label>Medicines</label>
+												<textarea name="medicine" class="form-control" rows="5" required></textarea>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="text-group">
+												  <label>Laboratory</label>
+												<textarea name="laboratory" class="form-control" rows="5" required></textarea>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="text-group">
+											   <label>In need of follow-up checkup?</label>
+											   <div class="p-t-10">
+												  <label class="radio-container m-r-45">Yes
+												  <input type="radio" checked="checked" name="next_checkup" value="Yes" required>
+												  <span class="checkmark"></span>
+												  </label>
+												  <label class="radio-container">No
+												  <input type="radio" name="next_checkup" value="No" required>
+												  <span class="checkmark"></span>
+												  </label>
+											   </div>
+											   <textarea name="next_checkup_note" class="form-control" rows="5"></textarea>
+											</div>
+										 </div>
+										<div class="col-md-12">
+											<div class="text-group">
+												  <label>Additional Notes</label>
+												<textarea name="notes" class="form-control" rows="5" required></textarea>
+											</div>
+										</div>
+										 
+									</div>
+								</div>
+								<div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
+									<h3 class="mb-4">Confirmation</h3>
+									<div class="row">
+									   <div class="col-md-12">
+										  <div class="text-group">
+											 <p>Is the diagnosis report finished and finalized?</p>
+										  </div>
+									   </div>
+									</div>
+									<div>
+									   <input type="submit" class="btn btn__primary btn__rounded ml-30" value="Submit Diagnosis Report"> 
+								</div>
+								
+								
+								
+							</div>
+						</div>
+						</form>
+				</div>
 				<% } %> 
 
 

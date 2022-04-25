@@ -72,6 +72,14 @@
 	<div class="container">
 					
 			<h1 class="title">Daignosed Records</h1>
+			<% if(typeof msg != 'undefined') { %>
+				<% if(msg) { %>
+				<div class="<%= type %>">
+					<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+					<p class="error-msg"><%= msg %></p>
+				</div>
+				<% } %>
+				<% } %>
 					<div class="row">
 						<div class="col-sm-6 col-md-9">
 							<form action="#">
@@ -116,8 +124,7 @@
 							<div class="row">
 								<% diagnose.forEach(function(diagnosis){ %>
 									<% if( diagnosis.appointment_status == "Follow-Up" && diagnosis.branch == doctor.branch) { %> 
-								<div class="searchhide">
-									<div class="card-columns2 m-2" id="id<%= diagnosis.id%><%= diagnosis.appointment_status %>">
+									<div class="searchhide" id="id<%= diagnosis.id%><%= diagnosis.appointment_status %>">
 										<div class="card p-4 mb-4">
 											<div class="d-flex justify-content-between mb-4">
 												<div class="user-info">
@@ -136,9 +143,12 @@
 													</a>
 												</div>
 											</div>
+											<hr>
+											<div class="btn-records">
+												<a class="button" href="/diagnose-patient/<%= diagnosis._id %>" >Diagnose Patient</a>
+												<a class="button" href="#!" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Records</a>
+											</div>
 										</div>
-	
-									</div>
 								</div>
 								<% } %> 
 								<% }); %> 
@@ -152,8 +162,7 @@
 							<div class="row">
 								<% diagnose.forEach(function(diagnosis){ %>
 									<% if( diagnosis.appointment_status == "Done"  && diagnosis.branch == doctor.branch) { %> 
-								<div class="searchhide">
-									<div class="card-columns2 m-2" id="id<%= diagnosis.id%><%= diagnosis.appointment_status %>">
+										<div class="searchhide" id="id<%= diagnosis.id%><%= diagnosis.appointment_status %>">
 										<div class="card p-4 mb-4">
 											<div class="d-flex justify-content-between mb-4">
 												<div class="user-info">
@@ -172,9 +181,10 @@
 													</a>
 												</div>
 											</div>
+											<hr>
+											<div class="btn-records"><a class="button" href="#!" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Records</a></div>
 										</div>
 									</div>
-								</div>
 								<% } %> 
 								<script>
 									var list = document.querySelectorAll("#id<%= diagnosis.id%><%= diagnosis.appointment_status %>")

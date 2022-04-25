@@ -547,7 +547,7 @@ app.get('/diagnose-patient/:_id', checkAuthenticated, async (req, res) => {
     const admins = await Admin.findById(user_id)
     const appointment_id = req.params._id
     const diagnose_patient = await Appointment.findById(appointment_id)
-    
+    const follow = await Diagnose.findById(appointment_id)
     if (req.user.usertype == "patient") {
       rAppointment.countDocuments({img_id: req.user.id}, function (err, total) {
         if (err){
@@ -564,7 +564,7 @@ app.get('/diagnose-patient/:_id', checkAuthenticated, async (req, res) => {
       })
     }
     else if (req.user.usertype == "doctor"){
-      res.render('doctor/diagnostic-test.ejs', { diagnose: diagnose_patient, doctor: doctors, base: 'base64' })
+      res.render('doctor/diagnostic-test.ejs', { followup: follow, diagnose: diagnose_patient, doctor: doctors, base: 'base64' })
     }
     else if (req.user.usertype == "admin"){
       res.render('admin/dashboard.ejs', { doctors: doc, admin: admins , base: 'base64'})
@@ -2786,7 +2786,7 @@ app.post('/set-appointment', checkAuthenticated, async (req, res) => {
           covid_status += 1
           console.log(covid_status," Symptom ",checkSymptom(exp_symptoms[i], covid19symptoms), " for COVID-19 ", "| ",exp_symptoms[i])
         }
-      });
+      })
     } else {
       console.log(exp_symptoms)
     }
@@ -2913,7 +2913,9 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
                 notes
             })
       await response.save()
-      res.redirect('/appointments')
+      const doctors = await Doctor.findById(req.user._id)
+      const appointments = await Appointment.find()
+      res.render('doctor/appointments.ejs', { appointment: appointments, doctor: doctors, patients: patient, base: 'base64', msg: "Patient successfully diagnosed", type: "success"})
       const delete_response = await Appointment.deleteOne({id: id})
       console.log( first_name," ",last_name,' appointment has been deleted successfully: ', delete_response)
       console.log( first_name," ",last_name,' has been diagnosed successfully: ', response)
@@ -2924,6 +2926,82 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
   
 })
 
+app.put('/follow-up-diagnose', checkAuthenticated, async (req, res) => {
+  const {id, img_id, first_name, last_name, branch, date, time, sex, age, status, phone, email, exp_symptoms, pre_diagnose_result, diagnosed_disease, medicine, laboratory, approved_staff, next_checkup, next_checkup_note, notes} = req.body
+      try{
+        let date_ob = new Date();
+        let set_date = ("0" + date_ob.getDate()).slice(-2);
+        let year = date_ob.getFullYear();
+        let hours = date_ob.getHours();
+        let min = ("0" + date_ob.getMinutes()).slice(-2);
+        var midday = "AM";
+		    midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+		    hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+        const time_timestamp = hours + ":" + min + " " + midday
+        const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+        const date_timestamp = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+        var appointment_status = " "
+        console.log(next_checkup)
+        if (next_checkup == "Yes") {
+          appointment_status = "Follow-Up"
+        } else {
+          appointment_status = "Done"
+        }
+
+        const response = new Diagnose({
+                id,
+                img_id,
+                first_name,
+                last_name,
+                branch,
+                time,
+                date,
+                exp_symptoms,
+                date_timestamp,
+                time_timestamp,
+                age,
+                sex,
+                status,
+                phone,
+                email,
+                approved_staff,
+                pre_diagnose_result,
+                appointment_status,
+                laboratory,
+                medicine,
+                diagnosed_disease,
+                next_checkup_note,
+                next_checkup,
+                notes
+            })
+            
+      if (next_checkup == "No") {
+        const records = await Diagnose.find({id:id})
+        for (let i = 0; i < records.length; i++) {
+          records[i].appointment_status = "Done"
+          await records[i].save()
+        }
+        console.log(records)
+      }
+      await response.save()
+      const doctors = await Doctor.findById(req.user._id)
+      const diagnosis = await Diagnose.find()
+      res.render('doctor/records.ejs', { diagnose: diagnosis, doctor: doctors, base: 'base64' , msg: "Patient sucessfully diagnosed", type: "alert-success"})
+      console.log( first_name," ",last_name,' has been diagnosed successfully: ', response)
+    } catch (err) {
+      const user_id = req.user._id
+      const doctors = await Doctor.findById(user_id)
+      Appointment.countDocuments({branch:req.user.branch, appointment_status: "Approved"}, function (err, count) {
+            if (err){
+                console.log(err)
+            }else{
+              res.render('doctor/dashboard.ejs', { appointment: count, doctor: doctors, base: 'base64', msg: err, type: "alert"})
+            }
+          })
+        console.log(err)
+    }
+  
+})
 
 
 app.post('/patient-login', checkNotAuthenticated, passport.authenticate('patient-local', {
