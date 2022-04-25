@@ -71,7 +71,7 @@
                     
 
                      <!--Modal-->
-                      <div class="modal fade" id="a<%= branches._id %>" tabindex="-1" role="dialog">
+                      <div class="modal fade time-slot" id="a<%= branches._id %>" tabindex="-1" role="dialog">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                           <div class="modal-content">
                             <div class="modal-header">
@@ -92,7 +92,7 @@
                                         <div class="text-group">
                                            <label class="label">Date</label>
                                            <div class="input-group-icon">
-                                              <input class="input--style-4 js-datepicker" id="date-no-past" type="date" name="date" onchange="empty()">
+                                              <input class="input--style-4 js-datepicker date-no-past<%= branches._id %>"  id="date-no-past" type="date" name="date" onchange="empty()">
                                            </div>
 
                                            <script>
@@ -101,17 +101,55 @@
                                             var mm = String(today.getMonth() + 1).padStart(2, "0");
                                             var yyyy = today.getFullYear();
                                             today = yyyy + "-" + mm + "-" + dd;
-                                            $("#date-no-past").attr("min", today);
+                                            $(".date-no-past<%= branches._id %>").attr("min", today);
                                           </script>
                                           <script>
-                                            document.getElementById("date-no-past").addEventListener("input", function (e) {
-                                                var day = new Date(this.value).getUTCDay();
+
+                                            $(document).ready(function(){
+                                              $('.time<%= branches._id %>').hide()
+                                            $('.date-no-past<%= branches._id %>').on("keyup change", function(e){
+                                              $('.time<%= branches._id %>').show()
+                                              var day = new Date(this.value).getUTCDay();
                                                 if ([6, 0].includes(day)) {
                                                     e.preventDefault();
                                                     this.value = "";
-                                                    $("#alert").modal("show");
+                                                    $(".time-slot").modal("hide");
+                                                    $(".close-weekends").modal("show");
                                                 }
-                                            });
+                                                var date = $(this).val();
+                                                var selectedDate = document.getElementsByClassName('selectedDate');
+                                                for (var i = 0; i < selectedDate.length; ++i) {
+                                                var outputDate = selectedDate[i];  
+                                                outputDate.innerHTML = date + ' ';
+
+                                                  var array = [];
+
+                                                  $('.database-date<%= branches._id %>').find('p').each(function(){
+                                                    array.push($(this).text());
+                                                  });
+
+                                                $(array ).each(function () {
+                                                  $('.purpose-radio:contains(" '+date+'"):contains("'+this+'")').css({"color":"black", "pointer-events": "none", "opacity": 0.5}).attr("disabled", true);
+                                                });
+
+                                                // Clear Array Elements
+                                                array = [];
+                                                //
+
+
+                                                }
+
+
+                                                });
+                                                });
+
+                                                function empty() {
+                                                    $('.purpose-radio').css({"pointer-events": "all", "opacity": 1});
+                                                }   
+                                                $(".close").click(function(){
+                                                  $('.time<%= branches._id %>').hide()
+                                                });
+                                                
 
                                           </script>
 
@@ -124,7 +162,7 @@
                                       <div class="checker">
                                        <!--INSERT TIME DATABASE-->
                                        <% for(var i=0; i<branches.set_time.length; i++) {%>
-                                          <div class="col-md-4 col-4 my-1 px-2 purpose-radio<%= branches._id %> purpose-radio radio-toolbar">
+                                          <div class="col-md-3 col-2 my-1 px-2 purpose-radio<%= branches._id %> purpose-radio radio-toolbar">
                                             <input type="radio" name="time" id="time<%= branches.id %><%= branches.set_time[i] %>" value="<%= branches.set_time[i] %>" >
                                             <label for="time<%= branches.id %><%= branches.set_time[i] %>" class="cell py-1 rounded-lg">
                                               <div class="selectedDate" style="display:none"></div><%= branches.set_time[i] %>
@@ -135,7 +173,7 @@
                                     </div>
                                         <% appointment.forEach(function(appointments){ %>
                                           <% if(appointments.branch == branches.branch_name && appointments.appointment_status == "Pending" || appointments.branch == branches.branch_name && appointments.appointment_status == "Approved"){ %> 
-                                            <div class="database-date<%= branches._id %> database-date">
+                                            <div class="database-date<%= branches._id %> database-date" hidden>
                                               <p id="valueInput<%= appointments.id%><%= branches._id %>"></p>
                                             </div>
                                           <script>
@@ -153,6 +191,7 @@
                                   <i class="bd-wizard-btn" data-step="previous">Previous</i> <i class="bd-wizard-btn" data-step="next" data-dismiss="modal" aria-label="Close">Next</i>
                                   <br><br>
                                 </div>
+                                </section>
                             </div>
                             </div>
                           </div>
@@ -242,18 +281,18 @@
     </div>
     <% } %> 
     <!--Modal-->
-  <div class="modal fade" id="alert" tabindex="-1" role="dialog">
+  <div class="modal fade close-weekends" id="alert" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <div class="col-md-12 text-center">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" id="hide_modal" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
             <img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
          </div>
         </div>
-        <div class="modal-body text-center">
+        <div class="modal-body text-center close-weekends">
           Sorry to say but our clinic is closed on Saturday and Sunday.
         </div>
         </div>
@@ -279,6 +318,11 @@
 	</script>
 
 <script>
+
+  $("#hide_modal").click(function(){
+    $(".modal-backdrop").hide();
+  });
+  
   function disableSubmit() {
    document.getElementById("submit").disabled = true;
   }
@@ -297,43 +341,6 @@
 
 
 <script src="../js/global.js"></script>
-
-<script>
-	$(document).ready(function(){
-
-
-$('#date-no-past').on("keyup change", function(e){
-var date = $(this).val();
-
-var selectedDate = document.getElementsByClassName('selectedDate');
-for (var i = 0; i < selectedDate.length; ++i) {
-var outputDate = selectedDate[i];  
-outputDate.innerHTML = date + ' ';
-
-  var array = [];
-
-  $('.database-date').find('p').each(function(){
-    array.push($(this).text());
-  });
-
-$(array ).each(function () {
-  $('.purpose-radio:contains(" '+date+'"):contains("'+this+'")').css({"color":"black", "pointer-events": "none", "opacity": 0.5}).attr("disabled", true);
-});
-
-// Clear Array Elements
-array = [];
-//
-
-
-}
-
-});
-});
-
-function empty() {
-    $('.purpose-radio').css({"pointer-events": "all", "opacity": 1});
-}    
-</script>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>

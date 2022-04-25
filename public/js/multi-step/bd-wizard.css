@@ -137,7 +137,7 @@ main {
           margin-bottom: 1px;
           width: 100%;
           max-width: none; } }
-          @media (max-width: 1200px) {
+          @media (max-width: 768px) {
             .wizard .content .purpose-radios-wrapper .purpose-radio {
               margin-right: 2px;
               margin-bottom: 1px;
