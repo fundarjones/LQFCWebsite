@@ -2892,8 +2892,82 @@ app.post('/set-appointment', checkAuthenticated, async (req, res) => {
   
 })
 
+app.post('/set-followup-appointment', checkAuthenticated, async (req, res) => {
+  const time = req.body.time
+  const {email, first_name, last_name, phone, sex, status, age } = req.user
+  const temp_date = req.body.date
+  
+  if (!Date.parse(temp_date) || !time) {
+    const alert = "Please input a day and time of your appointment."
+    const patients = await User.findById(req.user._id) 
+    const branches = await Branch.find()
+    const appointments = await Appointment.find()
+    res.render('patient/follow-up.ejs',{ alert: alert, appointment: appointments, branch: branches, patient: patients, base: 'base64'})
+    console.log(alert)
+  } else {
+          try{
+            input_date = temp_date
+            const appointment_status = "Follow-Up"
+            let date_ob = new Date();
+            let set_date = ("0" + date_ob.getDate()).slice(-2);
+            let year = date_ob.getFullYear();
+            let hours = date_ob.getHours();
+            let min = ("0" + date_ob.getMinutes()).slice(-2);
+            var b = input_date.split(/\D/);
+            var date_temp = new Date(b[0], --b[1], b[2]);
+            let set_date_appointment = ("0" + date_temp.getDate()).slice(-2);
+            let year_appointment = date_temp.getFullYear();
+            var midday = "AM";
+            midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+            hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+  
+            const time_timestamp = hours + ":" + min + " " + midday
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+            const date_timestamp = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+            const date = monthNames[date_temp.getMonth()] + " " + set_date_appointment + ", " + year_appointment
+            const id = req.user._id
+            const img_id = req.user.id
+            const followup = await Diagnose.findOne({id: id})
+            console.log(followup)
+            const branch = followup.branch
+            const symptoms_detected = followup.symptoms_detected
+            const exp_symptoms = followup.exp_symptoms
+            const pre_diagnose_result = followup.pre_diagnose_result
+            const response = new Appointment({
+                    id,
+                    img_id,
+                    first_name,
+                    last_name,
+                    branch,
+                    time,
+                    date,
+                    exp_symptoms,
+                    date_timestamp,
+                    time_timestamp,
+                    age,
+                    sex,
+                    status,
+                    phone,
+                    email,
+                    symptoms_detected,
+                    pre_diagnose_result,
+                    appointment_status
+                })
+          await response.save()
+          res.redirect('/appointments')
+          console.log('Follow Up Appointment created successfully: ', response)
+        } catch (err) {
+            res.redirect('/dashboard')
+            console.log(err)
+        }
+
+  }
+})
+
 app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
-  const {id, img_id, first_name, last_name, branch, date, time, sex, age, status, phone, email, exp_symptoms, pre_diagnose_result, diagnosed_disease, medicine, laboratory, approved_staff, next_checkup, next_checkup_note, notes} = req.body
+  const {id, img_id, first_name, last_name, branch, date, time, sex, age, status, phone, email, pre_diagnose_result, diagnosed_disease, medicine, laboratory, approved_staff, next_checkup, next_checkup_note, notes} = req.body
       try{
         let date_ob = new Date();
         let set_date = ("0" + date_ob.getDate()).slice(-2);
@@ -2907,13 +2981,15 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
         const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
         const date_timestamp = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
         var appointment_status = " "
-        console.log(next_checkup)
         if (next_checkup == "Yes") {
           appointment_status = "Follow-Up"
         } else {
           appointment_status = "Done"
         }
-
+        const old = await Appointment.findOne({id:id})
+        const exp_symptoms = old.exp_symptoms
+        const symptoms_detected = old.symptoms_detected
+        console.log(symptoms_detected)
         const response = new Diagnose({
                 id,
                 img_id,
@@ -2930,6 +3006,7 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
                 status,
                 phone,
                 email,
+                symptoms_detected,
                 approved_staff,
                 pre_diagnose_result,
                 appointment_status,
@@ -2943,7 +3020,7 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
       await response.save()
       const doctors = await Doctor.findById(req.user._id)
       const appointments = await Appointment.find()
-      res.render('doctor/appointments.ejs', { appointment: appointments, doctor: doctors, patients: patient, base: 'base64', msg: "Patient successfully diagnosed", type: "success"})
+      res.render('doctor/appointments.ejs', { appointment: appointments, doctor: doctors, base: 'base64', msg: "Patient successfully diagnosed", type: "success"})
       const delete_response = await Appointment.deleteOne({id: id})
       console.log( first_name," ",last_name,' appointment has been deleted successfully: ', delete_response)
       console.log( first_name," ",last_name,' has been diagnosed successfully: ', response)
@@ -2975,7 +3052,8 @@ app.put('/follow-up-diagnose', checkAuthenticated, async (req, res) => {
         } else {
           appointment_status = "Done"
         }
-
+        const old = await Diagnose.findOne({id:id})
+        const symptoms_detected = old.symptoms_detected
         const response = new Diagnose({
                 id,
                 img_id,
@@ -2985,6 +3063,7 @@ app.put('/follow-up-diagnose', checkAuthenticated, async (req, res) => {
                 time,
                 date,
                 exp_symptoms,
+                symptoms_detected,
                 date_timestamp,
                 time_timestamp,
                 age,

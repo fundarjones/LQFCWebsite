@@ -35,7 +35,7 @@
 
 
   </header>
-  <form action="/set-appointment" method="POST">
+  <form action="/set-followup-appointment" method="POST">
   <main class="d-flex">
     
     <div class="container">
@@ -81,7 +81,9 @@
                                   <script>
 
                                     $(document).ready(function(){
+                                      $('.time<%= branch._id %>').hide()
                                     $('.date-no-past<%= branch._id %>').on("keyup change", function(e){
+                                      $('.time<%= branch._id %>').show()
                                       var day = new Date(this.value).getUTCDay();
                                         if ([6, 0].includes(day)) {
                                             e.preventDefault();
@@ -120,6 +122,9 @@
                                             $('.purpose-radio').css({"pointer-events": "all", "opacity": 1});
                                         }    
 
+                                        $(".close").click(function(){
+                                          $('.time<%= branch._id %>').hide()
+                                        });
                                   </script>
 
                                 </div>
@@ -131,7 +136,7 @@
                               <div class="checker">
                                <!--INSERT TIME DATABASE-->
                                <% for(var i=0; i<branch.set_time.length; i++) {%>
-                                  <div class="col-md-2 col-2 my-1 px-2 purpose-radio<%= branch._id %> purpose-radio radio-toolbar">
+                                  <div class="col-md-4 col-4 my-1 px-2 purpose-radio<%= branch._id %> purpose-radio radio-toolbar">
                                     <input type="radio" name="time" id="time<%= branch.id %><%= branch.set_time[i] %>" value="<%= branch.set_time[i] %>" >
                                     <label for="time<%= branch.id %><%= branch.set_time[i] %>" class="cell py-1 rounded-lg">
                                       <div class="selectedDate" style="display:none"></div><%= branch.set_time[i] %>
@@ -141,7 +146,7 @@
                               </div>
                             </div>
                                 <% appointment.forEach(function(appointments){ %>
-                                  <% if(appointments.branch == branch.branch_name && appointments.appointment_status == "Pending" || appointments.branch == branch.branch_name && appointments.appointment_status == "Approved"){ %> 
+                                  <% if(appointments.branch == branch.branch_name && appointments.appointment_status == "Pending" || appointments.branch == branch.branch_name && appointments.appointment_status == "Approved" || appointments.branch == branch.branch_name && appointments.appointment_status == "Follow-Up"){ %> 
                                     <div class="database-date<%= branch._id %> database-date" hidden>
                                       <p id="valueInput<%= appointments.id%><%= branch._id %>"></p>
                                     </div>
@@ -156,82 +161,12 @@
                                   
                                   <% } %> 
                                 <% }) %> 
-                          <br><br>
-                          <i class="bd-wizard-btn" data-step="previous">Previous</i> <i class="bd-wizard-btn" data-step="next" data-dismiss="modal" aria-label="Close">Next</i>
+                          <br><br> <input type="submit" class="bd-wizard-btn" name="Done" id="submit">
                           <br><br>
                         </div>
                         </section>
               </div>
               <% } %> 
-          </section>
-
-          <h3>Symptoms</h3>
-          <section>
-            <div class="card-container">
-              <h5 class="bd-wizard-step-title">Step: 2 of 2</h5>
-              <h2 class="section-heading">Input Symptoms</h2>
-              <p>In order for us to Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.</p>
-                    
-              <div class="row row-space"> 
-                <div class="col-md-12">
-                      <label>Symptoms</label>
-                      <select id="symptoms-database" name="exp_symptoms" multiple >
-                        <!--insert symptoms database-->
-                        <option value="Headache" >Headache</option>
-                        <option value="Fever">Fever</option>
-                        <option value="Cough">Cough</option>
-                        <option value="Tiredness">Tiredness</option>
-                        <option value="Loss of Taste or Smell">Loss of Taste or Smell</option>
-                        <option value="Sore Throat">Sore Throat</option>
-                        <option value="Aches and Pains">Aches and Pains</option>
-                        <option value="Diarrhoea">Diarrhoea</option>
-                        <option value="Shortness of breath">Shortness of breath</option>
-                        <option value="Vomiting">Vomiting</option>
-                        <option value="Cognitive Impairment">Cognitive Impairment</option>
-                        <option value="Confusion">Confusion</option>
-                        <option value="Decline in memory or other thinking skills">Decline in memory or other thinking skills</option>
-                        <option value="Memory Loss">Memory Loss</option>
-                        <option value="Sore Eye">Sore Eye</option>
-                        <option value="Nose bleed">Nose bleed</option>
-                        <option value="Itchy Throat">Itchy Throat</option>
-                        <option value="Neck hurts">Neck hurts</option>
-                        <option value="Colds">Colds</option>
-                        <option value="Sore Eye">Sore Eye</option>
-                        <option value="Nausea">Nausea</option>
-                        <option value="Reflux">Reflux</option>
-                        <option value="Stomach pain lower left side">Stomach pain lower left side</option>
-                        <option value="Stomach pain lower right side">Stomach pain lower right side</option>
-                        <option value="Blood in urine">Blood in urine</option>
-                        <option value="Difficult to pee">Difficult to pee</option>
-                        <option value="Genital pain">Genital pain</option>
-                        <option value="Chills">Chills</option>
-                        <option value="Anxiety">Anxiety</option>
-                        <option value="Fatigue">Fatigue</option>
-                        <option value="Self injury">Self injury</option>
-                        <option value="Wound">Wound</option>
-                        <option value="Shaking">Shaking</option>
-                        <option value="Nervousness">Nervousness</option>
-                        <option value="Anal bleeding">Anal bleeding</option>
-                        <option value="Constipation">Constipation</option>
-                        <option value="Nausea">Nausea</option>
-                        <option value="Other symptoms..">Other symptoms..</option>
-                      </select>
-
-                      <div class="my-5">
-
-                        <body onload="disableSubmit()">
-                          <p><input type="checkbox" name="terms" id="terms" onchange="activateButton(this)">
-                          By booking an Appointment, I herebey accept the 
-                          <a href="/terms-conditions" target="_blank">Terms and Conditions</a></p>
-  
-                        <i class="bd-wizard-btn" data-step="previous">Previous</i>
-                        <input type="submit" class="bd-wizard-btn" name="Done" id="submit">
-                        
-                         </body>
-                      </div>
-                </div>
-            </div>
-            </div>
           </section>
 
           

@@ -18,6 +18,8 @@ const DiagnoseSchema = new mongoose.Schema(
 		email: { type: String, required: true },
 		exp_symptoms: { type: String, required: true },
 		pre_diagnose_result: { type: String, required: true },
+		symptoms_detected: { type: String, required: true },
+		exp_symptoms: { type: [String], enum: ['Headache', 'Fever', 'Cough', 'Tiredness', 'Loss of Taste or Smell', 'Sore Throat', 'Aches and Pains', 'Diarrhoea', 'Shortness of breath',"Vomiting","Cognitive Impairment","Confusion","Decline in memory or other thinking skills","Memory Loss","Sore Eye","Nose bleed","Itchy Throat","Neck hurts","Colds","Sore Eye","Nausea","Reflux","Stomach pain lower left side","Stomach pain lower right side","Blood in urine","Difficult to pee","Genital pain","Chills","Anxiety","Fatigue","Self injury","Wound","Shaking","Nervousness","Anal bleeding","Constipation","Nausea","Other symptoms.."], required: true },
 		appointment_status: { type: String, required: true },
 		diagnosed_disease: { type: String, required: true },
 		medicine: { type: String, required: true },

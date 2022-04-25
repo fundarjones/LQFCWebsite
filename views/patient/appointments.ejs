@@ -23,7 +23,7 @@
 		<ul class="side-menu">
 			<li><a href="/dashboard"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
 			<% if(patient.isVerified == true) {%> 
-				<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications<span class="badge">3</span></a></li>
+				<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications</a></li>
 				<li class="divider" data-text="main">Main</li>
 				<li><a href="/appointments" class="active"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
 			<% } %> 
@@ -111,7 +111,6 @@
 					<div class="row">
 						<% appointment.forEach(function(appointments){ %>
 						<div class="searchhide" >
-
 							<div class="card p-3 mb-4">
 								<div class="d-flex justify-content-between mb-4">
 									<div class="user-info">
@@ -218,7 +217,6 @@
 					</div>
 					<% }) %> 
 					<% diagnose.forEach(function(diagnosis){ %>
-						<div class="searchhide" id="id<%= diagnosis.id%><%= diagnosis.appointment_status %>">
 							<div class="card p-4 mb-4">
 								<div class="d-flex justify-content-between mb-4">
 									<div class="user-info">
@@ -257,7 +255,6 @@
 									}
 								</script>
 							</div>
-						</div>
 					
 					
 					<% }) %> 

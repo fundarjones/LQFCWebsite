@@ -3495,8 +3495,9 @@ main .btn-send:hover {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-    min-width: 0;
     margin-bottom: 20px;
+    max-width: 400px;
+    margin: auto !important;
     word-wrap: break-word;
     background-color: #fff;
     background-clip: border-box;

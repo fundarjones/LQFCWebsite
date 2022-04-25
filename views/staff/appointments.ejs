@@ -25,7 +25,7 @@
 		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
 		<ul class="side-menu">
 			<li><a href="/dashboard"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
-			<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications<span class="badge">3</span></a></li>
+			<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications</a></li>
 			<li class="divider" data-text="main">Main</li>
 			
 			<li><a href="/appointments" class="active"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
@@ -124,7 +124,7 @@
 									<section>
 										<div class="row">
 											<% appointment.forEach(function(appointments){ %>
-											<% if( appointments.pre_diagnose_result == "Not COVID-19" && appointments.appointment_status == "Pending" && staff.branch == appointments.branch) { %> 
+											<% if( appointments.pre_diagnose_result == "Not COVID-19" && appointments.appointment_status != "Approved" && staff.branch == appointments.branch) { %> 
 											<div class="searchhide">
 												<div class="card p-3 mb-4">
 													<div class="d-flex justify-content-between mb-4">
@@ -348,7 +348,7 @@
 						<section>
 							<div class="row">
 								<% appointment.forEach(function(appointments){ %>
-								<% if( appointments.pre_diagnose_result == "Possible COVID-19" && appointments.appointment_status == "Pending" && staff.branch == appointments.branch) { %> 
+								<% if( appointments.pre_diagnose_result == "Possible COVID-19" && appointments.appointment_status != "Approved" && staff.branch == appointments.branch) { %> 
 								<div class="searchhide">
 									<div class="card p-3 mb-4">
 										<div class="d-flex justify-content-between mb-4">
