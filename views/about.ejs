@@ -30,18 +30,18 @@
       <nav class="navbar navbar-expand-lg is-sticky">
         <div class="container-fluid">
           <a class="navbar-brand" href="/">
-            <img src="../assets/images/logo/logo.png" style="width:100%; height:auto; max-width:130px;" class="logo-dark" alt="logo">
-         </a>
+            <img src="assets/images/logo/logo.png" style="width:100%; height:auto; max-width:130px;" class="logo-dark" alt="logo">
+          </a>
           <button class="navbar-toggler" type="button">
             <span class="menu-lines"><span></span></span>
           </button>
           <div class="collapse navbar-collapse" id="mainNavigation">
             <ul class="navbar-nav ml-auto">
               <li class="nav__item">
-                <a href="/" class="nav__item-link active">Home</a>
+                <a href="/" class="nav__item-link">Home</a>
               </li><!-- /.nav-item -->
               <li class="nav__item">
-                <a href="/about" class="nav__item-link">About</a>
+                <a href="/about" class="nav__item-link active">About</a>
               </li><!-- /.nav-item -->
               <li class="nav__item">
                 <a href="/contact" class="nav__item-link">Contact</a>
@@ -55,12 +55,14 @@
               
             </ul><!-- /.navbar-nav -->
             <button class="close-mobile-menu d-block d-lg-none"><i class="fas fa-times"></i></button>
-          </div><!-- /.navbar-collapse -->
+          <!-- /.navbar-collapse -->
           <div class="d-none d-xl-flex align-items-center position-relative ml-30"> 
-            <a href="login" class="btn btn__primary btn__rounded ml-30" data-toggle="modal" data-target="#exampleModalCenter">
+            <a href="" class="btn btn__primary btn__rounded ml-30" data-toggle="modal" data-target="#exampleModalCenter">
               <span>LOGIN</span>
             </a>
           </div>
+        </div>
+        </div>
         </div><!-- /.container -->
       </nav><!-- /.navabr -->
     </header><!-- /.Header -->
@@ -333,31 +335,14 @@
                   with any general or medical enquiry.
                 </p>
                 <ul class="contact-list list-horizontal list-unstyled">
+                  <% branch.forEach(function(branches){ %>
                   <li>
-                    Sta. Cruz | Porac Branch<br>
-                    <a href="tel:+09171051731">
-                      <i class="icon-phone"></i> <span>0917-105-1731</span>
+                    <%= branches.branch_name %><br>
+                    <a href="tel:+<%= branches.phone %>">
+                      <i class="icon-phone"></i> <span><%= branches.phone %></span>
                     </a>
                   </li>
-                  
-                  <li>
-                    Sandra Mall | Angeles City Branch<br>
-                    <a href="tel:+tel:+09175026577">
-                      <i class="icon-phone"></i> <span>0917-502-6577</span>
-                    </a>
-                  </li>
-                  <li>
-                    Super 8 | Angeles City Branch<br>
-                    <a href="tel:+09178470719">
-                      <i class="icon-phone"></i> <span>0917-847-0719</span>
-                    </a>
-                  </li>
-                  <li>
-                    San Francisco | Magalang Branch<br>
-                    <a href="tel:+09178470719">
-                      <i class="icon-phone"></i> <span>0917-169-9131</span>
-                    </a>
-                  </li> 
+                  <% }) %>
                 </ul>
                 
 
@@ -388,7 +373,7 @@
           </div><!-- /.row -->
         </div><!-- /.container -->
       </div><!-- /.footer-secondary -->
-    </footer><!-- /.Footer -->
+    </footer><!-- /.Footer -->d
     <button id="scrollTopBtn"><i class="fas fa-long-arrow-alt-up"></i></button>
   </div><!-- /.wrapper -->
 

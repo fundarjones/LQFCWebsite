@@ -923,28 +923,42 @@ app.get('/staff-login', checkNotAuthenticated, async (req, res) => {
   res.render('staff/login.ejs')
 })
 
-app.get('/', checkNotAuthenticated, (req,res) => {
-res.render('index.ejs')
+app.get('/', checkNotAuthenticated, async(req,res) => {
+  const branches = await Branch.find()
+
+res.render('index.ejs', {branch: branches})
 })
 
-app.get('/about', checkNotAuthenticated, (req,res) => {
-  res.render('about.ejs')
+app.get('/about', checkNotAuthenticated, async(req,res) => {
+  const branches = await Branch.find()
+  res.render('about.ejs', {branch: branches})
 })
 
-app.get('/contact', checkNotAuthenticated, (req,res) => {
-  res.render('contact.ejs')
+app.get('/contact', checkNotAuthenticated, async(req,res) => {
+  const branches = await Branch.find()
+  res.render('contact.ejs', {branch: branches})
 })
 
-app.get('/lqfc-doctors', checkNotAuthenticated, (req,res) => {
-  res.render('doctors.ejs')
+app.get('/lqfc-doctors', checkNotAuthenticated, async (req,res) => {
+  const doctors = await Doctor.find()
+  const branches = await Branch.find()
+  res.render('doctors.ejs', {doctor: doctors, branch: branches})
+})
+
+app.get('/doctors-profile/:_id', checkNotAuthenticated, async (req,res) => {
+  const user_id = req.params._id
+  const doctors = await Doctor.findById(user_id)
+  const branches = await Branch.findOne({branch_name: doctors.branch})
+  res.render('doctors-profile.ejs', {doctor: doctors, branch: branches})
 })
 
 app.get('/terms-conditions', (req,res) => {
   res.render('terms-conditions.ejs')
 })
 
-app.get('/services', checkNotAuthenticated, (req,res) => {
-  res.render('services.ejs')
+app.get('/services', checkNotAuthenticated, async(req,res) => {
+  const branches = await Branch.find()
+  res.render('services.ejs', {branch: branches})
 })
 
 const sendResetEmail = async(email,token) =>{

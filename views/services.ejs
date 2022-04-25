@@ -29,16 +29,16 @@
       
       <nav class="navbar navbar-expand-lg is-sticky">
         <div class="container-fluid">
-          <a class="navbar-brand" href="../index.html">
-            <img src="../assets/images/logo/logo.png" style="width:100%; height:auto; max-width:130px;" class="logo-dark" alt="logo">
-         </a>
+          <a class="navbar-brand" href="/">
+            <img src="assets/images/logo/logo.png" style="width:100%; height:auto; max-width:130px;" class="logo-dark" alt="logo">
+          </a>
           <button class="navbar-toggler" type="button">
             <span class="menu-lines"><span></span></span>
           </button>
           <div class="collapse navbar-collapse" id="mainNavigation">
             <ul class="navbar-nav ml-auto">
               <li class="nav__item">
-                <a href="/" class="nav__item-link active">Home</a>
+                <a href="/" class="nav__item-link">Home</a>
               </li><!-- /.nav-item -->
               <li class="nav__item">
                 <a href="/about" class="nav__item-link">About</a>
@@ -47,7 +47,7 @@
                 <a href="/contact" class="nav__item-link">Contact</a>
               </li><!-- /.nav-item -->
               <li class="nav__item">
-                <a href="/services" class="nav__item-link">Services & Branches</a>
+                <a href="/services" class="nav__item-link active">Services & Branches</a>
               </li><!-- /.nav-item -->
               <li class="nav__item">
                 <a href="/lqfc-doctors" class="nav__item-link">Doctors</a>
@@ -55,12 +55,14 @@
               
             </ul><!-- /.navbar-nav -->
             <button class="close-mobile-menu d-block d-lg-none"><i class="fas fa-times"></i></button>
-          </div><!-- /.navbar-collapse -->
+          <!-- /.navbar-collapse -->
           <div class="d-none d-xl-flex align-items-center position-relative ml-30"> 
-            <a href="login.html" class="btn btn__primary btn__rounded ml-30" data-toggle="modal" data-target="#exampleModalCenter">
+            <a href="" class="btn btn__primary btn__rounded ml-30" data-toggle="modal" data-target="#exampleModalCenter">
               <span>LOGIN</span>
             </a>
           </div>
+        </div>
+        </div>
         </div><!-- /.container -->
       </nav><!-- /.navabr -->
     </header><!-- /.Header -->
@@ -252,16 +254,15 @@
               <div class="slick-carousel"
                 data-slick='{"slidesToShow": 4, "slidesToScroll": 1, "autoplay": false, "infinite":false, "arrows": false, "dots": false, "responsive": [{"breakpoint": 1200, "settings": {"slidesToShow": 3}}, {"breakpoint": 992, "settings": {"slidesToShow": 2}}, {"breakpoint": 767, "settings": {"slidesToShow": 2}}, {"breakpoint": 480, "settings": {"slidesToShow": 1}}]}'>
                 <!-- process item #1 -->
+                <% branch.forEach(function(branches){ %>
                 <div class="process-item center">
-                  <span class="process__number">Branch # 1</span>
-                  <h4 class="process__title">
-                    Super 8, Angeles City Branch</h4>
-                  <p class="process__desc justify">Super 8 Warehouse McArthur Highway, Sto. Domingo, Angeles City, Pampanga</p>
+                  <h4 class="process__title"><%= branches.branch_name %> </h4>
+                  <p class="process__desc justify"><%= branches.address %> </p>
                   <hr>
                   
                     <span>Weekdays</span>
                     <ul class="black list-vertical list-unstyled font-weight-bold">
-                      <li>1:00 PM - 7:00 PM</li>
+                      <li><%= branches.set_time[0] %>  - <%= branches.set_time[branches.set_time.length-1] %> </li>
                     </ul>
 
                     <span>Weekends</span>
@@ -273,102 +274,10 @@
                   <a href="https://goo.gl/maps/Kyn3rFzt5stUWV939" target="_blank" class="btn btn__secondary btn__link">
                     <span class="location">View Location</span>
                     <i class="icon-arrow-right"></i>
-                  </a>
-                </div><!-- /.process-item -->
-                <!-- process-item #2 -->
-                <div class="process-item center">
-                  <span class="process__number">Branch # 2</span>
-                  <h4 class="process__title">Sandra Mall, Angeles City Branch</h4>
-                  <p class="process__desc justify">Near Sandra Mall, Rizal Extension, Brgy. Sato Rosario, Angeles City, Pampanga</p>
-                  <hr>
-                      <span>Weekdays</span>
-                      <ul class="black list-vertical list-unstyled font-weight-bold">
-                        <li>9:00 AM - 2:30 PM</li>
-                      </ul>
-
-                    <span>Weekends</span>
-                    <ul class="black list-vertical list-unstyled font-weight-bold">
-                      <li>Closed</li>
-                    </ul>
-                    <hr>
-
-                  <a href="https://goo.gl/maps/aFFpDuuaCtSqVGpVA" target="_blank" class="btn btn__secondary btn__link">
-                    <span class="location">View Location</span>
-                    <i class="icon-arrow-right"></i>
-                  </a>
-                </div><!-- /.process-item -->
-                <!-- process-item #3 -->
-                <div class="process-item center">
-                  <span class="process__number">Branch # 3</span>
-                  <h4 class="process__title">Sta. Cruz, Porac Branch</h4>
-                  <p class="process__desc justify">118 Purok 1, Sta. Cruz Highway Cor. Fatima, Porac, Pampanga</p>
-
-                  <hr>
-                  
-                  <span>Weekdays</span>
-
-                  <ul class="black list-vertical list-unstyled font-weight-bold">
-                    <li>9:00 AM - 12:00 PM</li>
-                    <li>3:00 PM - 6:00 PM</li>
-                  </ul>
-
-                  <span>Weekends</span>
-                  <ul class="black list-vertical list-unstyled font-weight-bold">
-                    <li>Closed</li>
-                  </ul>
-
-                <hr>
-
-                  <a href="https://goo.gl/maps/XJvXRVjTyxMa1Hx8A" target="_blank" class="btn btn__secondary btn__link">
-                    <span class="location">View Location</span>
-                    <i class="icon-arrow-right"></i>
-                  </a>
-                </div><!-- /.process-item -->
-                <!-- process-item #4 -->
-                <div class="process-item center">
-                  <span class="process__number justify">Branch # 4</span>
-                  <h4 class="process__title">San Francisco, Magalang Branch</h4>
-                  <p class="process__desc justify">Across Shell Magalang, Purok 4, San Francisco, Magalang, Pampanga</p>
-
-                  <hr>
-                  <span>Weekdays</span>
-                  <ul class="black list-vertical list-unstyled font-weight-bold">
-                    <li>9:00 AM - 12:00 PM</li>
-                    <li>1:00 PM - 5:00 PM</li>
-                  </ul>
-
-                <span>Weekends</span>
-                <ul class="black list-vertical list-unstyled font-weight-bold">
-                  <li>Closed</li>
-                </ul>
-                <hr>
-
-                  <a href="https://goo.gl/maps/1yJ7MWSnBcunt1HE8" target="_blank" class="btn btn__secondary btn__link">
-                    <span class="location">View Location</span>
-                    <i class="icon-arrow-right"></i>
-                  </a>
-                </div><!-- /.process-item -->
-                <!-- process-item #5 -->
-                <div class="process-item center">
-                  <span class="process__number">Branch # 5</span>
-                  <h4 class="process__title">San Fernado Branch (Launching Soon)</h4>
-                  <p class="process__desc justify">Near Intersection Sindalan, City of San Fernando Pampanga</p>
-                  <hr>
-                  <span>Weekdays</span>
-                  <ul class="black list-vertical list-unstyled font-weight-bold">
-                    <li>Closed</li>
-                  </ul>
-
-                <span>Weekends</span>
-                <ul class="black list-vertical list-unstyled font-weight-bold">
-                  <li>Closed</li>
-                </ul>
-                <hr>
-                  <a href="#" target="_blank" class="btn btn__secondary btn__link">
-                    <span class="location">View Location</span>
-                    <i class="icon-arrow-right"></i>
-                  </a>
-                </div><!-- /.process-item -->
+                  </a><br><br>
+                </div>
+                <% }) %> 
+                <!-- /.process-item -->
               </div><!-- /.carousel -->
             </div>
           </div><!-- /.col-12 -->
@@ -396,11 +305,11 @@
             <div class="col-sm-6 col-md-6 col-lg-2 offset-lg-1">
               <div class="footer-widget-nav">
                   <ul class=" list-unstyled list-items-light">
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="doctors.html">Our Doctors</a></li>
-                    <li><a href="services.html">Our Services</a></li>
-                    <li><a href="services.html">Our Branches</a></li>
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="/contact">Contact Us</a></li>
+                    <li><a href="/lqfc-doctors">Our Doctors</a></li>
+                    <li><a href="/services">Our Services</a></li>
+                    <li><a href="/services">Our Branches</a></li>
                 </ul>
               </div><!-- /.footer-widget__content -->
             </div><!-- /.col-lg-2 -->
@@ -411,31 +320,14 @@
                   with any general or medical enquiry.
                 </p>
                 <ul class="contact-list list-horizontal list-unstyled">
+                  <% branch.forEach(function(branches){ %>
                   <li>
-                    Sta. Cruz | Porac Branch<br>
-                    <a href="tel:+09171051731">
-                      <i class="icon-phone"></i> <span>0917-105-1731</span>
+                    <%= branches.branch_name %><br>
+                    <a href="tel:+<%= branches.phone %>">
+                      <i class="icon-phone"></i> <span><%= branches.phone %></span>
                     </a>
                   </li>
-                  
-                  <li>
-                    Sandra Mall | Angeles City Branch<br>
-                    <a href="tel:+tel:+09175026577">
-                      <i class="icon-phone"></i> <span>0917-502-6577</span>
-                    </a>
-                  </li>
-                  <li>
-                    Super 8 | Angeles City Branch<br>
-                    <a href="tel:+09178470719">
-                      <i class="icon-phone"></i> <span>0917-847-0719</span>
-                    </a>
-                  </li>
-                  <li>
-                    San Francisco | Magalang Branch<br>
-                    <a href="tel:+09178470719">
-                      <i class="icon-phone"></i> <span>0917-169-9131</span>
-                    </a>
-                  </li> 
+                  <% }) %>
                 </ul>
                 
 
@@ -454,12 +346,12 @@
           <div class="row align-items-center">
             <div class="col-sm-12 col-md-6 col-lg-6">
               <span class="fz-14">&copy; </span>
-              <a class="fz-14 color-primary" href="../index.html">2022 Lagman Qualicare Family Clinic</a>
+              <a class="fz-14 color-primary" href="/">2022 Lagman Qualicare Family Clinic</a>
             </div><!-- /.col-lg-6 -->
             <div class="col-sm-12 col-md-6 col-lg-6">
               <nav>
                 <ul class="list-unstyled footer__copyright-links d-flex flex-wrap justify-content-end mb-0">
-                  <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                  <li><a href="/terms-conditions">Terms & Conditions</a></li>
                 </ul>
               </nav>
             </div><!-- /.col-lg-6 -->

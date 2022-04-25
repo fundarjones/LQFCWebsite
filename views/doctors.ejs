@@ -31,16 +31,16 @@
       
       <nav class="navbar navbar-expand-lg is-sticky">
         <div class="container-fluid">
-          <a class="navbar-brand" href="../index.html">
-            <img src="../assets/images/logo/logo.png" style="width:100%; height:auto; max-width:130px;" class="logo-dark" alt="logo">
-         </a>
+          <a class="navbar-brand" href="/">
+            <img src="assets/images/logo/logo.png" style="width:100%; height:auto; max-width:130px;" class="logo-dark" alt="logo">
+          </a>
           <button class="navbar-toggler" type="button">
             <span class="menu-lines"><span></span></span>
           </button>
           <div class="collapse navbar-collapse" id="mainNavigation">
             <ul class="navbar-nav ml-auto">
               <li class="nav__item">
-                <a href="/" class="nav__item-link active">Home</a>
+                <a href="/" class="nav__item-link">Home</a>
               </li><!-- /.nav-item -->
               <li class="nav__item">
                 <a href="/about" class="nav__item-link">About</a>
@@ -52,17 +52,19 @@
                 <a href="/services" class="nav__item-link">Services & Branches</a>
               </li><!-- /.nav-item -->
               <li class="nav__item">
-                <a href="/lqfc-doctors" class="nav__item-link">Doctors</a>
+                <a href="/lqfc-doctors" class="nav__item-link active">Doctors</a>
               </li><!-- /.nav-item -->
               
             </ul><!-- /.navbar-nav -->
             <button class="close-mobile-menu d-block d-lg-none"><i class="fas fa-times"></i></button>
-          </div><!-- /.navbar-collapse -->
+          <!-- /.navbar-collapse -->
           <div class="d-none d-xl-flex align-items-center position-relative ml-30"> 
-            <a href="login.html" class="btn btn__primary btn__rounded ml-30" data-toggle="modal" data-target="#exampleModalCenter">
+            <a href="" class="btn btn__primary btn__rounded ml-30" data-toggle="modal" data-target="#exampleModalCenter">
               <span>LOGIN</span>
             </a>
           </div>
+        </div>
+        </div>
         </div><!-- /.container -->
       </nav><!-- /.navabr -->
     </header><!-- /.Header -->
@@ -131,18 +133,18 @@
       <div class="container">
         <div class="row">
           <!-- Member #1 -->
+          <% doctor.forEach(function(doctors){ %>
           <div class="col-sm-6 col-md-4 col-lg-4">
             <div class="member">
               <div class="member__img">
-                <img src="../assets/images/doctors/placeholder.jpg" alt="member img">
+                <img src="uploads/<%= doctors.id %>.png" alt="Doctor Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
               </div><!-- /.member-img -->
               <div class="member__info">
-                <h5 class="member__name">Mike Dooley</h5>
-                <p class="member__job">Cardiology Specialist</p>
-                <p class="member__desc">Muldoone obtained his undergraduate degree in Biomedical Engineering at Tulane
-                  University prior to attending St George's University School of Medicine</p>
+                <h5 class="member__name"><%= doctors.first_name %> <%= doctors.last_name %></h5>
+                <p class="member__job"><%= doctors.specialization %></p>
+                <p class="member__desc"><%= doctors.bio %></p>
                 <div class="mt-20 d-flex flex-wrap justify-content-between align-items-center">
-                  <a href="doctors-profile.html" class="btn btn__secondary btn__link btn__rounded">
+                  <a href="/doctors-profile/<%= doctors._id %>" class="btn btn__secondary btn__link btn__rounded">
                     <span>View Profile</span>
                     <i class="icon-arrow-right"></i>
                   </a>
@@ -150,106 +152,7 @@
               </div><!-- /.member-info -->
             </div><!-- /.member -->
           </div><!-- /.col-lg-4 -->
-          <!-- Member #2 -->
-          <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="member">
-              <div class="member__img">
-                <img src="../assets/images/doctors/placeholder.jpg" alt="member img">
-              </div><!-- /.member-img -->
-              <div class="member__info">
-                <h5 class="member__name">Richard Muldoone</h5>
-                <p class="member__job">Cardiology Specialist</p>
-                <p class="member__desc">Brian specializes in treating skin, hair, nail, and mucous membrane. He also
-                  address cosmetic issues, helping to revitalize the appearance of the skin</p>
-                <div class="mt-20 d-flex flex-wrap justify-content-between align-items-center">
-                  <a href="doctors-profile.html" class="btn btn__secondary btn__link btn__rounded">
-                    <span>View Profile</span>
-                    <i class="icon-arrow-right"></i>
-                  </a>
-                </div>
-              </div><!-- /.member-info -->
-            </div><!-- /.member -->
-          </div><!-- /.col-lg-4 -->
-          <!-- Member #3 -->
-          <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="member">
-              <div class="member__img">
-                <img src="../assets/images/doctors/placeholder.jpg" alt="member img">
-              </div><!-- /.member-img -->
-              <div class="member__info">
-                <h5 class="member__name">Maria Andaloro</h5>
-                <p class="member__job">Pediatrician</p>
-                <p class="member__desc">Andaloro graduated from medical school and completed 3 years residency program
-                  in pediatrics. She passed rigorous exams by the American Board of Pediatrics.</p>
-                <div class="mt-20 d-flex flex-wrap justify-content-between align-items-center">
-                  <a href="doctors-profile.html" class="btn btn__secondary btn__link btn__rounded">
-                    <span>View Profile</span>
-                    <i class="icon-arrow-right"></i>
-                  </a>
-                </div>
-              </div><!-- /.member-info -->
-            </div><!-- /.member -->
-          </div><!-- /.col-lg-4 -->
-          <!-- Member #4 -->
-          <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="member">
-              <div class="member__img">
-                <img src="../assets/images/doctors/placeholder.jpg" alt="member img">
-              </div><!-- /.member-img -->
-              <div class="member__info">
-                <h5 class="member__name">Dupree Black</a></h5>
-                <p class="member__job">Urologist</p>
-                <p class="member__desc">Black diagnose and treat diseases of the urinary tract in both men and women. He
-                  also diagnose and treat anything involving the reproductive tract in men.</p>
-                <div class="mt-20 d-flex flex-wrap justify-content-between align-items-center">
-                  <a href="doctors-profile.html" class="btn btn__secondary btn__link btn__rounded">
-                    <span>View Profile</span>
-                    <i class="icon-arrow-right"></i>
-                  </a>
-                </div>
-              </div><!-- /.member-info -->
-            </div><!-- /.member -->
-          </div><!-- /.col-lg-4 -->
-          <!-- Member #5 -->
-          <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="member">
-              <div class="member__img">
-                <img src="../assets/images/doctors/placeholder.jpg" alt="member img">
-              </div><!-- /.member-img -->
-              <div class="member__info">
-                <h5 class="member__name">Markus skar</h5>
-                <p class="member__job">Laboratory</p>
-                <p class="member__desc">Skar play a very important role in your health care. People working in the
-                  clinical laboratory are responsible for conducting tests that provide crucial information.</p>
-                <div class="mt-20 d-flex flex-wrap justify-content-between align-items-center">
-                  <a href="doctors-profile.html" class="btn btn__secondary btn__link btn__rounded">
-                    <span>View Profile</span>
-                    <i class="icon-arrow-right"></i>
-                  </a>
-                </div>
-              </div><!-- /.member-info -->
-            </div><!-- /.member -->
-          </div><!-- /.col-lg-4 -->
-          <!-- Member #6 -->
-          <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="member">
-              <div class="member__img">
-                <img src="../assets/images/doctors/placeholder.jpg" alt="member img">
-              </div><!-- /.member-img -->
-              <div class="member__info">
-                <h5 class="member__name">Kiano Barker</h5>
-                <p class="member__job">Pathologist </p>
-                <p class="member__desc">Barker help care for patients every day by providing their doctors with the
-                  information needed to ensure appropriate care. He also valuable resources for other physicians.</p>
-                <div class="mt-20 d-flex flex-wrap justify-content-between align-items-center">
-                  <a href="doctors-profile.html" class="btn btn__secondary btn__link btn__rounded">
-                    <span>View Profile</span>
-                    <i class="icon-arrow-right"></i>
-                  </a>
-                </div>
-              </div><!-- /.member-info -->
-            </div><!-- /.member -->
-          </div><!-- /.col-lg-4 -->
+          <% }) %> 
         </div> <!-- /.row -->
         <!--
 
@@ -271,6 +174,9 @@
  <!-- ========================
       Footer
     ========================== -->
+    <!-- ========================
+      Footer
+    ========================== -->
     <footer class="footer">
       <div class="footer-primary">
         <div class="container">
@@ -287,11 +193,11 @@
             <div class="col-sm-6 col-md-6 col-lg-2 offset-lg-1">
               <div class="footer-widget-nav">
                   <ul class=" list-unstyled list-items-light">
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="doctors.html">Our Doctors</a></li>
-                    <li><a href="services.html">Our Services</a></li>
-                    <li><a href="services.html">Our Branches</a></li>
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="/contact">Contact Us</a></li>
+                    <li><a href="/lqfc-doctors">Our Doctors</a></li>
+                    <li><a href="/services">Our Services</a></li>
+                    <li><a href="/services">Our Branches</a></li>
                 </ul>
               </div><!-- /.footer-widget__content -->
             </div><!-- /.col-lg-2 -->
@@ -302,31 +208,14 @@
                   with any general or medical enquiry.
                 </p>
                 <ul class="contact-list list-horizontal list-unstyled">
+                  <% branch.forEach(function(branches){ %>
                   <li>
-                    Sta. Cruz | Porac Branch<br>
-                    <a href="tel:+09171051731">
-                      <i class="icon-phone"></i> <span>0917-105-1731</span>
+                    <%= branches.branch_name %><br>
+                    <a href="tel:+<%= branches.phone %>">
+                      <i class="icon-phone"></i> <span><%= branches.phone %></span>
                     </a>
                   </li>
-                  
-                  <li>
-                    Sandra Mall | Angeles City Branch<br>
-                    <a href="tel:+tel:+09175026577">
-                      <i class="icon-phone"></i> <span>0917-502-6577</span>
-                    </a>
-                  </li>
-                  <li>
-                    Super 8 | Angeles City Branch<br>
-                    <a href="tel:+09178470719">
-                      <i class="icon-phone"></i> <span>0917-847-0719</span>
-                    </a>
-                  </li>
-                  <li>
-                    San Francisco | Magalang Branch<br>
-                    <a href="tel:+09178470719">
-                      <i class="icon-phone"></i> <span>0917-169-9131</span>
-                    </a>
-                  </li> 
+                  <% }) %>
                 </ul>
                 
 
@@ -345,12 +234,12 @@
           <div class="row align-items-center">
             <div class="col-sm-12 col-md-6 col-lg-6">
               <span class="fz-14">&copy; </span>
-              <a class="fz-14 color-primary" href="../index.html">2022 Lagman Qualicare Family Clinic</a>
+              <a class="fz-14 color-primary" href="/">2022 Lagman Qualicare Family Clinic</a>
             </div><!-- /.col-lg-6 -->
             <div class="col-sm-12 col-md-6 col-lg-6">
               <nav>
                 <ul class="list-unstyled footer__copyright-links d-flex flex-wrap justify-content-end mb-0">
-                  <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                  <li><a href="/terms-conditions">Terms & Conditions</a></li>
                 </ul>
               </nav>
             </div><!-- /.col-lg-6 -->
