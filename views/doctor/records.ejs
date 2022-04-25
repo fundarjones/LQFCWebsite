@@ -12,6 +12,7 @@
 	
 	<link href="../js/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
 	<link href="../js/vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 
 
 	<% if (doctor) { %>
@@ -114,9 +115,9 @@
 						  <section>
 							<div class="row">
 								<% diagnose.forEach(function(diagnosis){ %>
-									<% if( diagnosis.appointment_status == "Follow Up" && diagnosis.branch == doctor.branch) { %> 
+									<% if( diagnosis.appointment_status == "Follow-Up" && diagnosis.branch == doctor.branch) { %> 
 								<div class="searchhide">
-									<div class="card-columns2 m-2">
+									<div class="card-columns2 m-2" id="id<%= diagnosis.id%><%= diagnosis.appointment_status %>">
 										<div class="card p-4 mb-4">
 											<div class="d-flex justify-content-between mb-4">
 												<div class="user-info">
@@ -130,56 +131,9 @@
 													</div>
 												</div>
 												<div class="dropdown open">
-													<a href="#!" class="px-2" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis.id %>" aria-haspopup="true" aria-expanded="false">
+													<a href="#!" class="px-2" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">
 														<i class="fa fa-expand"></i>
 													</a>
-												</div>
-											</div>
-											
-											<div id="records-dropdown">
-												<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
-												data-toggle="collapse" href="#record<%= diagnosis.id %>" role="button">
-												  <div class="position-relative">
-													<small class="ml-1 font-weight-bold">Record Created: <%= diagnosis.date_timestamp %>, <%= diagnosis.time_timestamp %></small>
-													<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
-													  <i class="fa fa-plus"></i>
-													</div>
-												  </div>
-												</a>
-												<div class="collapse" id="record<%= diagnosis.id %>">
-													<div class="row">
-														<div class="col-lg-6">
-															<h6>Symptoms:</h6>
-															<p><%= diagnosis.exp_symptoms %></p>
-														</div>
-														<div class="col-lg-6">
-															<h6>Medicines:</h6>
-															<p><%= diagnosis.medicine %></p>
-														</div>
-													</div>	
-													<hr>
-													<div class="row">
-														<div class="col-lg-6">
-															<h6>Laboratory:</h6>
-															<p><%= diagnosis.laboratory %></p>
-														</div>
-														<div class="col-lg-6">
-															<h6>Follow-up Checkup:</h6>
-															<p><%= diagnosis.next_checkup_note %></p>
-														</div>
-													</div>	
-													<hr>
-													<div class="row">
-														<div class="col-lg-12 mb-4">
-															<h6>Adittional Notes:</h6>
-															<p><%= diagnosis.notes %></p>
-														</div>
-													</div>
-													<div class="row">
-														<div class="col-lg-12 mb-4">
-														<small class="ml-1 font-weight-bold">End of Record</small>
-															</div>
-													</div>
 												</div>
 											</div>
 										</div>
@@ -194,85 +148,43 @@
 							
 		
 							<!-- DONE SECTION-->
-							<section>
-								<div class="row">
-									<% diagnose.forEach(function(diagnosis){ %>
-										<% if( diagnosis.appointment_status == "Done" && diagnosis.branch == doctor.branch) { %> 
-									<div class="searchhide">
-										<div class="card-columns2 m-2">
-											<div class="card p-4 mb-4">
-												<div class="d-flex justify-content-between mb-4">
-													<div class="user-info">
-														<div class="user-info__img">
-															<img src="uploads/<%= diagnosis.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
-														</div>
-														<div class="user-info__basic">
-															<h6 class="mb-0"><%= diagnosis.img_id %></h6>
-															<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %></h5>
-															<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %> | <%= diagnosis.phone %></p>
-														</div>
+						<section>
+							<div class="row">
+								<% diagnose.forEach(function(diagnosis){ %>
+									<% if( diagnosis.appointment_status == "Done"  && diagnosis.branch == doctor.branch) { %> 
+								<div class="searchhide">
+									<div class="card-columns2 m-2" id="id<%= diagnosis.id%><%= diagnosis.appointment_status %>">
+										<div class="card p-4 mb-4">
+											<div class="d-flex justify-content-between mb-4">
+												<div class="user-info">
+													<div class="user-info__img">
+														<img src="uploads/<%= diagnosis.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
 													</div>
-													<div class="dropdown open">
-														<a href="#!" class="px-2" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis.id %>" aria-haspopup="true" aria-expanded="false">
-															<i class="fa fa-expand"></i>
-														</a>
+													<div class="user-info__basic">
+														<h6 class="mb-0"><%= diagnosis.img_id %></h6>
+														<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %></h5>
+														<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %> | <%= diagnosis.phone %></p>
 													</div>
 												</div>
-												
-												<div id="records-dropdown">
-													<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
-													data-toggle="collapse" href="#record<%= diagnosis.id %>" role="button">
-													  <div class="position-relative">
-														<small class="ml-1 font-weight-bold">Record Created: <%= diagnosis.date_timestamp %>, <%= diagnosis.time_timestamp %></small>
-														<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
-														  <i class="fa fa-plus"></i>
-														</div>
-													  </div>
+												<div class="dropdown open">
+													<a href="#!" class="px-2" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">
+														<i class="fa fa-expand"></i>
 													</a>
-													<div class="collapse" id="record<%= diagnosis.id %>">
-														<div class="row">
-															<div class="col-lg-6">
-																<h6>Symptoms:</h6>
-																<p><%= diagnosis.exp_symptoms %></p>
-															</div>
-															<div class="col-lg-6">
-																<h6>Medicines:</h6>
-																<p><%= diagnosis.medicine %></p>
-															</div>
-														</div>	
-														<hr>
-														<div class="row">
-															<div class="col-lg-6">
-																<h6>Laboratory:</h6>
-																<p><%= diagnosis.laboratory %></p>
-															</div>
-															<div class="col-lg-6">
-																<h6>Follow-up Checkup:</h6>
-																<p><%= diagnosis.next_checkup_note %></p>
-															</div>
-														</div>	
-														<hr>
-														<div class="row">
-															<div class="col-lg-12 mb-4">
-																<h6>Adittional Notes:</h6>
-																<p><%= diagnosis.notes %></p>
-															</div>
-														</div>
-														<div class="row">
-															<div class="col-lg-12 mb-4">
-															<small class="ml-1 font-weight-bold">End of Record</small>
-																</div>
-														</div>
-													</div>
 												</div>
 											</div>
-		
 										</div>
 									</div>
-									<% } %> 
-									<% }); %> 
 								</div>
-							 </section>
+								<% } %> 
+								<script>
+									var list = document.querySelectorAll("#id<%= diagnosis.id%><%= diagnosis.appointment_status %>")
+									for (let i = 1; i < list.length; i++) {
+										list[i].style.display = "none";
+									}
+								</script>
+								<% }); %> 
+							</div>
+							</section>
 		
 					</div>
 				</div>
@@ -295,81 +207,171 @@
     ============================== -->
 
 	<% diagnose.forEach(function(diagnosis){ %>
-		<div class="modal fade" id="zoom<%= diagnosis.id %>" tabindex="-1" role="dialog">
-			<div class="modal-dialog modal-dialog-centered" role="document">
-			  <div class="modal-content">
-				<div class="p-4">
-					<div class="d-flex justify-content-between mb-4">
-						<div class="user-info">
-							<div class="user-info__img">
-								<img src="uploads/<%= diagnosis.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';"><ul class="profile-link">
+		<% if(diagnosis.appointment_status == "Follow-Up"){ %>
+			<div class="modal fade" id="zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" tabindex="-1" role="dialog">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+				  <div class="modal-content">
+					<div class="p-4">
+						<div class="d-flex justify-content-between mb-4">
+							<div class="user-info">
+								<div class="user-info__img">
+									<img src="uploads/<%= diagnosis.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';"><ul class="profile-link">
+								</div>
+								<div class="user-info__basic">
+									<h6 class="mb-0"><%= diagnosis.img_id %> </h6>
+									<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %> </h5>
+									<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %>  | <%= diagnosis.phone %> </p>
+								</div>
 							</div>
-							<div class="user-info__basic">
-								<h6 class="mb-0"><%= diagnosis.img_id %> </h6>
-								<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %> </h5>
-								<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %>  | <%= diagnosis.phone %> </p>
+							<div class="dropdown open">
+								
 							</div>
 						</div>
-						<div class="dropdown open">
-							
-						</div>
-					</div>
-					
-					<section id="records-dropdown">
-						<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
-						data-toggle="collapse" href="#record-1" role="button">
-						  <div class="position-relative">
-							<small class="ml-1 font-weight-bold">Record Created: <%= diagnosis.date_timestamp %> , <%= diagnosis.time_timestamp %></small>
-							<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
-							  <i class="fa fa-plus"></i>
-							</div>
-						  </div>
-						</a>
-						<div class="collapse" id="record-1">
-							<div class="row">
-								<div class="col-lg-6">
-									<h6>Symptoms:</h6>
-									<p><%= diagnosis.exp_symptoms %></p>
-								</div>
-								<div class="col-lg-6">
-									<h6>Medicines:</h6>
-									<p><%= diagnosis.medicine %></p>
-								</div>
-							</div>	
-							<hr>
-							<div class="row">
-								<div class="col-lg-6">
-									<h6>Laboratory:</h6>
-								</div>
-								<% if (diagnosis.next_checkup_note) {%> 
-								<div class="col-lg-6">
-									<h6>Follow-up Checkup:</h6>
-									<p><%= diagnosis.next_checkup_note %></p>
-								</div>
-								<% } %> 
-							</div>	
-							<hr>
-							<div class="row">
-								<div class="col-lg-12 mb-4">
-									<h6>Adittional Notes:</h6>
-									<p>L<%= diagnosis.notes %></p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-lg-12 mb-4">
-								<small class="ml-1 font-weight-bold">End of Record</small>
+						
+						<% diagnose.forEach(function(user_records){ %>
+							<% if(diagnosis.id == user_records.id && user_records.appointment_status == "Follow-Up"){ %>
+								<section id="records-dropdown">
+									<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
+									data-toggle="collapse" href="#record<%= user_records._id %>" role="button">
+									  <div class="position-relative">
+										<small class="ml-1 font-weight-bold">Record Created: <%= user_records.date_timestamp %> , <%= user_records.time_timestamp %></small>
+										<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
+										  <i class="fa fa-plus"></i>
+										</div>
+									  </div>
+									</a>
+									<div class="collapse" id="record<%= user_records._id %>">
+										<div class="row">
+											<div class="col-lg-6">
+												<h6>Symptoms:</h6>
+												<p><%= user_records.exp_symptoms %></p>
+											</div>
+											<div class="col-lg-6">
+												<h6>Medicines:</h6>
+												<p><%= user_records.medicine %></p>
+											</div>
+										</div>	
+										<hr>
+										<div class="row">
+											<div class="col-lg-6">
+												<h6>Laboratory:</h6>
+												<p<%= user_records.laboratory %></p>
+											</div>
+											<% if (user_records.next_checkup_note) {%> 
+											<div class="col-lg-6">
+												<h6>Follow-up Checkup:</h6>
+												<p><%= user_records.next_checkup_note %></p>
+											</div>
+											<% } %> 
+										</div>	
+										<hr>
+										<div class="row">
+											<div class="col-lg-12 mb-4">
+												<h6>Adittional Notes:</h6>
+												<p>L<%= user_records.notes %></p>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-12 mb-4">
+											<small class="ml-1 font-weight-bold">End of Record</small>
+												</div>
+										</div>
 									</div>
-							</div>
-						</div>
-					</section>
-	
-				</div>
+								</section>
+							<% } %>
+						<% }) %> 
+		
+					</div>
+					</div>
 				</div>
 			</div>
-		</div>
-	<% }); %> 
+		<% } %> 
+	<% }) %> 
+	
+	<% diagnose.forEach(function(diagnosis){ %>
+		<% if (diagnosis.appointment_status == "Done"){ %>  
+			<div class="modal fade" id="zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" tabindex="-1" role="dialog">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+				  <div class="modal-content">
+					<div class="p-4">
+						<div class="d-flex justify-content-between mb-4">
+							<div class="user-info">
+								<div class="user-info__img">
+									<img src="uploads/<%= diagnosis.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';"><ul class="profile-link">
+								</div>
+								<div class="user-info__basic">
+									<h6 class="mb-0"><%= diagnosis.img_id %> </h6>
+									<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %> </h5>
+									<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %>  | <%= diagnosis.phone %> </p>
+								</div>
+							</div>
+							<div class="dropdown open">
+								
+							</div>
+						</div>
+						
+						<% diagnose.forEach(function(user_records){ %>
+							<% if(diagnosis.id == user_records.id && user_records.appointment_status == "Done"){ %>
+								<section id="records-dropdown">
+									<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
+									data-toggle="collapse" href="#record<%= user_records._id %>" role="button">
+									  <div class="position-relative">
+										<small class="ml-1 font-weight-bold">Record Created: <%= user_records.date_timestamp %> , <%= user_records.time_timestamp %></small>
+										<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
+										  <i class="fa fa-plus"></i>
+										</div>
+									  </div>
+									</a>
+									<div class="collapse" id="record<%= user_records._id %>">
+										<div class="row">
+											<div class="col-lg-6">
+												<h6>Symptoms:</h6>
+												<p><%= user_records.exp_symptoms %></p>
+											</div>
+											<div class="col-lg-6">
+												<h6>Medicines:</h6>
+												<p><%= user_records.medicine %></p>
+											</div>
+										</div>	
+										<hr>
+										<div class="row">
+											<div class="col-lg-6">
+												<h6>Laboratory:</h6>
+												<p><%= user_records.laboratory %></p>
+											</div>
+											<% if (user_records.next_checkup_note) {%> 
+											<div class="col-lg-6">
+												<h6>Follow-up Checkup:</h6>
+												<p><%= user_records.next_checkup_note %></p>
+											</div>
+											<% } %> 
+										</div>	
+										<hr>
+										<div class="row">
+											<div class="col-lg-12 mb-4">
+												<h6>Adittional Notes:</h6>
+												<p>L<%= user_records.notes %></p>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-12 mb-4">
+											<small class="ml-1 font-weight-bold">End of Record</small>
+												</div>
+										</div>
+									</div>
+								</section>
+							<% } %>  
+						<% }) %> 
+		
+					</div>
+					</div>
+				</div>
+			</div>
+	<% } %> 
       
 	  
+	<% }) %> 
+
 	<% } %> 
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
@@ -379,8 +381,6 @@
 	  <script src="assets/js/script.js"></script>
 
 	<!-- Patients JS -->
-
-	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
 
 	<script>
@@ -414,6 +414,8 @@
 		return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
 		};
 	});
+
+	
 </script>
 
 </body>

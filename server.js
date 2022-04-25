@@ -925,8 +925,15 @@ app.get('/staff-login', checkNotAuthenticated, async (req, res) => {
 
 app.get('/', checkNotAuthenticated, async(req,res) => {
   const branches = await Branch.find()
+  Branch.countDocuments({}, function (err, count) {
+    if (err){
+        console.log(err)
+    }else{
+      res.render('index.ejs', {branch: branches, count: count})
+    }
+  })
 
-res.render('index.ejs', {branch: branches})
+
 })
 
 app.get('/about', checkNotAuthenticated, async(req,res) => {
@@ -2536,9 +2543,11 @@ app.put('/cancel-appointment', checkAuthenticated, async (req, res) => {
   "July", "August", "September", "October", "November", "December"
   ];
   const time_cancelled = hours + ":" + min + " " + midday
+  
   const date_cancelled = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
   try {
     const cancel = await Appointment.findById(user_id)
+    const cancelled_by = cancel.first_name + " " + cancel.last_name
       const response = new Appointment({
         id: cancel.id,
         img_id: cancel.img_id,
@@ -2560,7 +2569,8 @@ app.put('/cancel-appointment', checkAuthenticated, async (req, res) => {
         appointment_status: "Cancelled",
         approved_staff: cancel.approved_staff,
         time_cancelled,
-        date_cancelled
+        date_cancelled,
+        cancelled_by
     })
 await response.save()
 const cancel_response = await Appointment.deleteOne({_id: user_id})
@@ -2871,7 +2881,7 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
         var appointment_status = " "
         console.log(next_checkup)
         if (next_checkup == "Yes") {
-          appointment_status = "Follow Up"
+          appointment_status = "Follow-Up"
         } else {
           appointment_status = "Done"
         }

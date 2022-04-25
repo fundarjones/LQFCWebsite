@@ -110,7 +110,7 @@
 													</div>
 													<div class="user-info__basic">
 														<h4 class="text-highlight"><%= appointments.first_name %> <%= appointments.last_name %></h4>
-														<p class="inline">appointment for <%= appointments.date %> at <%= appointments.time %> has been cancelled.</p>
+														<p class="inline">appointment for <%= appointments.date %> at <%= appointments.time %> has been cancelled by <b><%= appointments.cancelled_by %></b>.</p>
 														<br>
 														<medium class="text-muted mb-0"><%= appointments.time_cancelled %></medium>
 													</div>
