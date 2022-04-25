@@ -8414,16 +8414,22 @@ nav .profile .profile-link button:hover {
   margin-bottom: 20px;
 }
 
-.button{
+.record-button{
   color: white !important;
   padding: 20px 30px;
-  font-size: 0.6rem;
+  font-size: 0.6rem !important;
 }
 
 @media only screen and (max-width: 398px) {
   .button{
     padding: 20px 15px;
   }
+}
+
+h4{
+  font-size: 1.3rem;
+  text-align: center;
+  font-weight: bold;
 }
 
 .alert-success {

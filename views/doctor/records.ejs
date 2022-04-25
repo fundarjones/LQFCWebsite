@@ -145,8 +145,8 @@
 											</div>
 											<hr>
 											<div class="btn-records">
-												<a class="button" href="/diagnose-patient/<%= diagnosis._id %>" >Diagnose Patient</a>
-												<a class="button" href="#!" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Records</a>
+												<a class="button record-button" href="/diagnose-patient/<%= diagnosis._id %>" >Diagnose Patient</a>
+												<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Records</a>
 											</div>
 										</div>
 								</div>
@@ -265,7 +265,7 @@
 										<div class="row">
 											<div class="col-lg-6">
 												<h6>Laboratory:</h6>
-												<p<%= user_records.laboratory %></p>
+												<p><%= user_records.laboratory %></p>
 											</div>
 											<% if (user_records.next_checkup_note) {%> 
 											<div class="col-lg-6">

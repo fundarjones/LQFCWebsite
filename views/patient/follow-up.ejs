@@ -52,117 +52,132 @@
           <h3>Branch Location</h3>
           <section>
                 <h5 class="bd-wizard-step-title">Step: 1 of 2</h5>
-                <h2 class="section-heading">Branch Location</h2>
-                <p>Select a branch location where you'd like to have your appointment.</p>
+                <h2 class="section-heading">Date & Time</h2>
+                <p>Select the date and time for your appointment.</p>
                 
                 
                 <div class="purpose-radios-wrapper">
+
+                  <% if (branch) {%> 
                   
-                  <% branch.forEach(function(branches){ %>
-                    
-                      <div class="purpose-radio">
-                        <input type="radio" name="branch" id="branch<%= branches.id %>" class="purpose-radio-input" value="<%= branches.branch_name %>" data-toggle="modal" data-target="#a<%= branches._id %>">
-                        <label for="branch<%= branches.id %>" class="purpose-radio-label">
-                        <span class="label-text"><%= branches.branch_name %> </span>
-                        <span class="label-text-address"><%= branches.address %> </span>
-                      </label>
-                    </div>
+                  <section class="text-center">
+                    <div class="card-container">
+                          <div class="row row-space">
+                            <div class="col-md-12">
+                              <div class="text-group">
+                                 <label class="label">Date</label>
+                                 <div class="input-group-icon">
+                                    <input class="input--style-4 js-datepicker" id="date-no-past" type="date" name="date" onchange="empty()">
+                                 </div>
 
-                    
+                                 <script>
+                                  var today = new Date();
+                                  var dd = String(today.getDate()).padStart(2, "0");
+                                  var mm = String(today.getMonth() + 1).padStart(2, "0");
+                                  var yyyy = today.getFullYear();
+                                  today = yyyy + "-" + mm + "-" + dd;
+                                  $("#date-no-past").attr("min", today);
+                                </script>
+                                <script>
+                                  document.getElementById("date-no-past").addEventListener("input", function (e) {
+                                      var day = new Date(this.value).getUTCDay();
+                                      if ([6, 0].includes(day)) {
+                                          e.preventDefault();
+                                          this.value = "";
+                                          $("#alert").modal("show");
+                                      }
+                                  });
 
-                     <!--Modal-->
-                      <div class="modal fade" id="a<%= branches._id %>" tabindex="-1" role="dialog">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <div class="col-md-12 text-center">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                                <img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
-                            </div>
-                            </div>
-                            <div class="modal-body text-center">
-                              <h3>Date & Time</h3>
-                            <section class="text-center">
-                              <div class="card-container">
-                                    <p>Select the date and time for your appointment.</p>
-                                    <div class="row row-space">
-                                      <div class="col-md-12">
-                                        <div class="text-group">
-                                           <label class="label">Date</label>
-                                           <div class="input-group-icon">
-                                              <input class="input--style-4 js-datepicker" id="date-no-past" type="date" name="date" onchange="empty()">
-                                           </div>
+                                </script>
 
-                                           <script>
-                                            var today = new Date();
-                                            var dd = String(today.getDate()).padStart(2, "0");
-                                            var mm = String(today.getMonth() + 1).padStart(2, "0");
-                                            var yyyy = today.getFullYear();
-                                            today = yyyy + "-" + mm + "-" + dd;
-                                            $("#date-no-past").attr("min", today);
-                                          </script>
-                                          <script>
-                                            document.getElementById("date-no-past").addEventListener("input", function (e) {
-                                                var day = new Date(this.value).getUTCDay();
-                                                if ([6, 0].includes(day)) {
-                                                    e.preventDefault();
-                                                    this.value = "";
-                                                    $("#alert").modal("show");
-                                                }
-                                            });
-
-                                          </script>
-
-                                        </div>
-                                     </div>
-                                    </div>
-                                    <label class="time<%= branches._id %> time">Time</label>
-                                    
-                                    <div class="time<%= branches._id %> time text-center mx-0">
-                                      <div class="checker">
-                                       <!--INSERT TIME DATABASE-->
-                                       <% for(var i=0; i<branches.set_time.length; i++) {%>
-                                          <div class="col-md-4 col-4 my-1 px-2 purpose-radio<%= branches._id %> purpose-radio radio-toolbar">
-                                            <input type="radio" name="time" id="time<%= branches.id %><%= branches.set_time[i] %>" value="<%= branches.set_time[i] %>" >
-                                            <label for="time<%= branches.id %><%= branches.set_time[i] %>" class="cell py-1 rounded-lg">
-                                              <div class="selectedDate" style="display:none"></div><%= branches.set_time[i] %>
-                                              </label>
-                                          </div>
-                                        <% } %> 
-                                      </div>
-                                    </div>
-                                        <% appointment.forEach(function(appointments){ %>
-                                          <% if(appointments.branch == branches.branch_name && appointments.appointment_status == "Pending" || appointments.branch == branches.branch_name && appointments.appointment_status == "Approved"){ %> 
-                                            <div class="database-date<%= branches._id %> database-date">
-                                              <p id="valueInput<%= appointments.id%><%= branches._id %>"></p>
-                                            </div>
-                                          <script>
-                                            var date_ob = new Date('<%= appointments.date%>');
-                                            var year = date_ob.getFullYear();
-                                            var month = ("0" + (date_ob.getMonth()+1)).slice(-2);
-                                            var date = ("0" + date_ob.getDate()).slice(-2);
-                                            var appointed_dates = year + "-"+ month+"-"+ date + " " + "<%= appointments.time %>"; 
-                                            document.getElementById("valueInput<%= appointments.id%><%= branches._id %>").innerHTML = appointed_dates
-                                          </script>
-                                          
-                                          <% } %> 
-                                        <% }) %> 
-                                  <br><br>
-                                  <i class="bd-wizard-btn" data-step="previous">Previous</i> <i class="bd-wizard-btn" data-step="next" data-dismiss="modal" aria-label="Close">Next</i>
-                                  <br><br>
-                                </div>
-                            </div>
-                            </div>
+                              </div>
+                           </div>
                           </div>
-                        </div>
-                <% }); %> 
-                  
-                
-              </div>
+                          <label class="time">Time</label>
+                          
+                          <div class="time text-center mx-0">
+                          
+                             <!--INSERT TIME DATABASE-->
+                             <% for(var i=0; i<branch.set_time.length; i++) {%>
+                                <div class="col-md-4 col-4 my-1 px-2 purpose-radio radio-toolbar">
+                                  <input type="radio" name="time" id="time<%= branch.id %><%= branch.set_time[i] %>" value="<%= branch.set_time[i] %>" >
+                                  <label for="time<%= branch.id %><%= branch.set_time[i] %>" class="cell py-1 rounded-lg">
+                                    <%= branch.set_time[i] %>
+                                    </label>
+                                </div>
+                              <% } %> 
+                            </div>
+                              <div class="database-date" >
+                                <% allbranch.forEach(function(branches){ %>
+                                <% appointment.forEach(function(appointments){ %>
+                                  <% if(appointments.branch == branches.branch_name){ %> 
+                                    <p id="valueInput<%= appointments.id%><%= branches._id %>"></p>
+                                  
+                                  <script>
+                                    var date_ob = new Date('<%= appointments.date%>');
+                                    var year = date_ob.getFullYear();
+                                    var month = ("0" + (date_ob.getMonth()+1)).slice(-2);
+                                    var date = ("0" + date_ob.getDate()).slice(-2);
+                                    var appointed_dates = year + "-"+ month+"-"+ date; 
+                                    document.getElementById("valueInput<%= appointments.id%><%= branches._id %>").innerHTML = appointed_dates
+                                  </script>
+                                  
+                                  <div class="database-time" >
+                                    <p><%= appointments.time %></p>
+                                  </div>
+                                  <script>
+                                    $(document).ready(function(){
+                                
+                                $('#date-no-past').on("keyup change", function(e){
+                                var date = $(this).val();
 
-              
+                                if ($('.database-date').is(':contains("'+date+'")')) {
+                                  
+                                  var array = [];
+
+                                  $('.database-time').find('p').each(function(){
+                                    array.push($(this).text());
+                                  });
+
+                                $(array ).each(function () {
+                                  $('.purpose-radio:contains("'+ this +'")').css({"color":"black", "pointer-events": "none", "opacity": 0.5}).attr("disabled", true);
+                                });
+                                } else {
+                                }
+                                
+                                // Clear Array Elements
+                                array = [];
+                                //
+
+                              });
+                            });
+
+                            $('.time').hide();
+                            
+                              function empty() {
+                                $('.purpose-radio').css({"pointer-events": "all", "opacity": 1});
+                                $('.time').show();
+                            } 
+                                  </script>
+                                  <% } %> 
+                                <% }) %> 
+                                <% }) %>  
+                                </div>
+
+                            <script>
+                              
+                                
+                            </script>
+                            
+                            
+                            
+                        <br><br>
+                        <i class="bd-wizard-btn" data-step="previous">Previous</i> <i class="bd-wizard-btn" data-step="next" data-dismiss="modal" aria-label="Close">Next</i>
+                        <br><br>
+                      </div>
+                      </section>
+              </div>
+              <% } %> 
           </section>
 
           <h3>Symptoms</h3>
@@ -299,40 +314,23 @@
 <script src="../js/global.js"></script>
 
 <script>
-	$(document).ready(function(){
-
-
-$('#date-no-past').on("keyup change", function(e){
-var date = $(this).val();
-
-var selectedDate = document.getElementsByClassName('selectedDate');
-for (var i = 0; i < selectedDate.length; ++i) {
-var outputDate = selectedDate[i];  
-outputDate.innerHTML = date + ' ';
-
-  var array = [];
-
-  $('.database-date').find('p').each(function(){
-    array.push($(this).text());
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, "0");
+  var mm = String(today.getMonth() + 1).padStart(2, "0");
+  var yyyy = today.getFullYear();
+  today = yyyy + "-" + mm + "-" + dd;
+  $("#date-no-past").attr("min", today);
+</script>
+<script>
+  const picker = document.getElementById("date-no-past");
+  picker.addEventListener("input", function (e) {
+      var day = new Date(this.value).getUTCDay();
+      if ([6, 0].includes(day)) {
+          e.preventDefault();
+          this.value = "";
+          $("#alert").modal("show");
+      }
   });
-
-$(array ).each(function () {
-  $('.purpose-radio:contains(" '+date+'"):contains("'+this+'")').css({"color":"black", "pointer-events": "none", "opacity": 0.5}).attr("disabled", true);
-});
-
-// Clear Array Elements
-array = [];
-//
-
-
-}
-
-});
-});
-
-function empty() {
-    $('.purpose-radio').css({"pointer-events": "all", "opacity": 1});
-}    
 </script>
 
 

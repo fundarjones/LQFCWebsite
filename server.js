@@ -184,7 +184,6 @@ app.get('/appointments', checkAuthenticated, async (req, res) => {
   const diagnosis = await Diagnose.find({ img_id: req.user.id })
 
   if (req.user.usertype == "patient") {
-    console.log(patient_appointments)
     res.render('patient/appointments.ejs', { diagnose: diagnosis, appointment: patient_appointments, patient: patients, base: 'base64' })
   }
   else if (req.user.usertype == "doctor"){
@@ -819,6 +818,35 @@ app.get('/set-appointment', checkAuthenticated, async (req, res) => {
   }
   else if (req.user.usertype == "admin"){
     res.render('admin/dashboard.ejs', { admin: admins, base: 'base64' })
+  }
+  else{
+    res.render('404.ejs')
+  }
+  
+})
+
+app.get('/set-appointment/follow-up', checkAuthenticated, async (req, res) => {
+  const user_id = req.user._id
+  const patients = await User.findById(user_id) 
+  const find = await Diagnose.find()
+  const found = find.find(element => element > req.user.img_id)
+  const branches = await Branch.findOne(found)
+  const allbranches = await Branch.find()
+  const appointments = await Appointment.find()
+  const diagnosis = await Diagnose.find()
+  function userExists(img_id,appointment_status) {
+    return diagnosis.some(function(el) {
+      return el.img_id === img_id && el.appointment_status === appointment_status;
+    }); 
+  }
+  if (req.user.usertype == "patient" && userExists(req.user.id,"Follow-Up") == true ) {
+    res.render('patient/follow-up.ejs',{ allbranch: allbranches, appointment: appointments, branch: branches, patient: patients, base: 'base64'})
+  }
+  else if (req.user.usertype == "doctor") {
+    res.redirect("/dashboard")
+  }
+  else if (req.user.usertype == "admin"){
+    res.redirect("/dashboard")
   }
   else{
     res.render('404.ejs')

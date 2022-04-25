@@ -79,11 +79,7 @@
 							<div class="d-flex justify-content-between mb-4">
 								<div class="user-info">
 									<div class="user-info__img">
-										<% if(!doctor.img.contentType){ %>.
-											<img src="files/male-avatar.png" alt="User Img">
-										<% } else { %>
-											<img src="data:image/<%=doctor.img.contentType%>;base64,<%=doctor.img.data.toString(base)%>" alt="User Img">
-										<% } %>
+										<img src="uploads/<%= doctor.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
 									</div>
 									<div class="user-info__basic">
 										<h5 class="text-highlight mb-0"><%= doctor.first_name %> <%= doctor.last_name %></h5>

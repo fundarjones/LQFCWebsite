@@ -27,7 +27,7 @@
 		<ul class="side-menu">
 			<li><a href="/dashboard" ><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
 			<% if(patient.isVerified == true) {%> 
-			<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications<span class="badge">3</span></a></li>
+			<li><a href="/notification" class="active"><i class='bx bxs-bell icon' ></i> Notifications<span class="badge">3</span></a></li>
 			<li class="divider" data-text="main">Main</li>
 			<li><a href="/appointments"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
 			<% } %> 
@@ -111,7 +111,7 @@
 													</div>
 													<div class="user-info__basic">
 														<h4 class="text-highlight">Your</h4>
-														<p class="inline">appointment for <%= appointments.date %> at <%= appointments.time %> has been cancelled.</p>
+														<p class="inline">appointment for <%= appointments.date %> at <%= appointments.time %> has been cancelled by <b>You</b>.</p>
 														<br>
 														<medium class="text-muted mb-0"><%= appointments.time_cancelled %></medium>
 													</div>
