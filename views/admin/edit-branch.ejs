@@ -121,25 +121,6 @@
 											  <input type="text" name="address" class="form-control" value="<%= edit.address %>" required>
 										</div>
 									</div>
-
-									<div class="col-md-12">
-										<div class="text-group">
-											<label>Header</label>
-											<a href="#!" class="px-2 float-right" data-toggle="modal" data-target="#branch-picture">Change Photo</a>
-										</div>
-																  
-										<div class="branch-upload">
-											<div class="branch-preview">
-												<% if(!edit.img.contentType){ %>
-													<div id="imagePreview1" style="background-image: url()">
-													</div>
-												<% } else { %>
-													<div id="imagePreview1" style="background-image: url('data:image/<%=edit.img.contentType%>;base64,<%=edit.img.data.toString(base)%>')"> 
-													</div>
-												<% } %>
-											</div>	
-										</div>
-									</div>
 								</div>
 								<div>
 									<br>
@@ -149,12 +130,13 @@
 							</div>
 							<div class="tab-pane fade" id="timeslots" role="tabpanel" aria-labelledby="application-tab">
 								<h3 class="mb-3">Time Slots Settings</h3>
+								<form action="/edit-branch-timeslot?_method=PUT" method="POST">
 								<div class="row">
 								   <div class="col-md-12">
 									  <div class="text-group">
 										 <p>Add time slots to the designated branch.</p>
 									  </div>
-
+									  <input type="text" name="_id" value="<%= edit._id %>" hidden>
 									  <label>Set Time for Appointment</label>
 									<select id="set_time" name="set_time" multiple>
 										<option value="6:00AM" >6:00AM</option>
@@ -182,6 +164,7 @@
 									<br>
 									<input class="btn btn__primary btn__rounded ml-30" type="submit" value="Update">
 								   </div>
+								</form>
 								</div>
 							<div class="tab-pane fade" id="deactivation" role="tabpanel" aria-labelledby="notification-tab">
 								<h3 class="mb-4">Delete Settings</h3>
@@ -203,38 +186,7 @@
 				</div>
 
 			</section>
-			<!----BRANCH PICTURE MODAL---->
-
-			<form action="change-branch-header?_method=PUT" method="POST" enctype="multipart/form-data">
-				<div class="modal fade" id="branch-picture" tabindex="-1" role="dialog">
-					<div class="modal-dialog modal-dialog-centered" role="document">
-						<div class="modal-content2">
-						<div class="p-4">
-							<center>
-								<input type="text" name="_id" value="<%= edit._id %>" hidden>
-									<div class="branch-upload">
-										<div class="branch-edit">
-											<input type='file' name="branchUpdate" id="imageUpload" accept=".png, .jpg, .jpeg" />
-											<label for="imageUpload"></label>
-										</div>
-								
-										<div class="branch-preview">
-											<% if(!edit.img.contentType){ %>
-												<div id="imagePreview2" style="background-image: url()">
-												</div>
-											<% } else { %>
-												<div id="imagePreview2" style="background-image: url('data:image/<%=edit.img.contentType%>;base64,<%=edit.img.data.toString(base)%>')"> 
-												</div>
-											<% } %>
-										</div>	
-									</div>
-							<br>
-							<input type="submit" class="btn btn__primary btn__rounded ml-30" value="Done">
-							</center>
-							</div>
-						</div>
-					</div>
-				</div>
+			
 			</form>
 			
 			<% } %> 
@@ -269,24 +221,6 @@
 	</script>
 
 
-<script>
-
-	function readURL(input) {
-		if (input.files && input.files[0]) {
-			var reader = new FileReader();
-			reader.onload = function(e) {
-				$('#imagePreview1, #imagePreview2').css('background-image', 'url('+e.target.result +')');
-				$('#imagePreview1, #imagePreview2').hide();
-				$('#imagePreview1, #imagePreview2').fadeIn(650);
-			}
-			reader.readAsDataURL(input.files[0]);
-		}
-	}
-	$("#imageUpload").change(function() {
-		readURL(this);
-	});
-	
-	 </script>
 
 <script>
 	window.onload = function(){

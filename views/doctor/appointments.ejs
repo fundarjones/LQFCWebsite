@@ -71,7 +71,7 @@
 				<h1 class="title">Appointments</h1>
 				<% if(typeof msg != 'undefined') { %>
 					<% if(msg) { %>
-					<div class="<%= type %>">
+					<div class="alert-<%= type %>">
 						<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
 						<p class="error-msg"><%= msg %></p>
 					</div>

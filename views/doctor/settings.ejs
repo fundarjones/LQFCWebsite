@@ -109,13 +109,11 @@
 									<h3 class="mb-4">Information Settings</h3>
 									<form action="/update-info?_method=PUT" method="POST">
 										<% if(typeof alert != 'undefined') { %>
-											<% alert.forEach(function(error) { %>
 										  <div class="alert">
 											<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-											<p class="error-msg"><%= error.msg %></p>
+											<p class="error-msg"><%= alert %></p>
 										  </div>
 					   
-									   <% }) %>
 										<% } %>
 									<div class="row">
 										<div class="col-md-6">

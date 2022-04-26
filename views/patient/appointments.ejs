@@ -84,10 +84,10 @@
 
 						
 								<div class="checkpending col-sm-3 col-md-3">
-									<% appointment.forEach(function(appointments){ %>
+									<% appointment.reverse().forEach(function(appointments){ %>
 										<p hidden><%= appointments.appointment_status %></p>
 									<% }) %> 
-									<% diagnose.forEach(function(diagnosis){ %>
+									<% diagnose.reverse().forEach(function(diagnosis){ %>
 										<p hidden><%= diagnosis.appointment_status %></p>
 									<% }) %>
 									<form action="/set-appointment" method="GET">
@@ -101,7 +101,7 @@
 					<br>
 
 					<div class="row">
-						<% appointment.forEach(function(appointments){ %>
+						<% appointment.reverse().forEach(function(appointments){ %>
 						<div class="searchhide">
 							<div class="card p-3 mb-4">
 								<div class="d-flex justify-content-between mb-4">
@@ -223,7 +223,7 @@
 					</div>
 					<% }) %> 
 			
-					<% diagnose.forEach(function(diagnosis){ %>
+					<% diagnose.reverse().forEach(function(diagnosis){ %>
 
 						<div id="id<%= diagnosis.id%><%= diagnosis.appointment_status %>">
 							<div class="card p-4 mb-4">
@@ -277,7 +277,7 @@
         Zoom Card
     ============================== -->
 
-	<% diagnose.forEach(function(diagnosis){ %>
+	<% diagnose.reverse().forEach(function(diagnosis){ %>
 		<% if(diagnosis.appointment_status == "Follow-Up"){ %>
 			<div class="modal fade" id="zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" tabindex="-1" role="dialog">
 				<div class="modal-dialog modal-dialog-centered" role="document">
@@ -299,7 +299,7 @@
 							</div>
 						</div>
 						
-						<% diagnose.forEach(function(user_records){ %>
+						<% diagnose.reverse().forEach(function(user_records){ %>
 							<% if(diagnosis.id == user_records.id && user_records.appointment_status == "Follow-Up"){ %>
 								<section id="records-dropdown">
 									<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
@@ -359,7 +359,7 @@
 		<% } %> 
 	<% }) %> 
 	
-	<% diagnose.forEach(function(diagnosis){ %>
+	<% diagnose.reverse().forEach(function(diagnosis){ %>
 		<% if (diagnosis.appointment_status == "Done"){ %>  
 			<div class="modal fade" id="zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" tabindex="-1" role="dialog">
 				<div class="modal-dialog modal-dialog-centered" role="document">
@@ -381,7 +381,7 @@
 							</div>
 						</div>
 						
-						<% diagnose.forEach(function(user_records){ %>
+						<% diagnose.reverse().forEach(function(user_records){ %>
 							<% if(diagnosis.id == user_records.id && user_records.appointment_status == "Done"){ %>
 								<section id="records-dropdown">
 									<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"

@@ -113,22 +113,6 @@
 											  <input type="text" name="address" class="form-control" placeholder="Enter address" required>
 										</div>
 									</div>
-
-									<div class="col-md-12">
-										<div class="text-group">
-											<label>Header</label>
-											</div>
-											<div class="branch-upload">
-												<div class="branch-edit">
-													<input type='file' id="imageUpload" name="branchUpload" accept=".png, .jpg, .jpeg" required/>
-													<label for="imageUpload"></label>
-												</div>
-												<div class="branch-preview">
-													<div id="imagePreview" style="background-image: url()">
-													</div>
-												</div>
-											</div>
-									</div>
 								</div>
 							</div>
 							<div class="tab-pane fade" id="timeslots" role="tabpanel" aria-labelledby="application-tab">
@@ -138,35 +122,6 @@
 									  <div class="text-group">
 										 <p>Add time slots to the designated branch.</p>
 									  </div>
-
-								   <!-- <div class="col-md-12">
-									  <div class="text-group">
-										 <p>Add time slots to the designated branch.</p>
-									  </div> -->
-									  <!-- <button class="btn btn__primary btn__rounded ml-30 mb-2" ng-click="addTimeslot()">Add Time Slot</button> -->
-									  
-									  <!-- <i class="fa fa-plus ml-3" ng-click="addTimeslot()"><span class="ml-1">Add Time Slot</span></i> -->
-
-									  <!-- <div id="no-more-tables">
-										 <table id="mytable" class="col-sm-12">
-											<thead class="cf">
-											   <tr>
-												  <th>Start Time</th>
-												  <th>End Time</th>
-											   </tr>
-											</thead>
-											<tbody>
-											   <tr>
-												  <td data-title="Start Time">
-													 <input type="time" name="time" class="form-control">
-												  </td>
-												  <td data-title="End Time">
-													 <input type="time" name="time_out" class="form-control">
-												  </td>
-											   </tr>
-											</tbody>
-										 </table>
-									  </div> -->
 
 									  <label>Set Time for Appointment</label>
 									<select id="set_time" name="set_time" multiple>
@@ -252,27 +207,7 @@
 		  select: '#set_time'
 		  });
 	</script>
-
-
-<script>
-
-	function readURL(input) {
-		if (input.files && input.files[0]) {
-			var reader = new FileReader();
-			reader.onload = function(e) {
-				$('#imagePreview').css('background-image', 'url('+e.target.result +')');
-				$('#imagePreview').hide();
-				$('#imagePreview').fadeIn(650);
-			}
-			reader.readAsDataURL(input.files[0]);
-		}
-	}
-	$("#imageUpload").change(function() {
-		readURL(this);
-	});
 	
-	 </script>
-	 
 	 <script>
 		window.onload = function(){
 			var el = document.getElementsByClassName('toggle-sidebar');
