@@ -132,15 +132,23 @@
         <div class="row">
           <div class="col-12">
             <div class="contact-panel d-flex flex-wrap">
-              <form class="contact-panel__form" method="post" action="contact.php" id="contactForm">
+              <form class="contact-panel__form" method="POST" action="/contact-us" id="contactForm">
                 <div class="row">
                   <div class="col-sm-12">
                     <h4 class="contact-panel__title">How Can We Help? </h4>
+                    <% if (typeof msg != "undefined"){ %> 
+                      <% if (msg){%> 
+                        <div class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
+                          <%= msg %> 
+                          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                        </div> 
+                      <% } %> 
+                      <% } %> 
                   </div>
                   <div class="col-sm-6 col-md-6 col-lg-6">
                     <div class="form-group">
                       <label>Full Name</label>
-                      <input type="text" class="form-control" placeholder="Name" id="contact-name" name="contact-name"
+                      <input type="text" class="form-control" placeholder="Name" id="contact-name" name="contact_name"
                         required>
                     </div>
                   </div><!-- /.col-lg-6 -->
@@ -148,31 +156,29 @@
                     <div class="form-group">
                       <label>Email</label>
                       <input type="email" class="form-control" placeholder="Email" id="contact-email"
-                        name="contact-email" required>
+                        name="contact_email" required>
                     </div>
                   </div><!-- /.col-lg-6 -->
                   <div class="col-sm-6 col-md-6 col-lg-6">
                     <div class="form-group">
                       <label>Phone</label>
-                      <input type="text" class="form-control" placeholder="Phone" id="contact-phone"
-                        name="contact-phone" required>
+                      <input type="number" class="form-control" placeholder="Phone" id="contact-phone"
+                        name="contact_phone" required>
                     </div>
                   </div><!-- /.col-lg-6 -->
                   <div class="col-sm-6 col-md-6 col-lg-6">
                     <div class="form-group">
                       <label>Subject</label>
-                      <input type="text" class="form-control" placeholder="Phone" id="contact-subject">
+                      <input type="text" class="form-control" name="contact_subject" placeholder="Subject" id="contact-subject">
                     </div>
                   </div><!-- /.col-lg-6 -->
                   <div class="col-12">
                     <div class="form-group">
                       <label>Message</label>
                       <textarea class="form-control" placeholder="Message" id="contact-message"
-                        name="contact-message"></textarea>
+                        name="contact_message"></textarea>
                     </div>
-                    <button type="submit" class="btn btn__secondary btn__rounded btn__block btn__xhight mt-10">
-                      <span>Submit</span> <i class="icon-arrow-right"></i>
-                    </button>
+                    <input type="submit" class="btn btn__secondary btn__rounded btn__block btn__xhight mt-10">
                     <div class="contact-result"></div>
                   </div><!-- /.col-lg-12 -->
                 </div><!-- /.row -->

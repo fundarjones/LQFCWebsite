@@ -230,6 +230,36 @@ body{
 }
 
 
+.closebtn {
+	margin-left: 15px;
+	color: white;
+	font-weight: bold;
+	float: right;
+	font-size: 22px;
+	line-height: 20px;
+	cursor: pointer;
+	transition: 0.3s;
+  }
+  
+  .closebtn:hover {
+	color: black;
+  }
+
+  .alert-success{
+    background-color: rgb(76,187,23)!important;
+  }
+
+  .error-msg{
+	text-align: center;
+}
+
+.alert {
+	padding: 7px;
+	margin-bottom: 20px;
+	background-color: #f44336;
+	color: white;
+  }
+
 
 
 

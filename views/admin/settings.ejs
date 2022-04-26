@@ -144,7 +144,7 @@
 										<div class="col-md-6">
 											<div class="text-group">
 												  <label>Phone</label>
-												  <input type="number" name="phone" class="form-control" value="<%= admin.phone %>">
+												  <input type="number" id="phone" name="phone" class="form-control" value="<%= admin.phone %>">
 											</div>
 										</div>
 	
@@ -329,6 +329,20 @@ $("#imageUpload").change(function() {
 		}
 		
 		}
+
+		var max_chars = 11;
+
+$('#phone').keydown( function(e){
+   if ($(this).val().length >= max_chars) { 
+	  $(this).val($(this).val().substr(0, max_chars));
+   }
+});
+
+$('#phone').keyup( function(e){
+   if ($(this).val().length >= max_chars) { 
+	  $(this).val($(this).val().substr(0, max_chars));
+   }
+});
 		</script>
 </body>
 </html>

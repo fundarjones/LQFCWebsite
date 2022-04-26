@@ -3497,7 +3497,7 @@ main .btn-send:hover {
     flex-direction: column;
     margin-bottom: 20px;
     max-width: 400px;
-    margin: auto !important;
+    margin: 10px;
     word-wrap: break-word;
     background-color: #fff;
     background-clip: border-box;

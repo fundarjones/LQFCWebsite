@@ -204,7 +204,7 @@
                         <div class="col-2">
                            <div class="input-group">
                               <label class="label">Phone Number</label>
-                              <input class="input--style-4" type="number" name="phone" placeholder="Enter Phone Number..." required>
+                              <input class="input--style-4" type="number" id="phone" name="phone" placeholder="Enter Phone Number..." onkeyup="limit(this);" required>
                            </div>
                         </div>
                      </div>
@@ -248,6 +248,20 @@
          gtag('js', new Date());
          
          gtag('config', 'UA-23581568-13');
+
+         var max_chars = 11;
+
+         $('#phone').keydown( function(e){
+            if ($(this).val().length >= max_chars) { 
+               $(this).val($(this).val().substr(0, max_chars));
+            }
+         });
+
+         $('#phone').keyup( function(e){
+            if ($(this).val().length >= max_chars) { 
+               $(this).val($(this).val().substr(0, max_chars));
+            }
+         });
       </script>
       <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v652eace1692a40cfa3763df669d7439c1639079717194" integrity="sha512-Gi7xpJR8tSkrpF7aordPZQlW2DLtzUlZcumS8dMQjwDHEnw9I7ZLyiOj/6tZStRBGtGgN6ceN6cMH8z7etPGlw==" data-cf-beacon='{"rayId":"6e55ae78cf5b4816","token":"cd0b4b3a733644fc843ef0b185f98241","version":"2021.12.0","si":100}' crossorigin="anonymous"></script>
    </body>

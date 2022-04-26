@@ -9399,3 +9399,22 @@ nav .profile .profile-link button:hover {
     line-height: 15px;
     font-style: italic;
   }
+
+  .modal-content2 {
+    font-size: larger;
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    width: 600px;
+    left: 50%;
+    transform: translate(-50%);
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border-radius: 15px;
+    outline: 0; }

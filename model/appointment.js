@@ -11,6 +11,7 @@ const AppointmentSchema = new mongoose.Schema(
 		time: { type: String, required: true },
 		sex: { type: String, required: true },
 		age: { type: String, required: true },
+		birthday: { type: String, required: true },
 		status: { type: String, required: true },
 		date_timestamp: { type: String, required: true },
 		time_timestamp: { type: String, required: true },

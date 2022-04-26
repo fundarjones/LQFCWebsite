@@ -50,7 +50,7 @@
 			<span class="divider"></span>
 			<div class="profile">
 				
-				<img src="data:image/<%=admin.img.contentType%>;base64,<%=admin.img.data.toString(base)%>"alt=""><ul class="profile-link">
+				<img src="uploads/<%= admin.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';"><ul class="profile-link">
 					<form action="/profile" method="GET">
 						<li><button type="submit"><i class='bx bxs-user-circle icon' ></i> Profile</button></li>
 					</form>
@@ -104,7 +104,7 @@
 									<div class="col-md-6">
 										<div class="text-group">
 											  <label>Line</label>
-											  <input type="number" name="phone" class="form-control" placeholder="Enter number..." required>
+											  <input type="number" id="phone" name="phone" class="form-control" placeholder="Enter number..." required>
 										</div>
 									</div>
 									<div class="col-md-12">
@@ -281,6 +281,19 @@
 		}
 		
 		}
+		var max_chars = 11;
+
+         $('#phone').keydown( function(e){
+            if ($(this).val().length >= max_chars) { 
+               $(this).val($(this).val().substr(0, max_chars));
+            }
+         });
+
+         $('#phone').keyup( function(e){
+            if ($(this).val().length >= max_chars) { 
+               $(this).val($(this).val().substr(0, max_chars));
+            }
+         });
 		</script>
 	 
 </body>

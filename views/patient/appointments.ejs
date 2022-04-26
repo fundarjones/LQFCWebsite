@@ -77,21 +77,13 @@
 							</div>
 							</form>
 						</div>
-						<div class="col-sm-6 col-md-3">
-							<form>
-							</form>
-								   <div class="rs-select2 js-select-simple select--no-search">
-									 <select name="subject">
-										<option disabled="disabled" selected="selected">Sort by:</option>
-										<option>Date</option>
-										<option>Status</option>
-									 </select>
-									 <div class="select-dropdown"></div>
-								  </div>
+						<div class="col-sm-3 col-md-3">
+							<p><input type="checkbox" class="mt-3 ml-2 custom-checkbox" id="showTodayOnly" onclick="showToday()">
+								Show today's appointments only</p>
 						</div>
 
 						
-								<div class="checkpending col-sm-6 col-md-3">
+								<div class="checkpending col-sm-3 col-md-3">
 									<% appointment.forEach(function(appointments){ %>
 										<p hidden><%= appointments.appointment_status %></p>
 									<% }) %> 
@@ -110,7 +102,7 @@
 
 					<div class="row">
 						<% appointment.forEach(function(appointments){ %>
-						<div class="searchhide" >
+						<div class="searchhide">
 							<div class="card p-3 mb-4">
 								<div class="d-flex justify-content-between mb-4">
 									<div class="user-info">
@@ -145,6 +137,16 @@
 										</div>
 										
 									</div>
+									<% } else { %> 
+									<div class="dropdown open">
+										<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+											
+											<form action="/deactivate" method="POST">
+												<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+												<input type="submit" class="dropdown-item text-danger" value="Remove">
+											</form>
+										</div>
+									</div>
 									<% } %> 
 								</div>
 								<h6>Symptoms:</h6>
@@ -156,7 +158,11 @@
 											<small class="ml-1"><%= appointments.date %></small>
 										</h5>
 									</div>
-									<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+									<% if(appointments.appointment_status == "Cancelled") { %> 
+									<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+									<% } else { %> 
+										<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+									<% } %> 
 								</div>
 							</div>
 						</div>
@@ -216,7 +222,10 @@
 						</div>
 					</div>
 					<% }) %> 
+			
 					<% diagnose.forEach(function(diagnosis){ %>
+
+						<div id="id<%= diagnosis.id%><%= diagnosis.appointment_status %>">
 							<div class="card p-4 mb-4">
 								<div class="d-flex justify-content-between mb-4">
 									<div class="user-info">
@@ -255,8 +264,7 @@
 									}
 								</script>
 							</div>
-					
-					
+						</div>
 					<% }) %> 
 					
 						
@@ -459,7 +467,35 @@
 		}
 		
 		}
-		</script>
+	
+	</script>
+
+<script>
+	function showToday() {
+	  var checkBox = document.getElementById("showTodayOnly");
+
+	  if (checkBox.checked == true){
+
+		var objToday = new Date(),
+		dayOfMonth = today + ( objToday.getDate() < 10) ? '0' + objToday.getDate() : objToday.getDate(),
+		months = new Array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'),
+		curMonth = months[objToday.getMonth()],
+		curYear = objToday.getFullYear();
+
+		var today = curMonth + " " + dayOfMonth + ", " + curYear;
+		
+		// Hide all content class element
+		$('.searchhide').hide();
+
+		// Search 
+		$('.searchhide:contains("'+today+'")').closest('.searchhide').show();
+		
+	  } else {
+		$('.searchhide').show();
+	
+	  }
+	}
+</script>
 
 <script>
 	$(document).ready(function(){

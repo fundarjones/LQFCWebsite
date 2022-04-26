@@ -6,7 +6,7 @@
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-	<link rel="stylesheet" href="../css/settings.css">
+	<link rel="stylesheet" href="../../css/settings.css">
 
 	<link href="../js/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
 	<link href="../js/vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
@@ -85,10 +85,6 @@
 									<i class="fa fa-clock-o text-center mr-1"></i> 
 									Time Slots
 									</a>
-								<a class="nav-link" id="application-tab" data-toggle="pill" href="#roles" role="tab" aria-controls="application" aria-selected="false">
-									<i class="fa fa-tasks text-center mr-1"></i> 
-									Roles
-								</a>
 								<a class="nav-link" id="notification-tab" data-toggle="pill" href="#deactivation" role="tab" aria-controls="notification" aria-selected="false">
 									<i class="fa fa-cog text-center mr-1"></i> 
 									Delete
@@ -98,44 +94,56 @@
 						<div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
 							<div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
 								<h3 class="mb-4">Information Settings</h3>
+								<% if(typeof alert != 'undefined') { %>
+								  <div class="alert">
+									<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+									<p class="error-msg"><%= msg %></p>
+								  </div>
+								<% } %>
 								<form action="/edit-branch?_method=PUT" method="POST">
 								<div class="row">
 									<div class="col-md-6">
+										<input type="text" name="_id" value="<%= edit._id %>" hidden>
 										<div class="text-group">
 											  <label>Branch Name</label>
-											  <input type="text" class="form-control" value="Angeles Branch">
+											  <input type="text" name="branch_name" class="form-control" value="<%= edit.branch_name %>" required>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="text-group">
 											  <label>Line</label>
-											  <input type="text" class="form-control" value="+91 9876543215">
+											  <input type="text" name="phone" id="phone" class="form-control" value="<%= edit.phone %>" required>
 										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="text-group">
 											  <label>Address</label>
-											  <input type="text" class="form-control" value="Lagman Medical Clinic, 4HGX+X24, Angeles, Pampanga">
+											  <input type="text" name="address" class="form-control" value="<%= edit.address %>" required>
 										</div>
 									</div>
 
 									<div class="col-md-12">
 										<div class="text-group">
 											<label>Header</label>
-											</div>
-											<div class="branch-upload">
-												<div class="branch-edit">
-													<input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" />
-													<label for="imageUpload"></label>
-												</div>
-												<div class="branch-preview">
-													<div id="imagePreview" style="background-image: url()">
+											<a href="#!" class="px-2 float-right" data-toggle="modal" data-target="#branch-picture">Change Photo</a>
+										</div>
+																  
+										<div class="branch-upload">
+											<div class="branch-preview">
+												<% if(!edit.img.contentType){ %>
+													<div id="imagePreview1" style="background-image: url()">
 													</div>
-												</div>
-											</div>
+												<% } else { %>
+													<div id="imagePreview1" style="background-image: url('data:image/<%=edit.img.contentType%>;base64,<%=edit.img.data.toString(base)%>')"> 
+													</div>
+												<% } %>
+											</div>	
+										</div>
 									</div>
+								</div>
+								<div>
 									<br>
-									<button class="btn btn__primary btn__rounded ml-30">Update</button>
+									<input class="btn btn__primary btn__rounded ml-30" type="submit" value="Update">
 								</div>
 								</form>
 							</div>
@@ -146,35 +154,6 @@
 									  <div class="text-group">
 										 <p>Add time slots to the designated branch.</p>
 									  </div>
-
-								   <!-- <div class="col-md-12">
-									  <div class="text-group">
-										 <p>Add time slots to the designated branch.</p>
-									  </div> -->
-									  <!-- <button class="btn btn__primary btn__rounded ml-30 mb-2" ng-click="addTimeslot()">Add Time Slot</button> -->
-									  
-									  <!-- <i class="fa fa-plus ml-3" ng-click="addTimeslot()"><span class="ml-1">Add Time Slot</span></i> -->
-
-									  <!-- <div id="no-more-tables">
-										 <table id="mytable" class="col-sm-12">
-											<thead class="cf">
-											   <tr>
-												  <th>Start Time</th>
-												  <th>End Time</th>
-											   </tr>
-											</thead>
-											<tbody>
-											   <tr>
-												  <td data-title="Start Time">
-													 <input type="time" name="time" class="form-control">
-												  </td>
-												  <td data-title="End Time">
-													 <input type="time" name="time_out" class="form-control">
-												  </td>
-											   </tr>
-											</tbody>
-										 </table>
-									  </div> -->
 
 									  <label>Set Time for Appointment</label>
 									<select id="set_time" name="set_time" multiple>
@@ -197,41 +176,13 @@
 									</select>
 									</div>
 									<br>
-									<button class="btn btn__primary btn__rounded ml-30">Update</button>
 		
 								   </div>
-								</div>
-							<div class="tab-pane fade" id="roles" role="tabpanel" aria-labelledby="application-tab">
-								<h3 class="mb-3">Roles Settings</h3>
-								<div class="row">
-									<div class="col-md-12">
-									<label>Assigned Doctors</label>
-									<select id="specialization" multiple>
-										<option value="1" >Dr 1</option>
-										<option value="2">Dr 2</option>
-										<option value="3">Dr 3</option>
-										<option value="4">Dr 4</option>
-										<option value="5">Dr 5</option>
-									</select>
-									</div>
-									<br><br><br>
-									<div class="col-md-12">
-										<label>Assigned Staffs</label>
-										<select id="branches" multiple>
-											<option value="1">Staff 1</option>
-											<option value="2">Staff 1</option>
-											<option value="3">Staff 3</option>
-											<option value="4">Staff 4</option>
-											<option value="5">Staff 5</option>
-										</select>
-										</div>
-								</div>
-								<div>
+								   <div>
 									<br>
-									<button class="btn btn__primary btn__rounded ml-30">Update</button>
+									<input class="btn btn__primary btn__rounded ml-30" type="submit" value="Update">
+								   </div>
 								</div>
-							</div>
-							
 							<div class="tab-pane fade" id="deactivation" role="tabpanel" aria-labelledby="notification-tab">
 								<h3 class="mb-4">Delete Settings</h3>
 								<div class="row">
@@ -251,15 +202,48 @@
 					</div>
 				</div>
 
-
-
 			</section>
+			<!----BRANCH PICTURE MODAL---->
+
+			<form action="change-branch-header?_method=PUT" method="POST" enctype="multipart/form-data">
+				<div class="modal fade" id="branch-picture" tabindex="-1" role="dialog">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content2">
+						<div class="p-4">
+							<center>
+								<input type="text" name="_id" value="<%= edit._id %>" hidden>
+									<div class="branch-upload">
+										<div class="branch-edit">
+											<input type='file' name="branchUpdate" id="imageUpload" accept=".png, .jpg, .jpeg" />
+											<label for="imageUpload"></label>
+										</div>
+								
+										<div class="branch-preview">
+											<% if(!edit.img.contentType){ %>
+												<div id="imagePreview2" style="background-image: url()">
+												</div>
+											<% } else { %>
+												<div id="imagePreview2" style="background-image: url('data:image/<%=edit.img.contentType%>;base64,<%=edit.img.data.toString(base)%>')"> 
+												</div>
+											<% } %>
+										</div>	
+									</div>
+							<br>
+							<input type="submit" class="btn btn__primary btn__rounded ml-30" value="Done">
+							</center>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+			
 			<% } %> 
 		</main>
+		
 	<!-- NAVBAR -->
 
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-	<script src="assets/js/script.js"></script>
+	<script src="../assets/js/script.js"></script>
 
 	<!-- Patients JS -->
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
@@ -268,23 +252,17 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 	<!-- Settings JS -->
-	<script src="assets/js/vendor/jquery/jquery.min.js"></script>
-	<script src="assets/js/vendor/select2/select2.min.js"></script>
-	<script src="assets/js/global.js"></script>
+	<script src="../assets/js/vendor/jquery/jquery.min.js"></script>
+	<script src="../assets/js/vendor/select2/select2.min.js"></script>
+	<script src="../assets/js/global.js"></script>
 
-	<script src="assets/js/vendor/timepicker/angular.min.js"></script>
-    <script src="assets/js/vendor/timepicker/app.js"></script>
+	<script src="../assets/js/vendor/timepicker/angular.min.js"></script>
+    <script src="../assets/js/vendor/timepicker/app.js"></script>
 	
 	<!-- Multiple Select JS-->
 
 	
 	<script>
-		new SlimSelect({
-		  select: '#specialization'
-		  });
-		new SlimSelect({
-		  select: '#branches'
-		  });
 		new SlimSelect({
 		select: '#set_time'
 		});
@@ -297,9 +275,9 @@
 		if (input.files && input.files[0]) {
 			var reader = new FileReader();
 			reader.onload = function(e) {
-				$('#imagePreview').css('background-image', 'url('+e.target.result +')');
-				$('#imagePreview').hide();
-				$('#imagePreview').fadeIn(650);
+				$('#imagePreview1, #imagePreview2').css('background-image', 'url('+e.target.result +')');
+				$('#imagePreview1, #imagePreview2').hide();
+				$('#imagePreview1, #imagePreview2').fadeIn(650);
 			}
 			reader.readAsDataURL(input.files[0]);
 		}
@@ -318,6 +296,19 @@
 	}
 	
 	}
+	var max_chars = 11;
+
+         $('#phone').keydown( function(e){
+            if ($(this).val().length >= max_chars) { 
+               $(this).val($(this).val().substr(0, max_chars));
+            }
+         });
+
+         $('#phone').keyup( function(e){
+            if ($(this).val().length >= max_chars) { 
+               $(this).val($(this).val().substr(0, max_chars));
+            }
+         });
 	</script>
 	 
 	 

@@ -71,34 +71,20 @@
 				<div class="container">
 					
 			<h1 class="title">Branches</h1>
-					<div class="row">
-						<div class="col-sm-6 col-md-6">
-							<form action="#">
-							<div class="form-group">
-								<input type="text" id="search" placeholder="Search...">
-							</div>
-							</form>
-						</div>
-						<div class="col-sm-6 col-md-3">
-							<form>
-							</form>
-								   <div class="rs-select2 js-select-simple select--no-search">
-									 <select name="subject">
-										<option disabled="disabled" selected="selected">Sort by:</option>
-										<option>Name</option>
-										<option>Branch</option>
-										<option>Specilization</option>
-									 </select>
-									 <div class="select-dropdown"></div>
-								  </div>
-						</div>
-						<div class="col-sm-6 col-md-3">
-							<form action="/add-branches" method="GET">
-								<button class="button">Add Branches</button>
-							</form>
-						</div>
-
+			<div class="row">
+				<div class="col-sm-9 col-md-9">
+					<form action="#">
+					<div class="form-group">
+						<input type="text" id="search" placeholder="Search...">
 					</div>
+					</form>
+				</div>
+				<div class="col-sm-3 col-md-3">
+					<form action="/add-branches" method="GET">
+						<button class="button">Add Branch</button>
+					</form>
+				</div>
+			</div>
 					<br>
 					<div class="row">
 						<% branches.forEach(function(branches){ %>	

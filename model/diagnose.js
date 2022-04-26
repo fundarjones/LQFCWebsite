@@ -28,6 +28,7 @@ const DiagnoseSchema = new mongoose.Schema(
 		next_checkup_note: { type: String },
 		notes: { type: String, required: true },
 		approved_staff: { type: String },
+		diagnosed_doctor: { type: String }
 	},
 	{ collection: 'diagnosis' }
 )

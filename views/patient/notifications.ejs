@@ -75,7 +75,55 @@
 					<br>
 					<div class="row">
 						<div class="col-sm-12 col-md-12 col-lg-12">
-							
+							<% diagnose.reverse().forEach(function(diagnosis){ %>.
+								<% if (diagnosis.appointment_status == "Follow-Up" && diagnosis.id == patient._id){ %> 
+									<div class="card p-3 mb-4 <%  %> ">
+										<h4 class="mb-0 m-2"><%= diagnosis.date_timestamp %> </h4>
+	
+										<!--Notif Content-->
+										<hr>
+										<div class="d-flex justify-content-between mb-4">
+											<div class="user-info">
+												<div class="user-info__img m-2">
+													<img src="files/male-avatar.png" alt="User Img">
+												</div>
+												<div class="user-info__basic">
+													<h4 class="text-highlight">Your</h4>
+													<p class="inline">appointment for <%= diagnosis.date %> at <%= diagnosis.time %> has been diagnosed by <b><%= diagnosed_doctor %></b> and in need of Follow-Up Check up. Please set an appointment for your follow-up check up.</p>
+													<br>
+													<medium class="text-muted mb-0"><%= diagnosed.time_timestamp %></medium>
+												</div>
+											</div>
+												
+										</div>
+										<!---->
+									</div>
+									<% } else if (diagnosis.appointment_status == "Done" && diagnosis.id == patient._id){ %> 
+										<div class="card p-3 mb-4">
+											<h4 class="mb-0 m-2"><%= diagnosis.date_timestamp %> </h4>
+		
+											<!--Notif Content-->
+											<hr>
+											<div class="d-flex justify-content-between mb-4">
+												<div class="user-info">
+													<div class="user-info__img m-2">
+														<img src="files/male-avatar.png" alt="User Img">
+													</div>
+													<div class="user-info__basic">
+														<h4 class="text-highlight">Your</h4>
+														<p class="inline">appointment for <%= diagnosis.date %> at <%= diagnosis.time %> has been diagnosed by <b><%= diagnosis.diagnosed_doctor %></b> and no need for follow-up check up.</p>
+														<br>
+														<medium class="text-muted mb-0"><%= diagnosis.time_timestamp %></medium>
+													</div>
+												</div>
+													
+											</div>
+											<!---->
+										</div>
+									<% } %> 
+									
+							<% }) %> 
+
 							<% appointment.reverse().forEach(function(appointments){ %>
 								<% if( appointments.appointment_status == "Pending" ) { %> 
 									<div class="card p-3 mb-4">
@@ -142,8 +190,10 @@
 											</div>
 											<!---->
 										</div>
-									<% } %> 
-							<% }); %> 
+										<% } %> 
+							<% }) %> 
+							
+							
 
 							</div>
 

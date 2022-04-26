@@ -172,7 +172,7 @@
                                       </div>
                                     </div>
                                         <% appointment.forEach(function(appointments){ %>
-                                          <% if(appointments.branch == branches.branch_name && appointments.appointment_status == "Pending" || appointments.branch == branches.branch_name && appointments.appointment_status == "Approved"){ %> 
+                                          <% if(appointments.branch == branches.branch_name && appointments.appointment_status == "Pending" || appointments.branch == branches.branch_name && appointments.appointment_status == "Approved" || appointments.branch == branches.branch_name && appointments.appointment_status == "Follow-Up"){ %> 
                                             <div class="database-date<%= branches._id %> database-date" hidden>
                                               <p id="valueInput<%= appointments.id%><%= branches._id %>"></p>
                                             </div>

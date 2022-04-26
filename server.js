@@ -114,7 +114,14 @@ app.get('/dashboard', checkAuthenticated, async (req, res) => {
           if (err){
               console.log(err)
           }else{
-            res.render('staff/dashboard.ejs', {appointment: count, cancelled: cancel, staff: staffs, base: 'base64' })
+            Appointment.countDocuments({branch:req.user.branch, appointment_status: "Follow-Up"}, function (err, followup) {
+              if (err){
+                  console.log(err)
+              }else{
+                const total = count + followup
+                res.render('staff/dashboard.ejs', {appointment: total, cancelled: cancel, staff: staffs, base: 'base64' })
+              }
+            })
           }
         })
       }
@@ -281,25 +288,13 @@ app.get('/edit-branch', checkAuthenticated, async (req, res) => {
   const staffs = await Staff.findById(user_id)
   const branches = await Branch.find();
   if (req.user.usertype == "patient") {
-    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
-      if (err){
-          console.log(err)
-      }else{
-        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
-          if (err){
-              console.log(err)
-          }else{
-            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
-          }
-        })
-      }
-    })
+    res.redirect("/dashboard")
   }
   else if (req.user.usertype == "doctor"){
-    res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64'  })
+    res.redirect("/dashboard")
   }
   else if (req.user.usertype == "staff"){
-    res.render('staff/dashboard.ejs', { staff: staffs, base: 'base64'  })
+    res.redirect("/dashboard")
   }
   else if (req.user.usertype == "admin"){
     res.render('admin/dashboard.ejs', { branch: branches, admin: admins, base: 'base64' })
@@ -312,31 +307,17 @@ app.get('/edit-branch', checkAuthenticated, async (req, res) => {
 
 app.get('/edit-branch/:_id', checkAuthenticated, async (req, res) => {
   const user_id = req.user._id
-  const patients = await User.findById(user_id)
-  const doctors = await Doctor.findById(user_id)
   const admins = await Admin.findById(user_id)
   const edit_id = req.params._id
   const edit_branch = await Branch.findById(edit_id)
   if (req.user.usertype == "patient") {
-    Appointment.countDocuments({img_id: req.user.id}, function (err, total) {
-      if (err){
-          console.log(err)
-      }else{
-        Diagnose.countDocuments({img_id:req.user.id}, function (err, diagnosed) {
-          if (err){
-              console.log(err)
-          }else{
-            res.render('patient/dashboard.ejs', { diagnose: diagnosed , total: total, patient: patients, base: 'base64' })
-          }
-        })
-      }
-    })
+    res.redirect("/dashboard")
   }
   else if (req.user.usertype == "doctor"){
-    res.render('doctor/dashboard.ejs', { doctor: doctors, base: 'base64'  })
+    res.redirect("/dashboard")
   }
   else if (req.user.usertype == "staff"){
-    res.render('staff/dashboard.ejs', { staff: staffs, base: 'base64'  })
+    res.redirect("/dashboard")
   }
   else if (req.user.usertype == "admin"){
     res.render('admin/edit-branch.ejs', { edit: edit_branch, admin: admins, base: 'base64' })
@@ -862,15 +843,16 @@ app.get('/notification', checkAuthenticated, async (req, res) => {
   const staffs = await Staff.findById(user_id)
   const branches = await Branch.find()
   const appointments = await Appointment.find()
+  const diagnosis = await Diagnose.find()
   const patient_appointments = await Appointment.find({ img_id: req.user.id })
   if (req.user.usertype == "patient") {
-    res.render('patient/notifications.ejs',{ appointment: patient_appointments,branch: branches, patient: patients, base: 'base64'})
+    res.render('patient/notifications.ejs',{ diagnose: diagnosis, appointment: patient_appointments,branch: branches, patient: patients, base: 'base64'})
   }
   else if (req.user.usertype == "doctor") {
-    res.render('doctor/notifications.ejs', { appointment: appointments,doctor: doctors, base: 'base64'  })
+    res.render('doctor/notifications.ejs', { diagnose: diagnosis, appointment: appointments,doctor: doctors, base: 'base64'  })
   }
   else if (req.user.usertype == "staff") {
-    res.render('staff/notifications.ejs', { appointment: appointments, staff: staffs, base: 'base64'  })
+    res.render('staff/notifications.ejs', { diagnose: diagnosis, appointment: appointments, staff: staffs, base: 'base64'  })
   }
   else if (req.user.usertype == "admin"){
     res.render('admin/dashboard.ejs', { admin: admins, base: 'base64' })
@@ -1842,6 +1824,385 @@ app.get("/reset-password", async(req,res) =>{
   }
 })
 
+const sendContactUs = async(contact_name, contact_email, contact_phone, contact_subject, contact_message) =>{
+
+var mailOptions = {
+  from: `${contact_email}`,
+  to: "drumitarist@gmail.com",
+  subject: `${contact_subject}`,
+  text: `<!DOCTYPE html>
+  <html>
+  
+  <head>
+      <title></title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <style type="text/css">
+          @media screen {
+              @font-face {
+                  font-family: 'Lato';
+                  font-style: normal;
+                  font-weight: 400;
+                  src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+              }
+  
+              @font-face {
+                  font-family: 'Lato';
+                  font-style: normal;
+                  font-weight: 700;
+                  src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+              }
+  
+              @font-face {
+                  font-family: 'Lato';
+                  font-style: italic;
+                  font-weight: 400;
+                  src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+              }
+  
+              @font-face {
+                  font-family: 'Lato';
+                  font-style: italic;
+                  font-weight: 700;
+                  src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+              }
+          }
+  
+          /* CLIENT-SPECIFIC STYLES */
+          body,
+          table,
+          td,
+          a {
+              -webkit-text-size-adjust: 100%;
+              -ms-text-size-adjust: 100%;
+          }
+  
+          table,
+          td {
+              mso-table-lspace: 0pt;
+              mso-table-rspace: 0pt;
+          }
+  
+          img {
+              -ms-interpolation-mode: bicubic;
+          }
+  
+          /* RESET STYLES */
+          img {
+              border: 0;
+              height: auto;
+              line-height: 100%;
+              outline: none;
+              text-decoration: none;
+          }
+  
+          table {
+              border-collapse: collapse !important;
+          }
+  
+          body {
+              height: 100% !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              width: 100% !important;
+          }
+  
+          /* iOS BLUE LINKS */
+          a[x-apple-data-detectors] {
+              color: inherit !important;
+              text-decoration: none !important;
+              font-size: inherit !important;
+              font-family: inherit !important;
+              font-weight: inherit !important;
+              line-height: inherit !important;
+          }
+  
+          /* MOBILE STYLES */
+          @media screen and (max-width:600px) {
+              h1 {
+                  font-size: 32px !important;
+                  line-height: 32px !important;
+              }
+          }
+  
+          /* ANDROID CENTER FIX */
+          div[style*="margin: 16px 0;"] {
+              margin: 0 !important;
+          }
+      </style>
+  </head>
+  
+  <body style="background-color: #d8eeff; margin: 0 !important; padding: 0 !important;">
+      <!-- HIDDEN PREHEADER TEXT -->
+      <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> Contact form submission recieved! </div>
+      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+          <!-- LOGO -->
+          <tr>
+              <td bgcolor="#294a75" align="center">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                      <tr>
+                          <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
+                      </tr>
+                  </table>
+              </td>
+          </tr>
+          <tr>
+              <td bgcolor="#294a75" align="center" style="padding: 0px 10px 0px 10px;">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                      <tr>
+                          <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+                              <h1 style="font-size: 48px; font-weight: 400; margin: 2;">Contact Form</h1> 
+                      </tr>
+                  </table>
+              </td>
+          </tr>
+          <tr>
+              <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                      <tr>
+                          <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                              <p style="margin: 0;"><b>Name:</b> ${contact_name}</p>
+                              <p style="margin: 0;"><b>Email:</b> ${contact_email}</p>
+                          </td>
+                      </tr>
+                      <tr>
+                      <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                              <p style="margin: 0;"><b>Contact Number:</b> ${contact_phone}</p>
+                          </td>
+                      </tr> <!-- COPY -->
+                      <tr>
+                          <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                              <p style="margin: 0;"><b>Message:</b></p>
+                              <br>
+                              <p style="margin: 0;"><b>${contact_message}</b></p>
+                          </td>
+                        <br><br><br><br>
+                      </tr> <!-- COPY -->
+                      <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;"><a href="https://lqfclinic.herokuapp.com/" target="_blank" style="color: #1746e0;"></a>Lagman Qualicare Family Clinic</p>
+                            </td>
+                        </tr>
+                  </table>
+              </td>
+          </tr>
+          <tr>
+              <td bgcolor="#d8eeff" align="center" style="padding: 30px 10px 0px 10px;">
+                  
+              </td>
+          </tr>
+          <tr>
+              <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                      <tr>
+                      </tr>
+                  </table>
+              </td>
+          </tr>
+      </table>
+  </body>
+  
+  </html>`,
+  html: `<!DOCTYPE html>
+  <html>
+  
+  <head>
+      <title></title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <style type="text/css">
+          @media screen {
+              @font-face {
+                  font-family: 'Lato';
+                  font-style: normal;
+                  font-weight: 400;
+                  src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+              }
+  
+              @font-face {
+                  font-family: 'Lato';
+                  font-style: normal;
+                  font-weight: 700;
+                  src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+              }
+  
+              @font-face {
+                  font-family: 'Lato';
+                  font-style: italic;
+                  font-weight: 400;
+                  src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+              }
+  
+              @font-face {
+                  font-family: 'Lato';
+                  font-style: italic;
+                  font-weight: 700;
+                  src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+              }
+          }
+  
+          /* CLIENT-SPECIFIC STYLES */
+          body,
+          table,
+          td,
+          a {
+              -webkit-text-size-adjust: 100%;
+              -ms-text-size-adjust: 100%;
+          }
+  
+          table,
+          td {
+              mso-table-lspace: 0pt;
+              mso-table-rspace: 0pt;
+          }
+  
+          img {
+              -ms-interpolation-mode: bicubic;
+          }
+  
+          /* RESET STYLES */
+          img {
+              border: 0;
+              height: auto;
+              line-height: 100%;
+              outline: none;
+              text-decoration: none;
+          }
+  
+          table {
+              border-collapse: collapse !important;
+          }
+  
+          body {
+              height: 100% !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              width: 100% !important;
+          }
+  
+          /* iOS BLUE LINKS */
+          a[x-apple-data-detectors] {
+              color: inherit !important;
+              text-decoration: none !important;
+              font-size: inherit !important;
+              font-family: inherit !important;
+              font-weight: inherit !important;
+              line-height: inherit !important;
+          }
+  
+          /* MOBILE STYLES */
+          @media screen and (max-width:600px) {
+              h1 {
+                  font-size: 32px !important;
+                  line-height: 32px !important;
+              }
+          }
+  
+          /* ANDROID CENTER FIX */
+          div[style*="margin: 16px 0;"] {
+              margin: 0 !important;
+          }
+      </style>
+  </head>
+  
+  <body style="background-color: #d8eeff; margin: 0 !important; padding: 0 !important;">
+      <!-- HIDDEN PREHEADER TEXT -->
+      <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> Contact form submission recieved! </div>
+      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+          <!-- LOGO -->
+          <tr>
+              <td bgcolor="#294a75" align="center">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                      <tr>
+                          <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
+                      </tr>
+                  </table>
+              </td>
+          </tr>
+          <tr>
+              <td bgcolor="#294a75" align="center" style="padding: 0px 10px 0px 10px;">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                      <tr>
+                          <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+                              <h1 style="font-size: 48px; font-weight: 400; margin: 2;">Contact Form</h1> 
+                      </tr>
+                  </table>
+              </td>
+          </tr>
+          <tr>
+              <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                      <tr>
+                          <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                              <p style="margin: 0;"><b>Name:</b> ${contact_name}</p>
+                              <p style="margin: 0;"><b>Email:</b> ${contact_email}</p>
+                          </td>
+                      </tr>
+                      <tr>
+                      <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                              <p style="margin: 0;"><b>Contact Number:</b> ${contact_phone}</p>
+                          </td>
+                      </tr> <!-- COPY -->
+                      <tr>
+                          <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                              <p style="margin: 0;"><b>Message:</b></p>
+                              <br>
+                              <p style="margin: 0;"><b>${contact_message}</b></p>
+                          </td>
+                        <br><br><br><br>
+                      </tr> <!-- COPY -->
+                      <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;"><a href="https://lqfclinic.herokuapp.com/" target="_blank" style="color: #1746e0;"></a>Lagman Qualicare Family Clinic</p>
+                            </td>
+                        </tr>
+                  </table>
+              </td>
+          </tr>
+          <tr>
+              <td bgcolor="#d8eeff" align="center" style="padding: 30px 10px 0px 10px;">
+                  
+              </td>
+          </tr>
+          <tr>
+              <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                      <tr>
+                      </tr>
+                  </table>
+              </td>
+          </tr>
+      </table>
+  </body>
+  
+  </html>`
+}
+transport.sendMail(mailOptions, function(error,info){
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Email has been sent")
+  }
+})
+
+}
+
+app.post("/contact-us", async(req,res) =>{
+  const { contact_name, contact_email, contact_phone, contact_subject, contact_message } = req.body
+  const branches = await Branch.find()
+  try{
+    sendContactUs(contact_name, contact_email, contact_phone, contact_subject, contact_message)
+    console.log("Contact Form sent successfully")
+    res.render("contact.ejs",{msg: "Contact Form sent successfully", type: "success", branch: branches})
+  } catch {
+    console.log("There has been an error submitting your form")
+    res.render("contact.ejs",{msg: "There has been an error submitting your form", type: "danger", branch: branches})
+  }
+})
+
+
 app.post("/reset-password", urlencodedParser,[
   check('password', 'Password must include one lowercase character, one uppercase character, a number, and a special character.')
     .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, "i"),
@@ -1899,6 +2260,13 @@ function getYears(x) {
   return Math.floor(x / 1000 / 60 / 60 / 24 / 365);
 }
 
+
+let d = new Date();
+let year = d.getFullYear();
+let month = d.getMonth();
+let day = d.getDate();
+let cA = new Date(year - 0, month, day).toDateString();
+
 app.post('/register', checkNotAuthenticated, urlencodedParser,[
   check('first_name', 'There must be no special characters in the first name')
     .matches(/^[A-Za-z0-9 .,'!&]+$/),
@@ -1933,6 +2301,8 @@ app.post('/register', checkNotAuthenticated, urlencodedParser,[
         throw new Error('Passwords must be same')
       }
     }),
+  check('birthday','Invalid Date of Birth!').isBefore(cA)
+    
 
 
 ], async (req, res) => {
@@ -1978,14 +2348,14 @@ app.post('/add-doctors', checkAuthenticated, urlencodedParser,[
     .matches(/^[A-Za-z0-9 .,'!&]+$/),
   check('last_name', 'There must be no special characters in the last name')
     .matches(/^[A-Za-z0-9 .,'!&]+$/),
-  check('birthday','Invalid Date of Birth')
-    .isISO8601(),
+  check('phone', 'Phone number must include 11 digits')
+    .isLength({min:11, max:11}),
   check('email', 'Email is not valid')
     .isEmail()
     .normalizeEmail()
     .custom((value, {req}) => {
       return new Promise((resolve, reject) => {
-        Doctor.findOne({email:req.body.email}, function(err, user){
+        User.findOne({email:req.body.email}, function(err, user){
           if(err) {
             reject(new Error('Server Error'))
           }
@@ -1996,21 +2366,19 @@ app.post('/add-doctors', checkAuthenticated, urlencodedParser,[
         });
       });
     }),
-  check('password', 'Password too small. Should be atleast 6 characters')
-    .isLength({min:6}),
+  check('password', 'Password must include one lowercase character, one uppercase character, a number, and a special character.')
+  .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, "i"),
+  check('password', 'Password must be greater than 5 characters.')
+  .isLength({min:6}),
   check('confirm_password')
     .custom(async (confirm_password, {req}) => {
       const password = req.body.password
       if(password !== confirm_password){
         throw new Error('Passwords must be same')
       }
-    })
+    }),
 
 ], async (req, res) => {
-  const doctor = new Doctor();
-  if (req.body.specialization) {
-    doctor.specialization = Array.isArray(req.body.specialization) ? req.body.specialization : [req.body.specialization]; 
-  }
   const { email, first_name, last_name, birthday, specialization, branch, sex, status, phone, password: plainTextPassword } = req.body
   const errors = validationResult(req)
     if(!errors.isEmpty()) {
@@ -2057,14 +2425,14 @@ app.post('/add-staff', checkAuthenticated, urlencodedParser,[
     .matches(/^[A-Za-z0-9 .,'!&]+$/),
   check('last_name', 'There must be no special characters in the last name')
     .matches(/^[A-Za-z0-9 .,'!&]+$/),
-  check('birthday','Invalid Date of Birth')
-    .isISO8601(),
+  check('phone', 'Phone number must include 11 digits')
+    .isLength({min:11, max:11}),
   check('email', 'Email is not valid')
     .isEmail()
     .normalizeEmail()
     .custom((value, {req}) => {
       return new Promise((resolve, reject) => {
-        Doctor.findOne({email:req.body.email}, function(err, user){
+        User.findOne({email:req.body.email}, function(err, user){
           if(err) {
             reject(new Error('Server Error'))
           }
@@ -2075,15 +2443,17 @@ app.post('/add-staff', checkAuthenticated, urlencodedParser,[
         });
       });
     }),
-  check('password', 'Password too small. Should be atleast 6 characters')
-    .isLength({min:6}),
+  check('password', 'Password must include one lowercase character, one uppercase character, a number, and a special character.')
+  .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, "i"),
+  check('password', 'Password must be greater than 5 characters.')
+  .isLength({min:6}),
   check('confirm_password')
     .custom(async (confirm_password, {req}) => {
       const password = req.body.password
       if(password !== confirm_password){
         throw new Error('Passwords must be same')
       }
-    })
+    }),
 
 ], async (req, res) => {
   const { email, first_name, last_name, birthday, branch, sex, status, phone, password: plainTextPassword } = req.body
@@ -2122,6 +2492,57 @@ app.post('/add-staff', checkAuthenticated, urlencodedParser,[
       res.redirect('/dashboard')
       console.log(err)
     }
+    }
+})
+
+const BranchUpdateStorage = multer.diskStorage({
+  destination: function(req, file, callback) {
+    callback(null, "public/uploads");
+  },
+  filename: async function (req, file, callback) {
+    const temp = Date.now()
+    const name = 'branch' + temp
+    callback(null, name+'.png');
+  }
+});
+
+const branchUpdate = multer({ storage: BranchUpdateStorage })
+
+app.put('/edit-branch/change-branch-header', branchUpdate.single('branchUpdate'),checkAuthenticated, async (req, res) => {
+    const user_id = req.body_id
+    try {
+      const branch = await Branch.findById(user_id)
+      branch.img = {
+        data: fs.readFileSync(path.join(__dirname + "/public/uploads/" + req.file.filename)),
+        contentType: 'image/png'
+      }
+      await branch.save()
+      const response = branch
+      res.redirect('/branches')
+      console.log('Branch header updated successfully: ', response)
+    } catch (err) {
+      res.redirect('/branches')
+      console.log(err)
+  }
+})
+
+app.put('/edit-branch', checkAuthenticated, async (req, res) => {
+  const { branch_name, phone, address, _id} = req.body
+      const user_id = _id
+      try{
+        const branch = await Branch.findById(user_id)
+          branch.branch_name = branch_name
+          branch.phone = phone
+          branch.address = address
+          await branch.save()
+          const response = branch
+          res.redirect('/branches')
+          console.log('Branch updated successfully: ', response)
+    } catch (err){
+      const admins = await Admin.findById(user_id)
+      const edit_branch = await Branch.findById(user_id)
+      res.render('../admin/edit-branch.ejs', { edit: edit_branch, admin: admins, base: 'base64' })
+      console.log(err)
     }
 })
 
@@ -2256,7 +2677,14 @@ const approved_time = hours + ":" + min + " " + midday
 const approved_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
 const approved_staff = req.user.first_name + " " + req.user.last_name
     try {
+      var appointment_status = " "
       const approve = await Appointment.findById(user_id)
+      if (approve.appointment_status == "Follow-Up") {
+        appointment_status = "Follow-Up"
+      }
+      else{
+        appointment_status = "Approved"
+      }
       const response = new Appointment({
         id: approve.id,
         img_id: approve.img_id,
@@ -2273,9 +2701,10 @@ const approved_staff = req.user.first_name + " " + req.user.last_name
         status: approve.status,
         phone: approve.phone,
         email: approve.email,
+        birthday: approve.birthday,
         symptoms_detected: approve.symptoms_detected,
         pre_diagnose_result: approve.pre_diagnose_result,
-        appointment_status: "Approved",
+        appointment_status,
         approved_time,
         approved_date,
         approved_staff
@@ -2365,10 +2794,6 @@ app.put('/edit-info', checkAuthenticated, urlencodedParser,[
 })
 
 app.put('/edit-doctor-roles', checkAuthenticated, async (req, res) => {
-  const doc = new Doctor();
-  if (req.body.specialization) {
-    doc.specialization = Array.isArray(req.body.specialization) ? req.body.specialization : [req.body.specialization]; 
-  }
   const { specialization, branch, _id } = req.body
   try {
     const doctor = await Doctor.findById(_id)
@@ -2398,7 +2823,7 @@ app.put('/edit-staff-role', checkAuthenticated, async (req, res) => {
 })
 
 app.post('/deactivate', checkAuthenticated, async (req, res) => {
-  const { usertype, id } = req.body
+  const { usertype, _id } = req.body
   try {
     if (usertype == "doctor") {
       const doctor = await Doctor.deleteOne({id: id})
@@ -2419,7 +2844,7 @@ app.post('/deactivate', checkAuthenticated, async (req, res) => {
       console.log('Patient removed successfully: ', response) 
     }
     else if (req.user.usertype == "staff" || req.user.usertype == "doctor") {
-      const appointment = await Appointment.deleteOne({id: id})
+      const appointment = await Appointment.deleteOne({_id: _id})
       const response = appointment
       res.redirect('/appointments')
       console.log('Appointment removed successfully: ', response) 
@@ -2584,6 +3009,7 @@ app.put('/cancel-appointment', checkAuthenticated, async (req, res) => {
         branch: cancel.branch,
         time: cancel.time,
         date: cancel.date,
+        birthday: cancel.birthday,
         exp_symptoms: cancel.exp_symptoms,
         date_timestamp: cancel.date_timestamp,
         time_timestamp: cancel.time_timestamp,
@@ -2632,7 +3058,7 @@ const BranchStorage = multer.diskStorage({
   destination: function(req, file, callback) {
     callback(null, "public/uploads");
   },
-  filename: function (req, file, callback) {
+  filename: async function (req, file, callback) {
     const temp = Date.now()
     const name = 'branch' + temp
     callback(null, name+'.png');
@@ -2777,7 +3203,7 @@ app.post('/set-appointment', checkAuthenticated, async (req, res) => {
     appointment.exp_symptoms = Array.isArray(req.body.exp_symptoms) ? req.body.exp_symptoms : [req.body.exp_symptoms]; 
   }
   const {time, exp_symptoms, branch} = req.body
-  const {email, first_name, last_name, phone, sex, status, age } = req.user
+  const {email, first_name, last_name, phone, sex, status, age, birthday} = req.user
   var covid19symptoms = ['Headache', 'Fever', 'Cough', 'Tiredness', 'Loss of Taste or Smell', 'Sore Throat', 'Aches and Pains', 'Diarrhoea', 'Shortness of breath', 'Fatigue'];
 
   const temp_date = req.body.date
@@ -2863,6 +3289,7 @@ app.post('/set-appointment', checkAuthenticated, async (req, res) => {
                     first_name,
                     last_name,
                     branch,
+                    birthday,
                     time,
                     date,
                     exp_symptoms,
@@ -2989,6 +3416,7 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
         const old = await Appointment.findOne({id:id})
         const exp_symptoms = old.exp_symptoms
         const symptoms_detected = old.symptoms_detected
+        const birthday = old.birthday
         console.log(symptoms_detected)
         const response = new Diagnose({
                 id,
@@ -2998,6 +3426,7 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
                 branch,
                 time,
                 date,
+                birthday,
                 exp_symptoms,
                 date_timestamp,
                 time_timestamp,
@@ -3017,6 +3446,14 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
                 next_checkup,
                 notes
             })
+      if (next_checkup == "No") {
+        const records = await Diagnose.find({id:id})
+        for (let i = 0; i < records.length; i++) {
+          records[i].appointment_status = "Done"
+          await records[i].save()
+        }
+        console.log(records)
+      }
       await response.save()
       const doctors = await Doctor.findById(req.user._id)
       const appointments = await Appointment.find()
@@ -3030,86 +3467,6 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
     }
   
 })
-
-app.put('/follow-up-diagnose', checkAuthenticated, async (req, res) => {
-  const {id, img_id, first_name, last_name, branch, date, time, sex, age, status, phone, email, exp_symptoms, pre_diagnose_result, diagnosed_disease, medicine, laboratory, approved_staff, next_checkup, next_checkup_note, notes} = req.body
-      try{
-        let date_ob = new Date();
-        let set_date = ("0" + date_ob.getDate()).slice(-2);
-        let year = date_ob.getFullYear();
-        let hours = date_ob.getHours();
-        let min = ("0" + date_ob.getMinutes()).slice(-2);
-        var midday = "AM";
-		    midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
-		    hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
-        const time_timestamp = hours + ":" + min + " " + midday
-        const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
-        const date_timestamp = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
-        var appointment_status = " "
-        console.log(next_checkup)
-        if (next_checkup == "Yes") {
-          appointment_status = "Follow-Up"
-        } else {
-          appointment_status = "Done"
-        }
-        const old = await Diagnose.findOne({id:id})
-        const symptoms_detected = old.symptoms_detected
-        const response = new Diagnose({
-                id,
-                img_id,
-                first_name,
-                last_name,
-                branch,
-                time,
-                date,
-                exp_symptoms,
-                symptoms_detected,
-                date_timestamp,
-                time_timestamp,
-                age,
-                sex,
-                status,
-                phone,
-                email,
-                approved_staff,
-                pre_diagnose_result,
-                appointment_status,
-                laboratory,
-                medicine,
-                diagnosed_disease,
-                next_checkup_note,
-                next_checkup,
-                notes
-            })
-            
-      if (next_checkup == "No") {
-        const records = await Diagnose.find({id:id})
-        for (let i = 0; i < records.length; i++) {
-          records[i].appointment_status = "Done"
-          await records[i].save()
-        }
-        console.log(records)
-      }
-      await response.save()
-      const doctors = await Doctor.findById(req.user._id)
-      const diagnosis = await Diagnose.find()
-      res.render('doctor/records.ejs', { diagnose: diagnosis, doctor: doctors, base: 'base64' , msg: "Patient sucessfully diagnosed", type: "alert-success"})
-      console.log( first_name," ",last_name,' has been diagnosed successfully: ', response)
-    } catch (err) {
-      const user_id = req.user._id
-      const doctors = await Doctor.findById(user_id)
-      Appointment.countDocuments({branch:req.user.branch, appointment_status: "Approved"}, function (err, count) {
-            if (err){
-                console.log(err)
-            }else{
-              res.render('doctor/dashboard.ejs', { appointment: count, doctor: doctors, base: 'base64', msg: err, type: "alert"})
-            }
-          })
-        console.log(err)
-    }
-  
-})
-
 
 app.post('/patient-login', checkNotAuthenticated, passport.authenticate('patient-local', {
   successRedirect: '/dashboard',
