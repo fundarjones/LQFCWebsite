@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" nonce="4c8842bcd9de47c9a87bbb85ca0" src="//local.adguard.org?ts=1650994949197&amp;type=content-script&amp;dmn=cdn.fbsbx.com&amp;app=msedge.exe&amp;css=1&amp;js=1&amp;gcss=1&amp;rel=1&amp;rji=1&amp;sbe=0"></script>
+<script type="text/javascript" nonce="4c8842bcd9de47c9a87bbb85ca0" src="//local.adguard.org?ts=1650994949197&amp;name=AdGuard%20Popup%20Blocker&amp;name=AdGuard%20Extra&amp;type=user-script"></script><link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<link rel="stylesheet" href="../css/logs-style.css">
+	
+	<link href="../js/vendor/select2/select2.min.css" rel="stylesheet" media="all">
+	
+	<link href="../js/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+	<link href="../js/vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+
+
+	<% if (admin) { %>
+		<title><%= admin.first_name %> <%= admin.last_name %> | Lagman Qualicare Family Clinic</title>
+</head>
+<body>
+
+	<!-- SIDEBAR -->
+	<section id="sidebar">
+		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
+		<ul class="side-menu">
+			<li><a href="/dashboard"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
+			<li class="divider" data-text="main">Main</li>
+			
+			<li><a href="/doctors"><i class='bx bxs-face icon' ></i> Doctors</a></li>
+			
+			<li><a href="/staffs"><i class='bx bxs-contact icon' ></i> Staffs</a></li>
+			<li><a href="/patients"><i class='bx bxs-user icon' ></i> Patients</a></li>
+			
+			<li><a href="/appointments"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
+			
+			<li><a href="/branches"><i class='bx bxs-map icon' ></i> Branches</a></li>
+
+			<li><a href="/logs" class="active"><i class='bx bxs-note icon' ></i> Logs</a></li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+
+	<!-- NAVBAR -->
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			<i class='bx bx-menu toggle-sidebar' ></i>
+			<form action="#">
+			</form>
+			
+			<span class="divider"></span>
+			<div class="profile">
+				
+				<img src="../uploads/<%= admin.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='../files/male-avatar.png';">
+				<ul class="profile-link">
+					<form action="/profile" method="GET">
+						<li><button type="submit"><i class='bx bxs-user-circle icon' ></i> Profile</button></li>
+					</form>
+					<form action="/settings" method="GET">
+						<li><button type="submit"><i class='bx bxs-cog' ></i> Settings</button></li>
+					</form>
+					<form action="/logout?_method=DELETE" method="POST">
+						<li><button type="submit"><i class='bx bxs-log-out-circle' ></i> Logout</button></li>
+					</form>
+					
+				</ul>
+			</div>
+		</nav>
+		<!-- NAVBAR -->
+
+		<!-- MAIN -->
+		<main>
+			<section class="ftco-section">
+				<div class="container">
+					
+				<h1 class="title">Notifications</h1>
+					<div class="row">
+							<div class="col-sm-6 col-md-9">
+								<form action="#">
+								<div class="form-group">
+									<input type="text" id='search' placeholder="Search...">
+								</div>
+								</form>
+							</div>
+							
+							<div class="col-sm-6 col-md-3">
+								<p><input type="checkbox" class="m-3" id="showTodayOnly" onclick="showToday()">
+									Show today's logs only</p>
+							</div>
+						
+
+							
+						<div class="col-lg-12">
+						<div class="card p-3">
+
+							<!---dito start yung loop-->
+							<div class="logs">
+								<div class="d-flex justify-content-between mb-2">
+									<div class="user-info">
+										<div class="user-info__img">
+											<img src="uploads/<%= admin.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+										</div>
+										<div class="user-info__basic">
+											<h4 class="text-highlight">Jones Fundar</h4>
+											<br>
+											<medium class="text-muted mb-0 ">Doctor</medium> |
+											<medium class="text-muted mb-0 inline">Angeles City Branch</medium>
+											<br>
+										</div>
+									</div>
+									<div>
+										<p class='text-primary' style="float: right;">Login</p>
+										<br>
+										<medium class="mb-0 ">April 25, 2022</medium> |
+										<medium class="mb-0 inline">3:30PM</medium>
+									</div>
+								</div>
+							<hr>
+							</div>
+							<!---->
+
+							
+							
+
+						</div>
+						</div>
+						
+					</div>
+					
+				</div>
+			</section>
+
+
+		</main>
+		<% } %> 
+	<!-- NAVBAR -->
+	
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+	<script src="assets/js/vendor/jquery/jquery.min.js"></script>
+      <script src="assets/js/vendor/select2/select2.min.js"></script>
+      <script src="assets/js/global.js"></script>
+	  <script src="assets/js/script.js"></script>
+
+	<!-- Patients JS -->
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+window.onload = function(){
+	var el = document.getElementsByClassName('toggle-sidebar');
+	for (var i=0;i<el.length; i++) {
+    el[i].click();
+}
+}
+</script>
+
+
+
+<script>
+
+	$(document).ready(function(){
+	
+		$('#search').on("keyup change", function(){
+		
+		// Search text
+		var text = $(this).val();
+		
+		// Hide all content class element
+		$('.logs').hide();
+
+		// Search 
+		$('.logs:contains("'+text+'")').closest('.logs').show();
+		});
+	});
+
+	$.expr[":"].contains = $.expr.createPseudo(function(arg) {
+		return function( elem ) {
+		return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+		};
+	});
+</script>
+
+
+
+<script>
+	function showToday() {
+	  var checkBox = document.getElementById("showTodayOnly");
+
+	  if (checkBox.checked == true){
+
+		var objToday = new Date(),
+		dayOfMonth = today + ( objToday.getDate() < 10) ? '0' + objToday.getDate() : objToday.getDate(),
+		months = new Array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'),
+		curMonth = months[objToday.getMonth()],
+		curYear = objToday.getFullYear();
+
+		var today = curMonth + " " + dayOfMonth + ", " + curYear;
+		
+		// Hide all content class element
+		$('.logs').hide();
+
+		// Search 
+		$('.logs:contains("'+today+'")').closest('.logs').show();
+	
+	  } else {
+
+		$('.logs').show();
+    
+	  }
+	}
+</script>
+
+</body>
+</html>

@@ -34,6 +34,8 @@
 			<li><a href="/appointments"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
 			
 			<li><a href="/branches"><i class='bx bxs-map icon' ></i> Branches</a></li>
+
+			<li><a href="/logs"><i class='bx bxs-note icon' ></i> Logs</a></li>
 		</ul>
 	</section>
 	<!-- SIDEBAR -->
@@ -136,7 +138,7 @@
 											<div class="text-group">
 												<label class="label">Birthday</label>
 												<div class="input-group-icon">
-												   <input class="input--style-4 js-datepicker" type="date" name="birthday" placeholder="Enter Birthday..." required>
+												   <input class="input--style-4 js-datepicker" type="date" name="birthday" id="date-no-future" placeholder="Enter Birthday..." required>
 												</div>
 											</div>
 										 </div>
@@ -293,6 +295,24 @@ $("#doctorUpload").change(function() {
             }
          });
 	</script>
+
+<script>
+	$(function(){
+	 var dtToday = new Date();
+ 
+	 var month = dtToday.getMonth() + 1;
+	 var day = dtToday.getDate();
+	 var year = dtToday.getFullYear();
+ 
+	 if(month < 10)
+		 month = '0' + month.toString();
+	 if(day < 10)
+		 day = '0' + day.toString();
+ 
+	 var maxDate = year + '-' + month + '-' + day;    
+	 $('#date-no-future').attr('max', maxDate);
+ });
+ </script>
 	 
 </body>
 </html>

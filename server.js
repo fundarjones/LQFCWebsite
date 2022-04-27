@@ -18,6 +18,7 @@ const resetToken = require('./model/resetTokens')
 const Admin = require('./model/admin')
 const Staff = require('./model/staff')
 const Branch = require('./model/branch')
+const Logs = require('./model/logs')
 const Appointment = require('./model/appointment')
 const Diagnose = require('./model/diagnose')
 const multer = require('multer')
@@ -547,7 +548,26 @@ app.get('/branches', checkAuthenticated, async (req, res) => {
   
 })
 
-
+app.get('/logs', checkAuthenticated, async (req, res) => {
+  const branch = await Branch.find();
+  const user_id = req.user._id
+  const patients = await User.findById(user_id)
+  const doctors = await Doctor.findById(user_id)
+  const admins = await Admin.findById(user_id)
+  if (req.user.usertype == "patient") {
+    res.redirect("/dashboard")
+  }
+  else if (req.user.usertype == "doctor"){
+    res.redirect("/dashboard")
+  }
+  else if (req.user.usertype == "admin"){
+    res.render('admin/logs.ejs', {  branches: branch , admin: admins , base: 'base64'})
+  }
+  else{
+    res.redirect("/dashboard")
+  }
+  
+})
 
 app.get('/add-branches', checkAuthenticated, async (req, res) => {
   const doc = await Doctor.find();
@@ -2420,7 +2440,8 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
   check('last_name', 'There must be no special characters in the last name')
     .matches(/^[A-Za-z0-9 .,'!&]+$/),
   check('phone', 'Phone number must include 11 digits')
-    .isLength({min:11, max:11})
+    .isLength({min:11, max:11}),
+  check('birthday','Invalid Date of Birth!').isBefore(cA)
 ], async (req, res) => {
   const user_id = req.user._id
   const { email, first_name, last_name, birthday, bio, sex, status, phone } = req.body
@@ -2528,6 +2549,406 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
   
 })
 
+const sendApproveAppointment = async (approved_date, approved_time, email, date, time, first_name, last_name) =>{
+
+  var mailOptions = {
+    from: "lqfclinic@gmail.com",
+    to: email,
+    subject: "LQFCLINIC: APPOINTMENT HAS BEEN APPROVED",
+    text: `<!DOCTYPE html>
+    <html>
+    
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <style type="text/css">
+            @media screen {
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: normal;
+                    font-weight: 400;
+                    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: normal;
+                    font-weight: 700;
+                    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: italic;
+                    font-weight: 400;
+                    src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: italic;
+                    font-weight: 700;
+                    src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+                }
+            }
+    
+            /* CLIENT-SPECIFIC STYLES */
+            body,
+            table,
+            td,
+            a {
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+            }
+    
+            table,
+            td {
+                mso-table-lspace: 0pt;
+                mso-table-rspace: 0pt;
+            }
+    
+            img {
+                -ms-interpolation-mode: bicubic;
+            }
+    
+            /* RESET STYLES */
+            img {
+                border: 0;
+                height: auto;
+                line-height: 100%;
+                outline: none;
+                text-decoration: none;
+            }
+    
+            table {
+                border-collapse: collapse !important;
+            }
+    
+            body {
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+    
+            /* iOS BLUE LINKS */
+            a[x-apple-data-detectors] {
+                color: inherit !important;
+                text-decoration: none !important;
+                font-size: inherit !important;
+                font-family: inherit !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+            }
+    
+            /* MOBILE STYLES */
+            @media screen and (max-width:600px) {
+                h1 {
+                    font-size: 32px !important;
+                    line-height: 32px !important;
+                }
+            }
+    
+            /* ANDROID CENTER FIX */
+            div[style*="margin: 16px 0;"] {
+                margin: 0 !important;
+            }
+        </style>
+    </head>
+    
+    <body style="background-color: #d8eeff; margin: 0 !important; padding: 0 !important;">
+        <!-- HIDDEN PREHEADER TEXT -->
+        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> Your appointment at Lagman Qualicare Family Clinic has been approved. </div>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <!-- LOGO -->
+            <tr>
+                <td bgcolor="#294a75" align="center">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#294a75" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+                                <h1 style="font-size: 48px; font-weight: 400; margin: 2;">Lagman Qualicare Family Clinic</h1> 
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;">Hi <b>${first_name}</b> <b>${last_name}</b>, your appointment for <b>${date}</b> at <b>${time}</b> has been approved on <b>${approved_date}</b> at <b>${approved_time}</b>.</p>
+                                <br>
+                                <p style="margin: 0;">Please Log on to your account to confirm your appointment.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="#ffffff" align="left">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
+                                            <table border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td align="center" style="border-radius: 3px;" bgcolor="#294a75"><a href="https://lqfclinic.herokuapp.com/patient-login" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #1746e0; display: inline-block;">Log In</a></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr> <!-- COPY -->
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;"></p>
+                            </td>
+                        </tr> <!-- COPY -->
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;"><a href="https://lqfclinic.herokuapp.com/" target="_blank" style="color: #1746e0;">Lagman Qualicare Family Clinic</a></p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 30px 10px 0px 10px;">
+                    
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    
+    </html>`,
+    html: `<!DOCTYPE html>
+    <html>
+    
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <style type="text/css">
+            @media screen {
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: normal;
+                    font-weight: 400;
+                    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: normal;
+                    font-weight: 700;
+                    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: italic;
+                    font-weight: 400;
+                    src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+                }
+    
+                @font-face {
+                    font-family: 'Lato';
+                    font-style: italic;
+                    font-weight: 700;
+                    src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+                }
+            }
+    
+            /* CLIENT-SPECIFIC STYLES */
+            body,
+            table,
+            td,
+            a {
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+            }
+    
+            table,
+            td {
+                mso-table-lspace: 0pt;
+                mso-table-rspace: 0pt;
+            }
+    
+            img {
+                -ms-interpolation-mode: bicubic;
+            }
+    
+            /* RESET STYLES */
+            img {
+                border: 0;
+                height: auto;
+                line-height: 100%;
+                outline: none;
+                text-decoration: none;
+            }
+    
+            table {
+                border-collapse: collapse !important;
+            }
+    
+            body {
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+    
+            /* iOS BLUE LINKS */
+            a[x-apple-data-detectors] {
+                color: inherit !important;
+                text-decoration: none !important;
+                font-size: inherit !important;
+                font-family: inherit !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+            }
+    
+            /* MOBILE STYLES */
+            @media screen and (max-width:600px) {
+                h1 {
+                    font-size: 32px !important;
+                    line-height: 32px !important;
+                }
+            }
+    
+            /* ANDROID CENTER FIX */
+            div[style*="margin: 16px 0;"] {
+                margin: 0 !important;
+            }
+        </style>
+    </head>
+    
+    <body style="background-color: #d8eeff; margin: 0 !important; padding: 0 !important;">
+        <!-- HIDDEN PREHEADER TEXT -->
+        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> Your appointment at Lagman Qualicare Family Clinic has been approved. </div>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <!-- LOGO -->
+            <tr>
+                <td bgcolor="#294a75" align="center">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#294a75" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+                                <h1 style="font-size: 48px; font-weight: 400; margin: 2;">Lagman Qualicare Family Clinic</h1> 
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;">Hi <b>${first_name}</b> <b>${last_name}</b>, your appointment for <b>${date}</b> at <b>${time}</b> has been approved on <b>${approved_date}</b> at <b>${approved_time}</b>.</p>
+                                <br>
+                                <p style="margin: 0;">Please Log on to your account to confirm your appointment.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="#ffffff" align="left">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
+                                            <table border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td align="center" style="border-radius: 3px;" bgcolor="#294a75"><a href="https://lqfclinic.herokuapp.com/patient-login" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #1746e0; display: inline-block;">Log In</a></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr> <!-- COPY -->
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;"></p>
+                            </td>
+                        </tr> <!-- COPY -->
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;"><a href="https://lqfclinic.herokuapp.com/" target="_blank" style="color: #1746e0;">Lagman Qualicare Family Clinic</a></p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 30px 10px 0px 10px;">
+                    
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#d8eeff" align="center" style="padding: 0px 10px 0px 10px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                        <tr>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    
+    </html>`
+  }
+
+  transport.sendMail(mailOptions, function(error,info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email has been sent: ", info)
+    }
+  })
+}
+
+app.put('/confirm-appointment', checkAuthenticated, async (req, res) => {
+  const user_id = req.user._id
+  try {
+    const confirm = await Appointment.findOne({id:user_id})
+    confirm.isConfirmed = true
+    await confirm.save()
+    console.log("Appointment has been confirmed: ", confirm)
+    const patients = await User.findById(user_id)
+    const patient_appointments = await Appointment.find({ img_id: req.user.id })
+    const diagnosis = await Diagnose.find({ img_id: req.user.id })
+    res.render("patient/appointments.ejs",{ diagnose: diagnosis, appointment: patient_appointments, patient: patients, base: 'base64', msg: "You have successfully, confirmed your appointment", type: "success"})
+    } catch (err) {
+      const patients = await User.findById(user_id)
+      const patient_appointments = await Appointment.find({ img_id: req.user.id })
+      const diagnosis = await Diagnose.find({ img_id: req.user.id })
+      res.render("patient/appointments.ejs",{ diagnose: diagnosis, appointment: patient_appointments, patient: patients, base: 'base64', msg: "An error has occured with the confirmation of your appointment, please try again later", type: "danger"})
+    }
+})
+
 app.put('/approve-appointment', checkAuthenticated, async (req, res) => {
     const user_id = req.body._id
     let date_ob = new Date();
@@ -2580,6 +3001,7 @@ const approved_staff = req.user.first_name + " " + req.user.last_name
 await response.save()
 const delete_response = await Appointment.deleteOne({_id: user_id})
 res.redirect('/appointments')
+sendApproveAppointment(approved_date, approved_time, approve.email, approve.date, approve.time, approve.first_name, approve.last_name)
 console.log('Pending appointment deleted successfully: ', delete_response)
 console.log('Appointment approved successfully: ', response)
       

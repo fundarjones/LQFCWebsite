@@ -131,7 +131,7 @@
 										<div class="col-md-6">
 											<div class="text-group">
 												  <label>Email</label>
-												  <input type="email" name="email" class="form-control" value="<%= doctor.email %>">
+												  <input type="email" name="email" class="form-control" value="<%= doctor.email %>" disabled>
 											</div>
 										</div>
 										<div class="col-md-6">
@@ -145,7 +145,7 @@
 											<div class="text-group">
 											   <label>Birthday</label>
 											   <div class="input-group-icon">
-												  <input class="input--style-4 js-datepicker" type="date" name="birthday" value="<%= doctor.birthday %>"> 
+												  <input class="input--style-4 js-datepicker" type="date" name="birthday" id="date-no-future" value="<%= doctor.birthday %>"> 
 											   </div>
 											</div>
 										 </div>
@@ -335,5 +335,23 @@ $('#phone').keyup( function(e){
    }
 });
 		</script>
+
+<script>
+	$(function(){
+	 var dtToday = new Date();
+ 
+	 var month = dtToday.getMonth() + 1;
+	 var day = dtToday.getDate();
+	 var year = dtToday.getFullYear();
+ 
+	 if(month < 10)
+		 month = '0' + month.toString();
+	 if(day < 10)
+		 day = '0' + day.toString();
+ 
+	 var maxDate = year + '-' + month + '-' + day;    
+	 $('#date-no-future').attr('max', maxDate);
+ });
+ </script>
 </body>
 </html>

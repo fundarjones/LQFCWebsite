@@ -166,7 +166,7 @@
                            <div class="input-group">
                               <label class="label">Birthday</label>
                               <div class="input-group-icon">
-                                 <input class="input--style-4 js-datepicker" type="date" name="birthday" placeholder="Enter Birthday..." required>
+                                 <input class="input--style-4 js-datepicker" type="date" id="date-no-future" name="birthday" placeholder="Enter Birthday..." required>
                               </div>
                            </div>
                         </div>
@@ -262,7 +262,26 @@
                $(this).val($(this).val().substr(0, max_chars));
             }
          });
+         
       </script>
+
+<script>
+   $(function(){
+    var dtToday = new Date();
+
+    var month = dtToday.getMonth() + 1;
+    var day = dtToday.getDate();
+    var year = dtToday.getFullYear();
+
+    if(month < 10)
+        month = '0' + month.toString();
+    if(day < 10)
+        day = '0' + day.toString();
+
+    var maxDate = year + '-' + month + '-' + day;    
+    $('#date-no-future').attr('max', maxDate);
+});
+</script>
       <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v652eace1692a40cfa3763df669d7439c1639079717194" integrity="sha512-Gi7xpJR8tSkrpF7aordPZQlW2DLtzUlZcumS8dMQjwDHEnw9I7ZLyiOj/6tZStRBGtGgN6ceN6cMH8z7etPGlw==" data-cf-beacon='{"rayId":"6e55ae78cf5b4816","token":"cd0b4b3a733644fc843ef0b185f98241","version":"2021.12.0","si":100}' crossorigin="anonymous"></script>
    </body>
    <!-- Mirrored from colorlib.com/etc/regform/colorlib-regform-4/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 01 Mar 2022 23:30:39 GMT -->

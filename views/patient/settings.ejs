@@ -150,7 +150,8 @@
 											<div class="text-group">
 											   <label>Birthday</label>
 											   <div class="input-group-icon">
-												  <input class="input--style-4 js-datepicker" type="date" name="birthday" value="<%= patient.birthday %>" required> 
+												  <input class="input--style-4 js-datepicker" type="date" name="birthday" id="date-no-future" value="<%= patient.birthday %>" disabled> 
+												  <p class="email-disabled text-warning">You are prohibited to change your birthday.</p>
 											   </div>
 											</div>
 										 </div>
@@ -340,5 +341,23 @@ $("#imageUpload").change(function() {
             }
          });
 		</script>
+
+<script>
+	$(function(){
+	 var dtToday = new Date();
+ 
+	 var month = dtToday.getMonth() + 1;
+	 var day = dtToday.getDate();
+	 var year = dtToday.getFullYear();
+ 
+	 if(month < 10)
+		 month = '0' + month.toString();
+	 if(day < 10)
+		 day = '0' + day.toString();
+ 
+	 var maxDate = year + '-' + month + '-' + day;    
+	 $('#date-no-future').attr('max', maxDate);
+ });
+ </script>
 </body>
 </html>

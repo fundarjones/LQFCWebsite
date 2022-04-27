@@ -27,6 +27,7 @@ const AppointmentSchema = new mongoose.Schema(
 		time_cancelled: { type: String },
 		date_cancelled: { type: String },
 		cancelled_by: { type: String },
+		isConfirmed: { type: Boolean, default: false },
 	},
 	{ collection: 'appointments' }
 )

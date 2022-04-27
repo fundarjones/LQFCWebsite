@@ -110,7 +110,11 @@
 												<i class="fa fa-ellipsis-v"></i>
 											</a>
 											<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= users.id %>">
-												<a class="dropdown-item text-danger" href="#"><i class="fa fa-trash mr-1"></i>Remove</a>
+												<form action="/deactivate" method="POST">
+													<input type="text" name="id" value="<%= users.id %>" hidden>
+													<input type="text" name="usertype" value="<%= users.usertype%>" hidden>
+													<input type="submit" class="dropdown-item text-danger" value="Remove">
+													</form>
 											</div>
 										</div>
 									</div>
@@ -151,7 +155,11 @@
 											<i class="fa fa-ellipsis-v"></i>
 										</a>
 										<div class="dropdown-menu dropdown-menu-right" aria-labelledby="a<%= users.id %>">
-											<a class="dropdown-item text-danger" href="#"><i class="fa fa-trash mr-1"></i>Remove</a>
+											<form action="/deactivate" method="POST">
+												<input type="text" name="id" value="<%= users.id %>" hidden>
+												<input type="text" name="usertype" value="<%= users.usertype%>" hidden>
+												<input type="submit" class="dropdown-item text-danger" value="Remove">
+												</form>
 										</div>
 									</div>
 								</div>

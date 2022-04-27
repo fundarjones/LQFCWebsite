@@ -66,6 +66,14 @@
 		<!-- MAIN -->
 		<main>
 			<h1 class="title">Appointments</h1>
+			<% if (typeof msg != "undefined"){ %> 
+				<% if (msg){%> 
+				  <div class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
+					<%= msg %> 
+					<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+				  </div> 
+				<% } %> 
+				<% } %> 
 			<section class="ftco-section">
 				<div class="container">
 					
@@ -152,6 +160,13 @@
 								<h6>Symptoms:</h6>
 									<p><%= appointments.exp_symptoms %></p>
 								<hr>
+									<% if (appointments.appointment_status == "Approved" && appointments.isConfirmed == false){%> 
+										<div class="btn-records">
+										<form action="/confirm-appointment?_method=PUT" method="POST">
+											<input type="submit" class="button record-button" value="Confirm Going">
+										</form>
+									</div>
+									<% } %> 
 								<div class="d-flex justify-content-between mt-4">
 									<div>
 										<h5 class="mb-0"><%= appointments.time %>
@@ -226,7 +241,7 @@
 					<% diagnose.reverse().forEach(function(diagnosis){ %>
 
 						<div id="id<%= diagnosis.id%><%= diagnosis.appointment_status %>">
-							<div class="card p-4 mb-4">
+							<div class="card p-3 mb-4">
 								<div class="d-flex justify-content-between mb-4">
 									<div class="user-info">
 										<div class="user-info__img">
@@ -236,7 +251,7 @@
 											<h6 class="mb-0"><%= diagnosis.img_id %></h6>
 											<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %></h5>
 											<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %> | <%= diagnosis.phone %></p>
-										</div>
+										</div><b></b>
 									</div>
 									<div class="dropdown open">
 										<a href="#!" class="px-2" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">

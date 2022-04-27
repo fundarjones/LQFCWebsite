@@ -74,8 +74,8 @@
 			<h1 class="title">Notifications</h1>
 					<br>
 					<div class="row">
-						<div class="col-sm-12 col-md-12 col-lg-12">
-							<% diagnose.reverse().forEach(function(diagnosis){ %>.
+						<div class="col-lg-12">
+							<% diagnose.reverse().forEach(function(diagnosis){ %>
 								<% if (diagnosis.appointment_status == "Follow-Up" && diagnosis.id == patient._id){ %> 
 									<div class="card p-3 mb-4 <%  %> ">
 										<h4 class="mb-0 m-2"><%= diagnosis.date_timestamp %> </h4>

@@ -5135,12 +5135,18 @@ input[type=radio] {
 .member .member__img {
 	position: relative;
 	overflow: hidden;
-	border-radius: 6px
+	border-radius: 6px;
+	width: 100%;
+	height: 300px;
+	background-position: center center;
+	background-size: cover;
+	background-repeat: no-repeat;
 }
 
 .member .member__img img {
+	
 	-webkit-transition: all .9s ease;
-	transition: all .9s ease
+	transition: all .9s ease;
 }
 
 .member .member__info {

@@ -157,6 +157,10 @@
 												<h6>Approved By:</h6>
 												<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
 												<hr>
+												<% if(appointments.isConfirmed == true){%> 
+													<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+												<% } %> 
+												<hr>
 												<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
 											<div class="d-flex justify-content-between mt-4">
@@ -215,6 +219,10 @@
 												<h6>Approved By:</h6>
 												<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
 												<hr>
+												<% if(appointments.isConfirmed == true){%> 
+													<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+												<% } %> 
+												<hr>
 												<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
 											<div class="d-flex justify-content-between mt-4">
@@ -259,10 +267,9 @@
 														<i class="fa fa-ellipsis-v"></i>
 													</a>
 													<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-														<a class="dropdown-item" href="/diagnose-patient/<%= appointments._id %>"><i class="fa fa-check mr-1"></i> Diagnose Patient</a>
-														<form action="/cancel-appointment?_method=PUT" method="POST">
-															<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-															<input class="dropdown-item text-danger" type="submit" value="Cancel">
+														<form action="/deactivate" method="POST">
+															<input type="text" name="id" value="<%= appointments.id %>" hidden>
+															<input class="dropdown-item text-danger" type="submit" value="Remove">
 														</form>
 													</div>
 												</div>
@@ -333,6 +340,10 @@
 												<h6>Approved By:</h6>
 												<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
 												<hr>
+												<% if(appointments.isConfirmed == true){%> 
+													<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+												<% } %> 
+												<hr>
 												<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
 											<div class="d-flex justify-content-between mt-4">
@@ -393,6 +404,10 @@
 												<h6>Approved By:</h6>
 												<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
 												<hr>
+												<% if(appointments.isConfirmed == true){%> 
+													<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+												<% } %> 
+												<hr>
 												<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
 											<div class="d-flex justify-content-between mt-4">
@@ -450,6 +465,10 @@
 												<hr>
 												<h6>Approved By:</h6>
 												<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
+												<hr>
+												<% if(appointments.isConfirmed == true){%> 
+													<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+												<% } %> 
 												<hr>
 												<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
@@ -521,6 +540,10 @@
 											<hr>
 											<h6>Approved By:</h6>
 											<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
+											<hr>
+											<% if(appointments.isConfirmed == true){%> 
+												<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+											<% } %> 
 											<hr>
 											<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
@@ -640,6 +663,10 @@
 											<h6>Approved By:</h6>
 											<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
 											<hr>
+											<% if(appointments.isConfirmed == true){%> 
+												<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+											<% } %> 
+											<hr>
 											<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
 										<div class="d-flex justify-content-between mt-4">
@@ -697,6 +724,10 @@
 											<hr>
 											<h6>Approved By:</h6>
 											<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
+											<hr>
+											<% if(appointments.isConfirmed == true){%> 
+												<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+											<% } %> 
 											<hr>
 											<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
@@ -760,6 +791,10 @@
 											<h6>Approved By:</h6>
 											<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
 											<hr>
+											<% if(appointments.isConfirmed == true){%> 
+												<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+											<% } %> 
+											<hr>
 											<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
 										<div class="d-flex justify-content-between mt-4">
@@ -817,6 +852,10 @@
 											<hr>
 											<h6>Approved By:</h6>
 											<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
+											<hr>
+											<% if(appointments.isConfirmed == true){%> 
+												<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+											<% } %> 
 											<hr>
 											<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
