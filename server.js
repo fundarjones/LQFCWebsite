@@ -99,11 +99,18 @@ app.get('/dashboard', checkAuthenticated, async (req, res) => {
     
   }
   else if (req.user.usertype == "doctor"){
-    Appointment.countDocuments({branch:req.user.branch, appointment_status: "Approved"}, function (err, count) {
+    Appointment.countDocuments({branch:req.user.branch, appointment_status: "Approved"}, function (err, count1) {
       if (err){
           console.log(err)
       }else{
-        res.render('doctor/dashboard.ejs', { appointment: count, doctor: doctors, base: 'base64' })
+        Appointment.countDocuments({branch:req.user.branch, appointment_status: "Follow-Up"}, function (err, count2) {
+          if (err){
+              console.log(err)
+          }else{
+            const count = count1 + count2
+            res.render('doctor/dashboard.ejs', { appointment: count, doctor: doctors, base: 'base64' })
+          }
+        })
       }
     })
   }
