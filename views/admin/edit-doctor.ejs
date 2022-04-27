@@ -228,6 +228,7 @@
 								<form action="/edit-security?_method=PUT" method="POST">
 								<div class="row">
 									<input type="text" name="_id" value="<%= edit._id %>" hidden>
+									<input type="text" name="usertype" value="<%= edit.usertype %>" hidden>
 									<input type="text" name="old_pass" value="<%= edit.password %>" hidden>
 									<div class="col-md-6">
 										<div class="text-group">
@@ -262,9 +263,9 @@
 								<div class="row">
 									<div class="col-md-12">
 										<div class="text-group">
-											<input type="text" name="id" value="<%= edit.id %>" hidden>
+											<input type="text" name="_id" value="<%= edit._id %>" hidden>
 											<input type="text" name="usertype" value="<%= edit.usertype %>" hidden>
-											<p>If you wish to remove this doctor's account profile in database. Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore vero enim error similique quia numquam ullam corporis officia odio repellendus aperiam consequatur laudantium porro voluptatibus, itaque laboriosam veritatis voluptatum distinctio!</p>
+											<p>Are you sure to remove this account to the database? Your action can't be undone.</p>
 										</div>
 									</div>
 								</div>

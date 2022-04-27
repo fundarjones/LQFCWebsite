@@ -3496,7 +3496,7 @@ main .btn-send:hover {
     flex-direction: column;
     margin-bottom: 20px;
     max-width: 400px;
-    margin: 10px;
+    margin: auto;
     word-wrap: break-word;
     background-color: #fff;
     background-clip: border-box;
@@ -3962,8 +3962,9 @@ main .btn-send:hover {
      color: #202326; }
  
  .alert-success {
-   color: #155724;
-   background-color: #d4edda;
+   color: #155724 !important;
+   background-color: #d4edda !important;
+   text-align: center;
    border-color: #c3e6cb; }
    .alert-success hr {
      border-top-color: #b1dfbb; }
@@ -3990,6 +3991,7 @@ main .btn-send:hover {
  
  .alert-danger {
    color: #721c24;
+   text-align: center;
    background-color: #f8d7da;
    border-color: #f5c6cb; }
    .alert-danger hr {
@@ -8403,8 +8405,6 @@ nav .profile .profile-link button:hover {
     height: auto;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 10px;
-    margin-bottom: 10px;
   }
 
 .btn-records{
@@ -8482,4 +8482,5 @@ h4{
     .closebtn:hover {
     color: black;
     }
-  
+
+    

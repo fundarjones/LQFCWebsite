@@ -125,7 +125,7 @@
 									</div>
 													
 									<div class="dropdown open">
-										<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments.id %>" aria-haspopup="true" aria-expanded="false">
+										<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments._id %>" aria-haspopup="true" aria-expanded="false">
 											<i class="fa fa-expand"></i>
 										</a>
 										
@@ -160,7 +160,7 @@
 								<h6>Symptoms:</h6>
 									<p><%= appointments.exp_symptoms %></p>
 								<hr>
-									<% if (appointments.appointment_status == "Approved" && appointments.isConfirmed == false){%> 
+									<% if (appointments.appointment_status == "Approved" && appointments.isConfirmed == false || appointments.appointment_status == "Follow-Up" && appointments.isConfirmed == false && appointments.approved_staff){%> 
 										<div class="btn-records">
 										<form action="/confirm-appointment?_method=PUT" method="POST">
 											<input type="submit" class="button record-button" value="Confirm Going">
@@ -188,7 +188,7 @@
 					============================== -->
 
 
-					<div class="modal fade" id="a<%= appointments.id %>" tabindex="-1" role="dialog">
+					<div class="modal fade" id="a<%= appointments._id %>" tabindex="-1" role="dialog">
 						<div class="modal-dialog modal-dialog-centered" role="document">
 						<div class="modal-content">
 							<div class="p-4">
@@ -230,7 +230,11 @@
 															<small class="ml-1"><%= appointments.date %></small>
 									</h5>
 									</div>
-									<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+									<% if(appointments.appointment_status == "Cancelled") { %> 
+										<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+										<% } else { %> 
+											<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+										<% } %> 
 								</div>
 							</div>
 						</div>

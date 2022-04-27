@@ -108,6 +108,14 @@
 								<div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
 									<h3 class="mb-4">Information Settings</h3>
 									<form action="/update-info?_method=PUT" method="POST">
+										<% if (typeof msg != "undefined"){ %> 
+											<% if (msg){%> 
+											  <div class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
+												<%= msg %> 
+												<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+											  </div> 
+											<% } %> 
+											<% } %> 
 										<% if(typeof alert != 'undefined') { %>
 										  <div class="alert">
 											<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
@@ -131,7 +139,7 @@
 										<div class="col-md-6">
 											<div class="text-group">
 												  <label>Email</label>
-												  <input type="email" name="email" class="form-control" value="<%= doctor.email %>" disabled>
+												  <input type="email" name="email" class="form-control" value="<%= doctor.email %>" required>
 											</div>
 										</div>
 										<div class="col-md-6">

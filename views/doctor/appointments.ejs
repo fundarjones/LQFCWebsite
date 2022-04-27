@@ -130,7 +130,7 @@
 												</div>
 																
 												<div class="dropdown open">
-													<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments.id %>" aria-haspopup="true" aria-expanded="false">
+													<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">
 														<i class="fa fa-expand"></i>
 													</a>
 													
@@ -148,7 +148,77 @@
 													</div>
 												</div>
 											</div>
-											<h6>Symptoms:</h6>
+											<div class="btn-records">
+												<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
+											</div>
+											<hr>
+											<div class="d-flex justify-content-between">
+												<div>
+													<h5 class="mb-0"><%= appointments.time %>
+														<small class="ml-1"><%= appointments.date %></small>
+													</h5>
+												</div>
+												<% if(appointments.appointment_status == "Cancelled") {%> 
+													<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+												<% }  else { %> 
+													<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+												<% } %> 
+											</div>
+										</div>
+									</div>
+									
+			
+									
+									
+									
+								<!-- ============================
+											Zoom Card
+										============================== -->
+					
+					
+										<div class="modal fade" id="a<%= appointments._id %><%= appointments.appointment_status %>" tabindex="-1" role="dialog">
+											<div class="modal-dialog modal-dialog-centered" role="document">
+											<div class="modal-content">
+												<div class="p-4">
+													<div class="d-flex justify-content-between mb-4">
+														<div class="user-info">
+															<div class="user-info__img">
+																	<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+															</div>
+															<div class="user-info__basic">
+																<h6 class="mb-0"><%= appointments.img_id %></h6>
+																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
+																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+															</div>
+														</div>
+														<% if (appointments.appointment_status != "Cancelled") {%> 
+															<div class="dropdown open">
+																<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																	<i class="fa fa-ellipsis-v"></i>
+																</a>
+																<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+																	<form action="/cancel-appointment?_method=PUT" method="POST">
+																		<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																		<input class="dropdown-item text-danger" type="submit" value="Cancel">
+																	</form>
+																</div>
+															</div>
+															<% } else { %> 
+																<div class="dropdown open">
+																	<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																		<i class="fa fa-ellipsis-v"></i>
+																	</a>
+																	<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+																		<form action="/deactivate" method="POST">
+																			<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																			<input type="text" name="usertype" value="appointments" hidden>
+																			<input type="submit" class="dropdown-item text-danger" value="Remove">
+																		</form>
+																	</div>
+																</div>
+														<% } %> 
+													</div>
+													<h6>Symptoms:</h6>
 												<p><%= appointments.exp_symptoms %></p>
 											<hr>
 											<h6>Prediagnostic COVID-19 Test Results:</h6>
@@ -159,8 +229,9 @@
 												<hr>
 												<% if(appointments.isConfirmed == true){%> 
 													<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
-												<% } %> 
 												<hr>
+												<% } %> 
+												
 												<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
 											<div class="d-flex justify-content-between mt-4">
@@ -169,321 +240,286 @@
 														<small class="ml-1"><%= appointments.date %></small>
 													</h5>
 												</div>
-												<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
-											</div>
-										</div>
-									</div>
-			
-									
-									
-									
-								<!-- ============================
-									Zoom Card
-								============================== -->
-			
-			
-								<div class="modal fade" id="a<%= appointments.id %>" tabindex="-1" role="dialog">
-									<div class="modal-dialog modal-dialog-centered" role="document">
-									<div class="modal-content">
-										<div class="p-4">
-											<div class="d-flex justify-content-between mb-4">
-												<div class="user-info">
-													<div class="user-info__img">
-														<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
-													</div>
-													<div class="user-info__basic">
-														<h6 class="mb-0"><%= appointments.img_id %></h6>
-														<h2 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-														<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
-													</div>
-												</div>
-												<div class="dropdown open">
-													<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-														<i class="fa fa-ellipsis-v"></i>
-													</a>
-													<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-														<a class="dropdown-item" href="/diagnose-patient/<%= appointments.id %>"><i class="fa fa-check mr-1"></i> Diagnose Patient</a>
-														<form action="/cancel-appointment?_method=PUT" method="POST">
-															<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-															<input class="dropdown-item text-danger" type="submit" value="Cancel">
-														</form>
-													</div>
-												</div>
-											</div>
-											<h6>Symptoms:</h6>
-												<p><%= appointments.exp_symptoms %></p>
-												<hr>
-												<h6>Prediagnostic COVID-19 Test Results:</h6>
-												<p class="text-success font-weight-bold"><%= appointments.pre_diagnose_result %></p>
-												<hr>
-												<h6>Approved By:</h6>
-												<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
-												<hr>
-												<% if(appointments.isConfirmed == true){%> 
-													<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+												<% if(appointments.appointment_status == "Cancelled") {%> 
+													<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+												<% }  else { %> 
+													<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
 												<% } %> 
-												<hr>
-												<h6>Branch:</h6>
-												<p class="font-weight-bold"><%= appointments.branch %></p>
-											<div class="d-flex justify-content-between mt-4">
-												<div>
-												<h5 class="mb-0"><%= appointments.time %>
-																		<small class="ml-1"><%= appointments.date %></small>
-												</h5>
+											</div>
 												</div>
-												<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+											</div>
 											</div>
 										</div>
-									</div>
-									</div>
-								</div>
 									
-								</div>
 
-								<div class="row">
 									<% } else if( appointments.pre_diagnose_result == "Not COVID-19" && appointments.appointment_status == "Cancelled" && appointments.branch == doctor.branch && appointments.approved_staff) { %> 
-									<div class="searchhide">
-										<div class="card p-3 mb-4">
-											<div class="d-flex justify-content-between mb-4">
-												<div class="user-info">
-													<div class="user-info__img">
-														<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+										<div class="searchhide">
+											<div class="card p-3 mb-4">
+												<div class="d-flex justify-content-between mb-4">
+													<div class="user-info">
+														<div class="user-info__img">
+															<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+														</div>
+														<div class="user-info__basic">
+															<h6 class="mb-0"><%= appointments.img_id %></h6>
+															<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
+															<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+														</div>
 													</div>
-													<div class="user-info__basic">
-														<h6 class="mb-0"><%= appointments.img_id %></h6>
-														<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-														<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+																	
+													<div class="dropdown open">
+														<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">
+															<i class="fa fa-expand"></i>
+														</a>
+														
+													</div>
+													<div class="dropdown open">
+														<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															<i class="fa fa-ellipsis-v"></i>
+														</a>
+														<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+															<form action="/deactivate" method="POST">
+																<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																<input type="text" name="usertype" value="appointments" hidden>
+																<input type="submit" class="dropdown-item text-danger" value="Remove">
+															</form>
+														</div>
 													</div>
 												</div>
-																
-												<div class="dropdown open">
-													<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments.id %>" aria-haspopup="true" aria-expanded="false">
-														<i class="fa fa-expand"></i>
-													</a>
-													
+												<div class="btn-records">
+													<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
 												</div>
-												<div class="dropdown open">
-													<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-														<i class="fa fa-ellipsis-v"></i>
-													</a>
-													<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-														<form action="/deactivate" method="POST">
-															<input type="text" name="id" value="<%= appointments.id %>" hidden>
-															<input class="dropdown-item text-danger" type="submit" value="Remove">
-														</form>
-													</div>
-												</div>
-											</div>
-											<h6>Symptoms:</h6>
-												<p><%= appointments.exp_symptoms %></p>
-											<hr>
-											<h6>Prediagnostic COVID-19 Test Results:</h6>
-												<p class="text-success font-weight-bold"><%= appointments.pre_diagnose_result %></p>
 												<hr>
-												<h6>Approved By:</h6>
-												<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
-												<hr>
-												<h6>Branch:</h6>
-												<p class="font-weight-bold"><%= appointments.branch %></p>
-											<div class="d-flex justify-content-between mt-4">
-												<div>
-													<h5 class="mb-0"><%= appointments.time %>
-														<small class="ml-1"><%= appointments.date %></small>
-													</h5>
+												<div class="d-flex justify-content-between">
+													<div>
+														<h5 class="mb-0"><%= appointments.time %>
+															<small class="ml-1"><%= appointments.date %></small>
+														</h5>
+													</div>
+													<% if(appointments.appointment_status == "Cancelled") {%> 
+														<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+													<% }  else { %> 
+														<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+													<% } %> 
 												</div>
-												<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
 											</div>
 										</div>
-									</div>
 			
 									
 									
 									
 								<!-- ============================
-									Zoom Card
-								============================== -->
-			
-			
-								<div class="modal fade" id="a<%= appointments.id %>" tabindex="-1" role="dialog">
-									<div class="modal-dialog modal-dialog-centered" role="document">
-									<div class="modal-content">
-										<div class="p-4">
-											<div class="d-flex justify-content-between mb-4">
-												<div class="user-info">
-													<div class="user-info__img">
-														<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+											Zoom Card
+										============================== -->
+					
+					
+										<div class="modal fade" id="a<%= appointments._id %><%= appointments.appointment_status %>" tabindex="-1" role="dialog">
+											<div class="modal-dialog modal-dialog-centered" role="document">
+											<div class="modal-content">
+												<div class="p-4">
+													<div class="d-flex justify-content-between mb-4">
+														<div class="user-info">
+															<div class="user-info__img">
+																	<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+															</div>
+															<div class="user-info__basic">
+																<h6 class="mb-0"><%= appointments.img_id %></h6>
+																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
+																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+															</div>
+														</div>
+														<% if (appointments.appointment_status != "Cancelled") {%> 
+															<div class="dropdown open">
+																<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																	<i class="fa fa-ellipsis-v"></i>
+																</a>
+																<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+																	<form action="/cancel-appointment?_method=PUT" method="POST">
+																		<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																		<input class="dropdown-item text-danger" type="submit" value="Cancel">
+																	</form>
+																</div>
+															</div>
+															<% } else { %> 
+																<div class="dropdown open">
+																	<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																		<i class="fa fa-ellipsis-v"></i>
+																	</a>
+																	<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+																		<form action="/deactivate" method="POST">
+																			<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																			<input type="text" name="usertype" value="appointments" hidden>
+																			<input type="submit" class="dropdown-item text-danger" value="Remove">
+																		</form>
+																	</div>
+																</div>
+														<% } %> 
 													</div>
-													<div class="user-info__basic">
-														<h6 class="mb-0"><%= appointments.img_id %></h6>
-														<h2 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-														<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
-													</div>
-												</div>
-												<div class="dropdown open">
-													<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-														<i class="fa fa-ellipsis-v"></i>
-													</a>
-													<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-														<form action="/deactivate" method="POST">
-															<input type="text" name="id" value="<%= appointments.id %>" hidden>
-															<input class="dropdown-item text-danger" type="submit" value="Remove">
-														</form>
-													</div>
-												</div>
-											</div>
-											<h6>Symptoms:</h6>
-												<p><%= appointments.exp_symptoms %></p>
+													<h6>Symptoms:</h6>
+													<p><%= appointments.exp_symptoms %></p>
 												<hr>
 												<h6>Prediagnostic COVID-19 Test Results:</h6>
-												<p class="text-success font-weight-bold"><%= appointments.pre_diagnose_result %></p>
-												<hr>
-												<h6>Approved By:</h6>
-												<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
-												<hr>
-												<% if(appointments.isConfirmed == true){%> 
-													<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
-												<% } %> 
-												<hr>
-												<h6>Branch:</h6>
-												<p class="font-weight-bold"><%= appointments.branch %></p>
-											<div class="d-flex justify-content-between mt-4">
-												<div>
-												<h5 class="mb-0"><%= appointments.time %>
-																		<small class="ml-1"><%= appointments.date %></small>
-												</h5>
+													<p class="text-success font-weight-bold"><%= appointments.pre_diagnose_result %></p>
+													<hr>
+													<h6>Approved By:</h6>
+													<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
+													<hr>
+													<% if(appointments.isConfirmed == true){%> 
+														<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+													<hr>
+													<% } %> 
+													<h6>Branch:</h6>
+													<p class="font-weight-bold"><%= appointments.branch %></p>
+												<div class="d-flex justify-content-between mt-4">
+													<div>
+														<h5 class="mb-0"><%= appointments.time %>
+															<small class="ml-1"><%= appointments.date %></small>
+														</h5>
+													</div>
+													<% if(appointments.appointment_status == "Cancelled") {%> 
+														<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+													<% }  else { %> 
+														<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+													<% } %> 
 												</div>
-												<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+												</div>
+											</div>
 											</div>
 										</div>
-									</div>
-									</div>
-								</div>
 									
-								</div>
-								<div class="row">
 									<% } else if( appointments.pre_diagnose_result == "Not COVID-19" && appointments.appointment_status == "Follow-Up" && appointments.branch == doctor.branch) { %> 
-									<div class="searchhide">
-										<div class="card p-3 mb-4">
-											<div class="d-flex justify-content-between mb-4">
-												<div class="user-info">
-													<div class="user-info__img">
-														<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+										<div class="searchhide">
+											<div class="card p-3 mb-4">
+												<div class="d-flex justify-content-between mb-4">
+													<div class="user-info">
+														<div class="user-info__img">
+															<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+														</div>
+														<div class="user-info__basic">
+															<h6 class="mb-0"><%= appointments.img_id %></h6>
+															<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
+															<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+														</div>
 													</div>
-													<div class="user-info__basic">
-														<h6 class="mb-0"><%= appointments.img_id %></h6>
-														<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-														<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+																	
+													<div class="dropdown open">
+														<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">
+															<i class="fa fa-expand"></i>
+														</a>
+														
+													</div>
+													<div class="dropdown open">
+														<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															<i class="fa fa-ellipsis-v"></i>
+														</a>
+														<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+															<a class="dropdown-item" href="/diagnose-patient/<%= appointments._id %>"><i class="fa fa-check mr-1"></i> Diagnose Patient</a>
+															<form action="/cancel-appointment?_method=PUT" method="POST">
+																<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																<input class="dropdown-item text-danger" type="submit" value="Cancel">
+															</form>
+														</div>
 													</div>
 												</div>
-																
-												<div class="dropdown open">
-													<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments.id %>" aria-haspopup="true" aria-expanded="false">
-														<i class="fa fa-expand"></i>
-													</a>
-													
+												<div class="btn-records">
+													<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
 												</div>
-												<div class="dropdown open">
-													<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-														<i class="fa fa-ellipsis-v"></i>
-													</a>
-													<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-														<a class="dropdown-item" href="/diagnose-patient/<%= appointments._id %>"><i class="fa fa-check mr-1"></i> Diagnose Patient</a>
-														<form action="/cancel-appointment?_method=PUT" method="POST">
-															<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-															<input class="dropdown-item text-danger" type="submit" value="Cancel">
-														</form>
+												<hr>
+												<div class="d-flex justify-content-between">
+													<div>
+														<h5 class="mb-0"><%= appointments.time %>
+															<small class="ml-1"><%= appointments.date %></small>
+														</h5>
 													</div>
+													<% if(appointments.appointment_status == "Cancelled") {%> 
+														<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+													<% }  else { %> 
+														<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+													<% } %> 
 												</div>
-											</div>
-											<h6>Symptoms:</h6>
-												<p><%= appointments.exp_symptoms %></p>
-											<hr>
-											<h6>Prediagnostic COVID-19 Test Results:</h6>
-												<p class="text-success font-weight-bold"><%= appointments.pre_diagnose_result %></p>
-												<hr>
-												<h6>Approved By:</h6>
-												<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
-												<hr>
-												<% if(appointments.isConfirmed == true){%> 
-													<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
-												<% } %> 
-												<hr>
-												<h6>Branch:</h6>
-												<p class="font-weight-bold"><%= appointments.branch %></p>
-											<div class="d-flex justify-content-between mt-4">
-												<div>
-													<h5 class="mb-0"><%= appointments.time %>
-														<small class="ml-1"><%= appointments.date %></small>
-													</h5>
-												</div>
-												<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
 											</div>
 										</div>
-									</div>
-			
 									
 									
 									
 								<!-- ============================
-									Zoom Card
-								============================== -->
-			
-			
-								<div class="modal fade" id="a<%= appointments.id %>" tabindex="-1" role="dialog">
-									<div class="modal-dialog modal-dialog-centered" role="document">
-									<div class="modal-content">
-										<div class="p-4">
-											<div class="d-flex justify-content-between mb-4">
-												<div class="user-info">
-													<div class="user-info__img">
-														<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+											Zoom Card
+										============================== -->
+					
+					
+										<div class="modal fade" id="a<%= appointments._id %><%= appointments.appointment_status %>" tabindex="-1" role="dialog">
+											<div class="modal-dialog modal-dialog-centered" role="document">
+											<div class="modal-content">
+												<div class="p-4">
+													<div class="d-flex justify-content-between mb-4">
+														<div class="user-info">
+															<div class="user-info__img">
+																	<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+															</div>
+															<div class="user-info__basic">
+																<h6 class="mb-0"><%= appointments.img_id %></h6>
+																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
+																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+															</div>
+														</div>
+														<% if (appointments.appointment_status != "Cancelled") {%> 
+															<div class="dropdown open">
+																<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																	<i class="fa fa-ellipsis-v"></i>
+																</a>
+																<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+																	<form action="/cancel-appointment?_method=PUT" method="POST">
+																		<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																		<input class="dropdown-item text-danger" type="submit" value="Cancel">
+																	</form>
+																</div>
+															</div>
+															<% } else { %> 
+																<div class="dropdown open">
+																	<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																		<i class="fa fa-ellipsis-v"></i>
+																	</a>
+																	<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+																		<form action="/deactivate" method="POST">
+																			<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																			<input type="text" name="usertype" value="appointments" hidden>
+																			<input type="submit" class="dropdown-item text-danger" value="Remove">
+																		</form>
+																	</div>
+																</div>
+														<% } %> 
 													</div>
-													<div class="user-info__basic">
-														<h6 class="mb-0"><%= appointments.img_id %></h6>
-														<h2 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-														<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
-													</div>
-												</div>
-												<div class="dropdown open">
-													<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-														<i class="fa fa-ellipsis-v"></i>
-													</a>
-													<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-														<a class="dropdown-item" href="/diagnose-patient/<%= appointments.id %>"><i class="fa fa-check mr-1"></i> Diagnose Patient</a>
-														<form action="/cancel-appointment?_method=PUT" method="POST">
-															<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-															<input class="dropdown-item text-danger" type="submit" value="Cancel">
-														</form>
-													</div>
-												</div>
-											</div>
-											<h6>Symptoms:</h6>
-												<p><%= appointments.exp_symptoms %></p>
+													<h6>Symptoms:</h6>
+													<p><%= appointments.exp_symptoms %></p>
 												<hr>
 												<h6>Prediagnostic COVID-19 Test Results:</h6>
-												<p class="text-success font-weight-bold"><%= appointments.pre_diagnose_result %></p>
-												<hr>
-												<h6>Approved By:</h6>
-												<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
-												<hr>
-												<% if(appointments.isConfirmed == true){%> 
-													<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
-												<% } %> 
-												<hr>
-												<h6>Branch:</h6>
-												<p class="font-weight-bold"><%= appointments.branch %></p>
-											<div class="d-flex justify-content-between mt-4">
-												<div>
-												<h5 class="mb-0"><%= appointments.time %>
-																		<small class="ml-1"><%= appointments.date %></small>
-												</h5>
+													<p class="text-success font-weight-bold"><%= appointments.pre_diagnose_result %></p>
+													<hr>
+													<h6>Approved By:</h6>
+													<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
+													<hr>
+													<% if(appointments.isConfirmed == true){%> 
+														<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+													<hr>
+													<% } %> 
+													<h6>Branch:</h6>
+													<p class="font-weight-bold"><%= appointments.branch %></p>
+												<div class="d-flex justify-content-between mt-4">
+													<div>
+														<h5 class="mb-0"><%= appointments.time %>
+															<small class="ml-1"><%= appointments.date %></small>
+														</h5>
+													</div>
+													<% if(appointments.appointment_status == "Cancelled") {%> 
+														<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+													<% }  else { %> 
+														<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+													<% } %> 
 												</div>
-												<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+												</div>
+											</div>
 											</div>
 										</div>
-									</div>
-									</div>
-								</div>
 								<% } %> 
 								<% }); %> 
 									
@@ -513,7 +549,7 @@
 											</div>
 															
 											<div class="dropdown open">
-												<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments.id %>" aria-haspopup="true" aria-expanded="false">
+												<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">
 													<i class="fa fa-expand"></i>
 												</a>
 												
@@ -531,7 +567,76 @@
 												</div>
 											</div>
 										</div>
-										<h6>Symptoms:</h6>
+										<div class="btn-records">
+											<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
+										</div>
+										<hr>
+										<div class="d-flex justify-content-between">
+											<div>
+												<h5 class="mb-0"><%= appointments.time %>
+													<small class="ml-1"><%= appointments.date %></small>
+												</h5>
+											</div>
+											<% if(appointments.appointment_status == "Cancelled") {%> 
+												<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+											<% }  else { %> 
+												<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+											<% } %> 
+										</div>
+									</div>
+								</div>
+		
+								
+								
+								
+							<!-- ============================
+											Zoom Card
+										============================== -->
+					
+					
+										<div class="modal fade" id="a<%= appointments._id %><%= appointments.appointment_status %>" tabindex="-1" role="dialog">
+											<div class="modal-dialog modal-dialog-centered" role="document">
+											<div class="modal-content">
+												<div class="p-4">
+													<div class="d-flex justify-content-between mb-4">
+														<div class="user-info">
+															<div class="user-info__img">
+																	<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+															</div>
+															<div class="user-info__basic">
+																<h6 class="mb-0"><%= appointments.img_id %></h6>
+																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
+																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+															</div>
+														</div>
+														<% if (appointments.appointment_status != "Cancelled") {%> 
+															<div class="dropdown open">
+																<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																	<i class="fa fa-ellipsis-v"></i>
+																</a>
+																<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+																	<form action="/cancel-appointment?_method=PUT" method="POST">
+																		<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																		<input class="dropdown-item text-danger" type="submit" value="Cancel">
+																	</form>
+																</div>
+															</div>
+															<% } else { %> 
+																<div class="dropdown open">
+																	<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																		<i class="fa fa-ellipsis-v"></i>
+																	</a>
+																	<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+																		<form action="/deactivate" method="POST">
+																			<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																			<input type="text" name="usertype" value="appointments" hidden>
+																			<input type="submit" class="dropdown-item text-danger" value="Remove">
+																		</form>
+																	</div>
+																</div>
+														<% } %> 
+													</div>
+													<h6>Symptoms:</h6>
 											<p><%= appointments.exp_symptoms %></p>
 										<hr>
 										<h6>Prediagnostic COVID-19 Test Results:</h6>
@@ -543,8 +648,8 @@
 											<hr>
 											<% if(appointments.isConfirmed == true){%> 
 												<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
-											<% } %> 
 											<hr>
+											<% } %> 
 											<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
 										<div class="d-flex justify-content-between mt-4">
@@ -553,68 +658,16 @@
 													<small class="ml-1"><%= appointments.date %></small>
 												</h5>
 											</div>
-											<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+											<% if(appointments.appointment_status == "Cancelled") {%> 
+												<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+											<% }  else { %> 
+												<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+											<% } %> 
 										</div>
-									</div>
-								</div>
-		
-								
-								
-								
-							<!-- ============================
-								Zoom Card
-							============================== -->
-		
-		
-							<div class="modal fade" id="a<%= appointments.id %>" tabindex="-1" role="dialog">
-								<div class="modal-dialog modal-dialog-centered" role="document">
-								<div class="modal-content">
-									<div class="p-4">
-										<div class="d-flex justify-content-between mb-4">
-											<div class="user-info">
-												<div class="user-info__img"> 
-													<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
-												</div>
-												<div class="user-info__basic">
-													<h6 class="mb-0"><%= appointments.img_id %></h6>
-													<h2 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-													<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
 												</div>
 											</div>
-											<div class="dropdown open">
-												<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-													<i class="fa fa-ellipsis-v"></i>
-												</a>
-												<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-													<a class="dropdown-item" href="/diagnose-patient/<%= appointments._id %> "><i class="fa fa-check mr-1"></i> Diagnose Patient</a>
-													<form action="/cancel-appointment?_method=PUT" method="POST">
-														<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-														<input class="dropdown-item text-danger" type="submit" value="Cancel">
-													</form>
-												</div>
 											</div>
 										</div>
-										<h6>Symptoms:</h6>
-											<p><%= appointments.exp_symptoms %></p>
-											<hr>
-											<h6>Prediagnostic COVID-19 Test Results:</h6>
-											<p class="text-danger font-weight-bold"><%= appointments.pre_diagnose_result %></p>
-											<p>Detected Symptoms = <%= appointments.symptoms_detected %></p>
-											<hr>
-											<h6>Branch:</h6>
-											<p class="text-info font-weight-bold"><%= appointments.branch %></p>
-										<div class="d-flex justify-content-between mt-4">
-											<div>
-											<h5 class="mb-0"><%= appointments.time %>
-																	<small class="ml-1"><%= appointments.date %></small>
-											</h5>
-											</div>
-											<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
-										</div>
-									</div>
-								</div>
-								</div>
-							</div>
 								
 							</div>
 
@@ -635,7 +688,7 @@
 											</div>
 															
 											<div class="dropdown open">
-												<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments.id %>" aria-haspopup="true" aria-expanded="false">
+												<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">
 													<i class="fa fa-expand"></i>
 												</a>
 												
@@ -645,15 +698,84 @@
 													<i class="fa fa-ellipsis-v"></i>
 												</a>
 												<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-													<a class="dropdown-item" href="/diagnose-patient/<%= appointments._id %>"><i class="fa fa-check mr-1"></i> Diagnose Patient</a>
-													<form action="/cancel-appointment?_method=PUT" method="POST">
+													<form action="/deactivate" method="POST">
 														<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-														<input class="dropdown-item text-danger" type="submit" value="Cancel">
+														<input type="text" name="usertype" value="appointments" hidden>
+														<input type="submit" class="dropdown-item text-danger" value="Remove">
 													</form>
 												</div>
 											</div>
 										</div>
-										<h6>Symptoms:</h6>
+										<div class="btn-records">
+											<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
+										</div>
+										<hr>
+										<div class="d-flex justify-content-between">
+											<div>
+												<h5 class="mb-0"><%= appointments.time %>
+													<small class="ml-1"><%= appointments.date %></small>
+												</h5>
+											</div>
+											<% if(appointments.appointment_status == "Cancelled") {%> 
+												<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+											<% }  else { %> 
+												<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+											<% } %> 
+										</div>
+									</div>
+								</div>
+		
+								
+								
+								
+							<!-- ============================
+											Zoom Card
+										============================== -->
+					
+					
+										<div class="modal fade" id="a<%= appointments._id %><%= appointments.appointment_status %>" tabindex="-1" role="dialog">
+											<div class="modal-dialog modal-dialog-centered" role="document">
+											<div class="modal-content">
+												<div class="p-4">
+													<div class="d-flex justify-content-between mb-4">
+														<div class="user-info">
+															<div class="user-info__img">
+																	<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+															</div>
+															<div class="user-info__basic">
+																<h6 class="mb-0"><%= appointments.img_id %></h6>
+																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
+																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+															</div>
+														</div>
+														<% if (appointments.appointment_status != "Cancelled") {%> 
+															<div class="dropdown open">
+																<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																	<i class="fa fa-ellipsis-v"></i>
+																</a>
+																<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+																	<form action="/cancel-appointment?_method=PUT" method="POST">
+																		<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																		<input class="dropdown-item text-danger" type="submit" value="Cancel">
+																	</form>
+																</div>
+															</div>
+															<% } else { %> 
+																<div class="dropdown open">
+																	<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																		<i class="fa fa-ellipsis-v"></i>
+																	</a>
+																	<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+																		<form action="/deactivate" method="POST">
+																			<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																			<input type="text" name="usertype" value="appointments" hidden>
+																			<input type="submit" class="dropdown-item text-danger" value="Remove">
+																		</form>
+																	</div>
+																</div>
+														<% } %> 
+													</div>
+													<h6>Symptoms:</h6>
 											<p><%= appointments.exp_symptoms %></p>
 										<hr>
 										<h6>Prediagnostic COVID-19 Test Results:</h6>
@@ -665,8 +787,8 @@
 											<hr>
 											<% if(appointments.isConfirmed == true){%> 
 												<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
-											<% } %> 
 											<hr>
+											<% } %> 
 											<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
 										<div class="d-flex justify-content-between mt-4">
@@ -675,74 +797,16 @@
 													<small class="ml-1"><%= appointments.date %></small>
 												</h5>
 											</div>
-											<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
-										</div>
-									</div>
-								</div>
-		
-								
-								
-								
-							<!-- ============================
-								Zoom Card
-							============================== -->
-		
-		
-							<div class="modal fade" id="a<%= appointments.id %>" tabindex="-1" role="dialog">
-								<div class="modal-dialog modal-dialog-centered" role="document">
-								<div class="modal-content">
-									<div class="p-4">
-										<div class="d-flex justify-content-between mb-4">
-											<div class="user-info">
-												<div class="user-info__img">
-													<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
-												</div>
-												<div class="user-info__basic">
-													<h6 class="mb-0"><%= appointments.img_id %></h6>
-													<h2 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-													<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
-												</div>
-											</div>
-											<div class="dropdown open">
-												<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-													<i class="fa fa-ellipsis-v"></i>
-												</a>
-												<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-													<form action="/deactivate" method="POST">
-														<input type="text" name="id" value="<%= appointments.id %>" hidden>
-														<input class="dropdown-item text-danger" type="submit" value="Remove">
-													</form>
-												</div>
-											</div>
-										</div>
-										<h6>Symptoms:</h6>
-											<p><%= appointments.exp_symptoms %></p>
-											<hr>
-											<h6>Prediagnostic COVID-19 Test Results:</h6>
-											<p class="text-danger font-weight-bold"><%= appointments.pre_diagnose_result %></p>
-											<p>Detected Symptoms = <%= appointments.symptoms_detected %></p>
-											<hr>
-											<h6>Approved By:</h6>
-											<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
-											<hr>
-											<% if(appointments.isConfirmed == true){%> 
-												<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+											<% if(appointments.appointment_status == "Cancelled") {%> 
+												<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+											<% }  else { %> 
+												<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
 											<% } %> 
-											<hr>
-											<h6>Branch:</h6>
-												<p class="font-weight-bold"><%= appointments.branch %></p>
-										<div class="d-flex justify-content-between mt-4">
-											<div>
-											<h5 class="mb-0"><%= appointments.time %>
-																	<small class="ml-1"><%= appointments.date %></small>
-											</h5>
-											</div>
-											<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
 										</div>
-									</div>
-								</div>
-								</div>
-							</div>
+												</div>
+											</div>
+											</div>
+										</div>
 								
 							</div>
 
@@ -763,7 +827,7 @@
 											</div>
 															
 											<div class="dropdown open">
-												<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments.id %>" aria-haspopup="true" aria-expanded="false">
+												<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">
 													<i class="fa fa-expand"></i>
 												</a>
 												
@@ -781,7 +845,76 @@
 												</div>
 											</div>
 										</div>
-										<h6>Symptoms:</h6>
+										<div class="btn-records">
+											<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
+										</div>
+										<hr>
+										<div class="d-flex justify-content-between">
+											<div>
+												<h5 class="mb-0"><%= appointments.time %>
+													<small class="ml-1"><%= appointments.date %></small>
+												</h5>
+											</div>
+											<% if(appointments.appointment_status == "Cancelled") {%> 
+												<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+											<% }  else { %> 
+												<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+											<% } %> 
+										</div>
+									</div>
+								</div>
+		
+								
+								
+								
+							<!-- ============================
+											Zoom Card
+										============================== -->
+					
+					
+										<div class="modal fade" id="a<%= appointments._id %><%= appointments.appointment_status %>" tabindex="-1" role="dialog">
+											<div class="modal-dialog modal-dialog-centered" role="document">
+											<div class="modal-content">
+												<div class="p-4">
+													<div class="d-flex justify-content-between mb-4">
+														<div class="user-info">
+															<div class="user-info__img">
+																	<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+															</div>
+															<div class="user-info__basic">
+																<h6 class="mb-0"><%= appointments.img_id %></h6>
+																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
+																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+															</div>
+														</div>
+														<% if (appointments.appointment_status != "Cancelled") {%> 
+															<div class="dropdown open">
+																<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																	<i class="fa fa-ellipsis-v"></i>
+																</a>
+																<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+																	<form action="/cancel-appointment?_method=PUT" method="POST">
+																		<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																		<input class="dropdown-item text-danger" type="submit" value="Cancel">
+																	</form>
+																</div>
+															</div>
+															<% } else { %> 
+																<div class="dropdown open">
+																	<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																		<i class="fa fa-ellipsis-v"></i>
+																	</a>
+																	<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+																		<form action="/deactivate" method="POST">
+																			<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																			<input type="text" name="usertype" value="appointments" hidden>
+																			<input type="submit" class="dropdown-item text-danger" value="Remove">
+																		</form>
+																	</div>
+																</div>
+														<% } %> 
+													</div>
+													<h6>Symptoms:</h6>
 											<p><%= appointments.exp_symptoms %></p>
 										<hr>
 										<h6>Prediagnostic COVID-19 Test Results:</h6>
@@ -793,8 +926,8 @@
 											<hr>
 											<% if(appointments.isConfirmed == true){%> 
 												<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
-											<% } %> 
 											<hr>
+											<% } %> 
 											<h6>Branch:</h6>
 												<p class="font-weight-bold"><%= appointments.branch %></p>
 										<div class="d-flex justify-content-between mt-4">
@@ -803,74 +936,16 @@
 													<small class="ml-1"><%= appointments.date %></small>
 												</h5>
 											</div>
-											<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
-										</div>
-									</div>
-								</div>
-		
-								
-								
-								
-							<!-- ============================
-								Zoom Card
-							============================== -->
-		
-		
-							<div class="modal fade" id="a<%= appointments.id %>" tabindex="-1" role="dialog">
-								<div class="modal-dialog modal-dialog-centered" role="document">
-								<div class="modal-content">
-									<div class="p-4">
-										<div class="d-flex justify-content-between mb-4">
-											<div class="user-info">
-												<div class="user-info__img">
-													<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
-												</div>
-												<div class="user-info__basic">
-													<h6 class="mb-0"><%= appointments.img_id %></h6>
-													<h2 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-													<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
-												</div>
-											</div>
-											<div class="dropdown open">
-												<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-													<i class="fa fa-ellipsis-v"></i>
-												</a>
-												<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-													<form action="/deactivate" method="POST">
-														<input type="text" name="id" value="<%= appointments.id %>" hidden>
-														<input class="dropdown-item text-danger" type="submit" value="Remove">
-													</form>
-												</div>
-											</div>
-										</div>
-										<h6>Symptoms:</h6>
-											<p><%= appointments.exp_symptoms %></p>
-											<hr>
-											<h6>Prediagnostic COVID-19 Test Results:</h6>
-											<p class="text-danger font-weight-bold"><%= appointments.pre_diagnose_result %></p>
-											<p>Detected Symptoms = <%= appointments.symptoms_detected %></p>
-											<hr>
-											<h6>Approved By:</h6>
-											<p class="text-info font-weight-bold"><%= appointments.approved_staff %></p>
-											<hr>
-											<% if(appointments.isConfirmed == true){%> 
-												<p class="text-success confirm"><span class="font-weight-bold"><%= appointments.first_name %></span> has confirmed going to the scheduled appointment.</p>
+											<% if(appointments.appointment_status == "Cancelled") {%> 
+												<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+											<% }  else { %> 
+												<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
 											<% } %> 
-											<hr>
-											<h6>Branch:</h6>
-												<p class="font-weight-bold"><%= appointments.branch %></p>
-										<div class="d-flex justify-content-between mt-4">
-											<div>
-											<h5 class="mb-0"><%= appointments.time %>
-																	<small class="ml-1"><%= appointments.date %></small>
-											</h5>
-											</div>
-											<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
 										</div>
-									</div>
-								</div>
-								</div>
-							</div>
+												</div>
+											</div>
+											</div>
+										</div>
 							<% } %> 
 							<% }); %> 
 								

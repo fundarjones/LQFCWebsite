@@ -130,7 +130,7 @@
 														</div>
 																		
 														<div class="dropdown open">
-															<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments.id %>" aria-haspopup="true" aria-expanded="false">
+															<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">
 																<i class="fa fa-expand"></i>
 															</a>
 															
@@ -165,12 +165,11 @@
 																</div>
 														<% } %> 
 													</div>
-													<h6>Symptoms:</h6>
-														<p><%= appointments.exp_symptoms %></p>
+													<div class="btn-records">
+														<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
+													</div>
 													<hr>
-													<h6>Prediagnostic COVID-19 Test Results:</h6>
-														<p class="text-success font-weight-bold"><%= appointments.pre_diagnose_result %></p>
-													<div class="d-flex justify-content-between mt-4">
+													<div class="d-flex justify-content-between">
 														<div>
 															<h5 class="mb-0"><%= appointments.time %>
 																<small class="ml-1"><%= appointments.date %></small>
@@ -193,7 +192,7 @@
 										============================== -->
 					
 					
-										<div class="modal fade" id="a<%= appointments.id %>" tabindex="-1" role="dialog">
+										<div class="modal fade" id="a<%= appointments._id %><%= appointments.appointment_status %>" tabindex="-1" role="dialog">
 											<div class="modal-dialog modal-dialog-centered" role="document">
 											<div class="modal-content">
 												<div class="p-4">
@@ -269,7 +268,7 @@
 									<section>
 										<div class="row">
 											<% appointment.reverse().forEach(function(appointments){ %>
-											<% if( appointments.pre_diagnose_result == "Possible COVID-19" && appointments.appointment_status != "Approved" && staff.branch == appointments.branch) { %> 
+											<% if( appointments.pre_diagnose_result == "Possible COVID-19" && appointments.appointment_status != "Approved" && staff.branch == appointments.branch && !appointments.approved_staff) { %> 
 											<div class="searchhide">
 												<div class="card p-3 mb-4">
 													<div class="d-flex justify-content-between mb-4">
@@ -285,7 +284,7 @@
 														</div>
 																		
 														<div class="dropdown open">
-															<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments.id %>" aria-haspopup="true" aria-expanded="false">
+															<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">
 																<i class="fa fa-expand"></i>
 															</a>
 															
@@ -320,13 +319,10 @@
 																</div>
 														<% } %>  
 													</div>
-													<h6>Symptoms:</h6>
-														<p><%= appointments.exp_symptoms %></p>
+													<div class="btn-records">
+														<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
+													</div>
 													<hr>
-													<h6>Prediagnostic COVID-19 Test Results:</h6>
-														<p class="text-danger font-weight-bold"><%= appointments.pre_diagnose_result %></p>
-														<p>Detected Symptoms = <%= appointments.symptoms_detected %></p>
-													<div class="d-flex justify-content-between mt-4">
 														<div>
 															<h5 class="mb-0"><%= appointments.time %>
 																<small class="ml-1"><%= appointments.date %></small>
@@ -349,7 +345,7 @@
 										============================== -->
 					
 					
-										<div class="modal fade" id="a<%= appointments.id %>" tabindex="-1" role="dialog">
+										<div class="modal fade" id="a<%= appointments._id %><%= appointments.appointment_status %>" tabindex="-1" role="dialog">
 											<div class="modal-dialog modal-dialog-centered" role="document">
 											<div class="modal-content">
 												<div class="p-4">

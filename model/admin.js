@@ -8,7 +8,7 @@ const AdminSchema = new mongoose.Schema(
 		last_name: { type: String, required: true },
 		birthday: { type: String, required: true },
 		age: { type: String, required: true },
-		bio: { type: String, required: true },
+		bio: { type: String },
 		sex: { type: String, required: true },
 		status: { type: String, required: true },
 		phone: { type: String, required: true },

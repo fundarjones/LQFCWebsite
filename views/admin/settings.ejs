@@ -110,7 +110,7 @@
 							</a>
 							</div>
 						</div>
-						
+							
 							<div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
 								<div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
 									<h3 class="mb-4">Information Settings</h3>
@@ -124,6 +124,14 @@
 					   
 									   <% }) %>
 										<% } %>
+										<% if(typeof msg != 'undefined') { %>
+										<% if (msg){%> 
+											<div class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
+											  <%= msg %> 
+											  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+											</div> 
+										  <% } %> 
+										  <% } %> 
 									<div class="row">
 										<div class="col-md-6">
 											<div class="text-group">

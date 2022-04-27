@@ -4275,8 +4275,9 @@ button:focus {
      color: #202326; }
  
  .alert-success {
-   color: #155724;
-   background-color: #d4edda;
+   color: #155724 !important;
+   text-align: center;
+   background-color: #d4edda !important;
    border-color: #c3e6cb; }
    .alert-success hr {
      border-top-color: #b1dfbb; }
@@ -9418,3 +9419,54 @@ nav .profile .profile-link button:hover {
     background-clip: padding-box;
     border-radius: 15px;
     outline: 0; }
+
+
+    .alert-success {
+      padding: 7px;
+      margin-bottom: 20px;
+      color: #4e555b ;
+      position: relative;
+      border: 1px solid transparent;
+      border-radius: 0.25rem;
+     }
+    .error-msg{
+      margin-top: 15px;
+      text-align: center;
+    }
+    
+    .alert {
+      padding: 7px;
+      margin-bottom: 20px;
+      color: white;
+      }
+    
+      #records-dropdown p{
+        font-size: 1rem;
+      }
+    
+      .error-msg a{
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        color: #17a2b8;
+        transition: 0.3s;
+      }
+    
+      .error-msg a:hover{
+        color: #004997;
+      }
+    
+      .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+        }
+        
+        .closebtn:hover {
+        color: black;
+        }

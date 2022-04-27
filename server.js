@@ -31,6 +31,7 @@ const { check, validationResult } = require('express-validator')
 
 const livereload = require("livereload")
 const { Router } = require('express')
+const e = require('express')
 
 const publicDirectory = path.join(__dirname, 'public')
 
@@ -2358,7 +2359,8 @@ app.post('/add-staff', checkAuthenticated, urlencodedParser,[
         const alert = errors.array()
         const user_id = req.user._id
         const users = await Admin.findById(user_id)
-        res.render('admin/add-staff.ejs', { admin: users, base: "base64", alert
+        const branches = await Branch.find()
+        res.render('admin/add-staff.ejs', { admin: users, branch: branches, base: "base64", alert
         })
     }
     else{
@@ -2427,8 +2429,6 @@ app.put('/edit-branch-timeslot', checkAuthenticated, async (req, res) => {
           res.redirect('/branches')
           console.log('Branch timeslot updated successfully: ', response)
     } catch (err){
-      const admins = await Admin.findById(user_id)
-      const edit_branch = await Branch.findById(user_id)
       res.redirect("/branches")
       console.log(err)
     }
@@ -2539,8 +2539,9 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
             console.log('User updated successfully: ', response)
           }
           
-        } catch {
+        } catch (err){
           res.redirect("/dashboard")
+          console.log(err)
         }
         
       
@@ -2933,7 +2934,7 @@ const sendApproveAppointment = async (approved_date, approved_time, email, date,
 app.put('/confirm-appointment', checkAuthenticated, async (req, res) => {
   const user_id = req.user._id
   try {
-    const confirm = await Appointment.findOne({id:user_id})
+    const confirm = await Appointment.findOne({id:user_id, appointment_status : { $ne: "Cancelled" }})
     confirm.isConfirmed = true
     await confirm.save()
     console.log("Appointment has been confirmed: ", confirm)
@@ -3114,21 +3115,22 @@ app.put('/edit-staff-role', checkAuthenticated, async (req, res) => {
 
 app.post('/deactivate', checkAuthenticated, async (req, res) => {
   const { usertype, _id } = req.body
+
   try {
     if (usertype == "doctor") {
-      const doctor = await Doctor.deleteOne({id: id})
+      const doctor = await Doctor.deleteOne({_id: _id})
       const response = doctor
       res.redirect('/doctors')
       console.log('Doctor removed successfully: ', response) 
     }
     else if (usertype == "staff") {
-      const staff = await Staff.deleteOne({id: id})
+      const staff = await Staff.deleteOne({_id: _id})
       const response = staff
       res.redirect('/staffs')
       console.log('Staff removed successfully: ', response) 
     }
     else if (usertype == "patient") {
-      const patient = await User.deleteOne({id: id})
+      const patient = await User.deleteOne({_id: _id})
       const response = patient
       res.redirect('/patients')
       console.log('Patient removed successfully: ', response) 
@@ -3139,13 +3141,31 @@ app.post('/deactivate', checkAuthenticated, async (req, res) => {
       res.redirect('/appointments')
       console.log('Appointment removed successfully: ', response) 
     }
+    else if (req.user.usertype == "admin") {
+      if (usertype == "branches") {
+        const branch = await Branch.deleteOne({_id: _id})
+        const response = branch
+        res.redirect('/branches')
+        console.log('Branch removed successfully: ', response) 
+      } else if (usertype == "appointments"){
+        const appointment = await Appointment.deleteOne({_id: _id})
+        const response = appointment
+        res.redirect('/appointments')
+        console.log('Appointment removed successfully: ', response) 
+      }
+      else{
+        console.log("An error has occured")
+        res.redirect("/dashboard")
+      }
+    }
     else{
       console.log("Usertype not found")
       res.redirect("/dashboard")
     }
     
-  } catch {
+  } catch (err) {
     res.redirect("/dashboard")
+    console.log(err)
   }
 })
 
@@ -3239,7 +3259,8 @@ app.put('/edit-security', checkAuthenticated,urlencodedParser,[
       doctor.password = password
       await doctor.save()
       const response = doctor
-      res.redirect('/profile')
+      res.render('patient/settings.ejs', { 
+      doctor: doctor, msg: "Your password successfully changed.", type: "success", base: 'base64'})
       console.log('Doctor password updated successfully: ', response) 
     }
     else if (req.user.usertype == "staff") {
@@ -3247,23 +3268,26 @@ app.put('/edit-security', checkAuthenticated,urlencodedParser,[
       staff.password = password
       await staff.save()
       const response = staff
-      res.redirect('/profile')
+      res.render('patient/settings.ejs', { 
+      staff: staff, msg: "Your password successfully changed.", type: "success", base: 'base64'})
       console.log('Staff password updated successfully: ', response) 
     }
-    else if (usertype == "admin") {
+    else if (req.user.usertype == "admin") {
       const admin = await Admin.findById(_id)
       admin.password = password
       await admin.save()
       const response = admin
-      res.redirect('/profile')
+      res.render('admin/settings.ejs', { 
+      admin: admin, msg: "Your password successfully changed.", type: "success", base: 'base64'})
       console.log('Admin password updated successfully: ', response) 
     }
-    else if (usertype == "patient") {
+    else if (req.user.usertype == "patient") {
       const patient = await User.findById(_id)
       patient.password = password
       await patient.save()
       const response = patient
-      res.redirect('/profile')
+      res.render('patient/settings.ejs', { 
+      patient: patient, msg: "Your password successfully changed.", type: "success", base: 'base64'})
       console.log('Patient password updated successfully: ', response) 
     }
     else{
@@ -3290,7 +3314,7 @@ app.put('/cancel-appointment', checkAuthenticated, async (req, res) => {
   const date_cancelled = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
   try {
     const cancel = await Appointment.findById(user_id)
-    const cancelled_by = cancel.first_name + " " + cancel.last_name
+    const cancelled_by = req.user.first_name + " " + req.user.last_name
       const response = new Appointment({
         id: cancel.id,
         img_id: cancel.img_id,
@@ -3344,9 +3368,7 @@ app.post('/add-branch', checkAuthenticated, async (req, res) => {
                 id: Date.now().toString(),
                 branch_name,
                 address,
-                set_time, 
-                assigned_doctor,
-                assigned_staffs,
+                set_time,
                 phone,
             })
       await response.save()
@@ -3575,7 +3597,7 @@ app.post('/set-appointment', checkAuthenticated, async (req, res) => {
 
 app.post('/set-followup-appointment', checkAuthenticated, async (req, res) => {
   const time = req.body.time
-  const {email, first_name, last_name, phone, sex, status, age } = req.user
+  const {email, first_name, last_name, phone, sex, status, age, birthday} = req.user
   const temp_date = req.body.date
   
   if (!Date.parse(temp_date) || !time) {
@@ -3631,6 +3653,7 @@ app.post('/set-followup-appointment', checkAuthenticated, async (req, res) => {
                     sex,
                     status,
                     phone,
+                    birthday,
                     email,
                     symptoms_detected,
                     pre_diagnose_result,
@@ -3667,7 +3690,7 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
         } else {
           appointment_status = "Done"
         }
-        const old = await Appointment.findOne({id:id})
+        const old = await Appointment.findOne({id:id}) 
         const exp_symptoms = old.exp_symptoms
         const symptoms_detected = old.symptoms_detected
         const birthday = old.birthday
