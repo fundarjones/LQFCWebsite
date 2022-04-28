@@ -224,13 +224,13 @@
 											<div class="col-md-6">
 												<div class="text-group">
 													  <label>New password</label>
-													  <input type="password" name="password" class="form-control" required>
+													  <input type="password" name="password pr-password" class="form-control" required>
 												</div>
 											</div>
 											<div class="col-md-6">
 												<div class="text-group">
 													  <label>Confirm new password</label>
-													  <input type="password" name="confirm_password" class="form-control" required>
+													  <input type="password" name="confirm_password" class="form-control pr-password" required>
 												</div>
 											</div>
 										</div>
@@ -302,6 +302,14 @@
 	<script src="assets/js/vendor/jquery/jquery.min.js"></script>
 	<script src="assets/js/vendor/select2/select2.min.js"></script>
 	<script src="assets/js/global.js"></script>
+	<script src="assets/js/vendor/password/jquery.passwordRequirements.min.js"></script>
+      <script>
+            $(document).ready(function (){
+                  $(".pr-password").passwordRequirements({
+
+                  });
+            });
+      </script>
 	
 	<script>
 		new SlimSelect({

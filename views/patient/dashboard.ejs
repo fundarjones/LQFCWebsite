@@ -77,14 +77,7 @@
 				<% } %>
 			  <% } %>
 			
-			<% if(typeof emailSent != 'undefined') { %>
-				<% if(emailSent) { %>
-				<div class="alert-success">
-				  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-				  <p class="error-msg">Verification email sent successfully</p>
-				</div>
-				<% } %>
-			  <% } %>
+			
 
 			<% if(!patient.isVerified) { %>
 				<% if(patient.isVerified == false) { %>
@@ -92,7 +85,18 @@
 				  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
 				  <p class="error-msg">To set up an appointment online, you must first verify your email address. <a href="send-verification-email">Re-send verification email.</a></p>
 				</div>
+
+				<% if(typeof emailSent != 'undefined') { %>
+					<% if(emailSent) { %>
+					<div class="alert-success">
+					  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+					  <p class="error-msg">Verification email sent successfully</p>
+					</div>
+					<% } %>
+				  <% } %>
+
 				<% } %>
+				
 			  <% } %>
 
 			<% if(typeof alert != 'undefined') { %>
