@@ -8414,6 +8414,23 @@ nav .profile .profile-link button:hover {
   margin-bottom: 20px;
 }
 
+.follow-up-btn{
+  display: block;
+  text-align: center;
+}
+
+.checkstatus{
+  display: block;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.secondbtn{
+  display: block;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
 .record-button{
   color: white !important;
   padding: 20px 30px;
@@ -8481,6 +8498,11 @@ h4{
     
     .closebtn:hover {
     color: black;
+    }
+
+    .diagnosis{
+      margin-left: auto;
+      margin-right: auto;
     }
 
     

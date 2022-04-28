@@ -705,9 +705,10 @@ app.get('/set-appointment', checkAuthenticated, async (req, res) => {
 app.get('/set-appointment/follow-up', checkAuthenticated, async (req, res) => {
   const user_id = req.user._id
   const patients = await User.findById(user_id) 
-  const find = await Diagnose.find()
-  const found = find.find(element => element > req.user.img_id)
-  const branches = await Branch.findOne(found)
+  const find = await Diagnose.findOne({id: user_id})
+  const found = find.branch
+  console.log(found)
+  const branches = await Branch.findOne({branch_name: found})
   const allbranches = await Branch.find()
   const appointments = await Appointment.find()
   const diagnosis = await Diagnose.find()
@@ -3697,7 +3698,7 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
         } else {
           appointment_status = "Done"
         }
-        const old = await Appointment.findOne({id:id}) 
+        const old = await Appointment.findOne({id:id, appointment_status: { $ne: "Cancelled" }})
         const exp_symptoms = old.exp_symptoms
         const symptoms_detected = old.symptoms_detected
         const birthday = old.birthday
@@ -3742,7 +3743,7 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
       const doctors = await Doctor.findById(req.user._id)
       const appointments = await Appointment.find()
       res.render('doctor/appointments.ejs', { appointment: appointments, doctor: doctors, base: 'base64', msg: "Patient successfully diagnosed", type: "success"})
-      const delete_response = await Appointment.deleteOne({id: id})
+      const delete_response = await Appointment.deleteOne({id:id, appointment_status: { $ne: "Cancelled" }})
       console.log( first_name," ",last_name,' appointment has been deleted successfully: ', delete_response)
       console.log( first_name," ",last_name,' has been diagnosed successfully: ', response)
     } catch (err) {

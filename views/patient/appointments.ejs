@@ -89,11 +89,10 @@
 							<p><input type="checkbox" class="mt-3 ml-2 custom-checkbox" id="showTodayOnly" onclick="showToday()">
 								Show today's appointments only</p>
 						</div>
-
 						
 								<div class="checkpending col-sm-3 col-md-3">
 									<% appointment.reverse().forEach(function(appointments){ %>
-										<p hidden><%= appointments.appointment_status %></p>
+										<p><%= appointments.appointment_status %></p>
 									<% }) %> 
 									<% diagnose.reverse().forEach(function(diagnosis){ %>
 										<p hidden><%= diagnosis.appointment_status %></p>
@@ -244,44 +243,50 @@
 			
 					<% diagnose.reverse().forEach(function(diagnosis){ %>
 
-						<div id="id<%= diagnosis.id%><%= diagnosis.appointment_status %>">
-							<div class="card p-3 mb-4">
-								<div class="d-flex justify-content-between mb-4">
-									<div class="user-info">
-										<div class="user-info__img">
-											<img src="uploads/<%= diagnosis.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+						<div id="id<%= diagnosis.id%><%= diagnosis.appointment_status %>" class="diagnosis">
+								<div class="card p-3 mb-4">
+									<div class="d-flex justify-content-between mb-4">
+										<div class="user-info">
+											<div class="user-info__img">
+												<img src="uploads/<%= diagnosis.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+											</div>
+											<div class="user-info__basic">
+												<h6 class="mb-0"><%= diagnosis.img_id %></h6>
+												<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %></h5>
+												<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %> | <%= diagnosis.phone %></p>
+											</div><b></b>
 										</div>
-										<div class="user-info__basic">
-											<h6 class="mb-0"><%= diagnosis.img_id %></h6>
-											<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %></h5>
-											<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %> | <%= diagnosis.phone %></p>
-										</div><b></b>
+										<div class="dropdown open">
+											<a href="#!" class="px-2" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">
+												<i class="fa fa-expand"></i>
+											</a>
+										</div>
 									</div>
-									<div class="dropdown open">
-										<a href="#!" class="px-2" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">
-											<i class="fa fa-expand"></i>
-										</a>
-									</div>
-								</div>
-								<% if (diagnosis.appointment_status == "Follow-Up"){%> 
-								<h4>Follow Up Check-Ups</h4>
-								<% } else { %> 
-								<h4>Finished Check-Ups</h4>
-								<% } %> 
-								<hr>
-								<div class="btn-records">
 									<% if (diagnosis.appointment_status == "Follow-Up"){%> 
-										<a class="button record-button" href="/set-appointment/follow-up">Set Appointment</a>
+									<h4>Follow Up Check-Ups</h4>
+									<% } else { %> 
+									<h4>Finished Check-Ups</h4>
 									<% } %> 
-									
-									<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Records</a>
-								</div>
-								<script>
-									var list = document.querySelectorAll("#id<%= diagnosis.id%><%= diagnosis.appointment_status %>")
-									for (let i = 1; i < list.length; i++) {
-										list[i].style.display = "none";
-									}
-								</script>
+									<hr>
+									<div class="follow-up-btn col-md-12">
+										<% if (diagnosis.appointment_status == "Follow-Up"){%> 
+											<div class="row checkstatus">
+											<% appointment.reverse().forEach(function(appointments){ %>
+												<p hidden><%= appointments.appointment_status %></p>
+										<% }) %> 
+											<a class="button record-button" href="/set-appointment/follow-up">Set Appointment</a>
+										<% } %> 
+									</div>
+									<div class="row secondbtn">
+											<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Records</a>
+										</div>
+									</div>
+									<script>
+										var list = document.querySelectorAll("#id<%= diagnosis.id%><%= diagnosis.appointment_status %>")
+										for (let i = 1; i < list.length; i++) {
+											list[i].style.display = "none";
+										}
+									</script>
 							</div>
 						</div>
 					<% }) %> 
@@ -358,7 +363,7 @@
 										<div class="row">
 											<div class="col-lg-12 mb-4">
 												<h6>Adittional Notes:</h6>
-												<p>L<%= user_records.notes %></p>
+												<p><%= user_records.notes %></p>
 											</div>
 										</div>
 										<div class="row">
@@ -440,7 +445,7 @@
 										<div class="row">
 											<div class="col-lg-12 mb-4">
 												<h6>Adittional Notes:</h6>
-												<p>L<%= user_records.notes %></p>
+												<p><%= user_records.notes %></p>
 											</div>
 										</div>
 										<div class="row">
@@ -535,7 +540,7 @@
 	$('.checkpending:contains("Pending")').hide()
 	$('.checkpending:contains("Approved")').hide()
 	$('.checkpending:contains("Follow-Up")').hide()
-
+	$('.checkstatus:contains("Follow-Up")').hide()
 	$.expr[":"].contains = $.expr.createPseudo(function(arg) {
 		return function( elem ) {
 		return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
