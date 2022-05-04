@@ -110,6 +110,7 @@ button {
 }
 
 .page-wrapper {
+	padding: 10px;
 	min-height: 100vh
 }
 
@@ -447,7 +448,6 @@ input {
 	-ms-transform: translateY(-50%);
 	-o-transform: translateY(-50%);
 	transform: translateY(-50%);
-	cursor: pointer
 }
 
 .select--no-search .select2-search {
@@ -555,10 +555,6 @@ input {
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
-	background: #fff
-}
-
-.card-4 {
 	background: #fff;
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -662,6 +658,7 @@ input {
   color:#f1f1f1;
   }
   #pr-box.light ul {
+	font-weight: 600;
   background-color:#f1f1f1;
   }
   #pr-box.light ul li span {
@@ -691,7 +688,18 @@ input {
   }
 
 
-
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+}
 
 
 

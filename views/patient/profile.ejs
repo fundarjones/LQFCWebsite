@@ -82,35 +82,47 @@
 									</div>
 									<a href="/settings" class="text-primary font-weight-bold">Edit Profile</a>
 								</div>
-								<h6>Admin</h6>
+								<h6>Patient</h6>
 								<p><%= patient.bio %></p>
 								<hr>
 								<div class="row about-list">
-									<div class="col-md-4">
+									<div class="col-md-12">
 										<div class="media">
 											<label>Email</label>
 											<p><%= patient.email %></p>
 										</div>
 									</div>
-									<div class="col-md-4">
+									<div class="col-md-6">
 										<div class="media">
-											<label>Phone</label>
+											<label>Primary Phone</label>
 											<p><%= patient.phone %></p>
 										</div>
 									</div>
-									<div class="col-md-4">
+									<div class="col-md-6">
+										<div class="media">
+											<label>Secondary Phone</label>
+											<p></p>
+										</div>
+									</div>
+									<div class="col-md-3">
 										<div class="media">
 											<label>Birthday</label>
 											<p><%= patient.birthday %></p>
 										</div>
 									</div>
-									<div class="col-md-4">
+									<div class="col-md-3">
 										<div class="media">
-											<label>Sex</label>
+											<label>Age</label>
+											<p><%= patient.age %></p>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="media">
+											<label>Gender</label>
 											<p><%= patient.sex %></p>
 										</div>
 									</div>
-									<div class="col-md-4">
+									<div class="col-md-3">
 										<div class="media">
 											<label>Status</label>
 											<p><%= patient.status %></p>

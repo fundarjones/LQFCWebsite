@@ -5,6 +5,7 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+  font-size: 1rem;
 }
 
 :root {
@@ -39,7 +40,7 @@ li {
 }
 
 .logo{
-  height: 100%;
+  height: 90%;
 }
 
 
@@ -3495,7 +3496,6 @@ main .btn-send:hover {
     -ms-flex-direction: column;
     flex-direction: column;
     margin-bottom: 20px;
-    max-width: 400px;
     margin: auto;
     word-wrap: break-word;
     background-color: #fff;
@@ -3511,6 +3511,32 @@ main .btn-send:hover {
     .card > .list-group:last-child .list-group-item:last-child {
       border-bottom-right-radius: 0.25rem;
       border-bottom-left-radius: 0.25rem; }
+
+      
+@media only screen and (min-width: 320px) {
+  .card {
+    width: 240px;}
+}
+
+@media only screen and (min-width: 350px) {
+  .card {
+    width: 280px;}
+}
+
+@media only screen and (min-width: 700px) {
+    .card {
+    width: 350px;}
+}
+
+@media only screen and (min-width: 900px) {
+    .card {
+    width: 350px;}
+}
+
+@media only screen and (min-width: 1500px) {
+   .card {
+    width: 350px;}
+}
   
   .card-body {
     -webkit-box-flex: 1;
@@ -4587,7 +4613,8 @@ main .btn-send:hover {
   @media (min-width: 1200px) {
     .modal-xl {
       max-width: 1140px; } }
- 
+
+
  .tooltip {
    position: absolute;
    z-index: 1070;
@@ -7751,6 +7778,7 @@ main .btn-send:hover {
    color: #212529 !important; }
  
  .text-muted {
+    word-spacing: 3px;
    color: #6c757d !important; }
  
   .text-highlight{
@@ -8402,9 +8430,9 @@ nav .profile .profile-link button:hover {
   }
 
   .searchhide{
+    
     height: auto;
-    margin-left: auto;
-    margin-right: auto;
+    margin:10px
   }
 
 .btn-records{
@@ -8433,8 +8461,8 @@ nav .profile .profile-link button:hover {
 
 .record-button{
   color: white !important;
-  padding: 20px 30px;
-  font-size: 0.6rem !important;
+  padding: 15px 20px;
+  font-size: 0.8rem !important;
 }
 
 @media only screen and (max-width: 398px) {

@@ -4,10 +4,12 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins" , sans-serif;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1rem;
 }
 
 .login-error{
+  margin-top: 15px;
   color: rgb(197, 43, 43);
 }
 
@@ -110,7 +112,7 @@ body{
   width: 20px;
 }
 .forms .form-content .input-boxes{
-  margin-top: 30px;
+  margin-top: 10px;
 }
 .forms .form-content .input-box{
   display: flex;

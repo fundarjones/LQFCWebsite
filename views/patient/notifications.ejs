@@ -73,107 +73,64 @@
 					
 			<h1 class="title">Notifications</h1>
 					<br>
-					<div class="row">
-						<div class="col-lg-12">
 							
 							<% appointment.reverse().forEach(function(appointments){ %>
 								<% if( appointments.appointment_status == "Pending" ) { %> 
-									<div class="card p-3 mb-4">
-										<h4 class="mb-0 m-2"><%= appointments.date_timestamp %> </h4>
 
 										<!--Notif Content-->
-										<hr>
 										<div class="d-flex justify-content-between mb-4">
 											<div class="user-info">
-												<div class="user-info__img m-2">
-													<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
-												</div>
 												<div class="user-info__basic">
-													<h4 class="text-highlight">You</h4>
-													<p class="inline">set an appointment for <%= appointments.date %> at <%= appointments.time %>.</p>
-													<br>
+													<p class="inline">You set an appointment for <%= appointments.date %> at <%= appointments.time %>.</p>
+													<medium class="text-muted mb-0"><%= appointments.date_timestamp %></medium> |
 													<medium class="text-muted mb-0"><%= appointments.time_timestamp %></medium>
 												</div>
 											</div>
 										</div>
+										<hr>
 										<!---->
-									</div>
 									<% } else if (appointments.appointment_status == "Cancelled"){ %> 
-										<div class="card p-3 mb-4">
-											<h4 class="mb-0 m-2"><%= appointments.date_cancelled %> </h4>
-	
 											<!--Notif Content-->
-											<hr>
 											<div class="d-flex justify-content-between mb-4">
 												<div class="user-info">
-													<div class="user-info__img m-2">
-														<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
-													</div>
 													<div class="user-info__basic">
-														<h4 class="text-highlight">Your</h4>
-														<p class="inline">appointment for <%= appointments.date %> at <%= appointments.time %> has been cancelled by <b><%= appointments.cancelled_by %></b>.</p>
-														<br>
+														<p class="inline">Your appointment for <%= appointments.date %> at <%= appointments.time %> has been cancelled by <b><%= appointments.cancelled_by %></b>.</p>
+														<medium class="text-muted mb-0"><%= appointments.date_cancelled %></medium> |
 														<medium class="text-muted mb-0"><%= appointments.time_cancelled %></medium>
 													</div>
 												</div>
-													
 											</div>
-											<!---->
-										</div>
-									<% } else if (appointments.appointment_status == "Approved"){ %> 
-										<div class="card p-3 mb-4">
-											<h4 class="mb-0 m-2"><%= appointments.approved_date %> </h4>
-		
-											<!--Notif Content-->
 											<hr>
+											<!---->
+									<% } else if (appointments.appointment_status == "Approved"){ %> 
+											<!--Notif Content-->
 											<div class="d-flex justify-content-between mb-4">
 												<div class="user-info">
-													<div class="user-info__img m-2">
-														<img src="files/male-avatar.png" alt="User Img">
-													</div>
 													<div class="user-info__basic">
-														<h4 class="text-highlight">Your</h4>
-														<p class="inline">appointment for <%= appointments.date %> at <%= appointments.time %> has been approved.</p>
-														<br>
+														<p class="inline">Your appointment for <%= appointments.date %> at <%= appointments.time %> has been approved.</p>
+														<medium class="text-muted mb-0"><%= appointments.approved_date %></medium> |
 														<medium class="text-muted mb-0"><%= appointments.approved_time %></medium>
 													</div>
 												</div>
-													
 											</div>
+											<hr>
 											<!---->
-										</div>
 										<% } else if (appointments.appointment_status == "Follow-Up"){ %> 
-											<div class="card p-3 mb-4">
-												<h4 class="mb-0 m-2"><%= appointments.date_timestamp %> </h4>
-			
 												<!--Notif Content-->
-												<hr>
 												<div class="d-flex justify-content-between mb-4">
 													<div class="user-info">
-														<div class="user-info__img m-2">
-															<img src="files/male-avatar.png" alt="User Img">
-														</div>
 														<div class="user-info__basic">
-															<h4 class="text-highlight">You</h4>
-															<p class="inline">set-up a follow up appointment for <%= appointments.date %> at <%= appointments.time %>.</p>
-															<br>
-															<medium class="text-muted mb-0"><%= appointments.time_timestamp%></medium>
+															<p class="inline">You set-up a follow up appointment for <%= appointments.date %> at <%= appointments.time %>.</p>
+															<medium class="text-muted mb-0"><%= appointments.date_timestamp %></medium> |
+															<medium class="text-muted mb-0"><%= appointments.time_timestamp %></medium>
 														</div>
 													</div>
-														
 												</div>
+												<hr>
 												<!---->
-											</div>
 											<% } %> 
 							<% }) %> 
-							
-							
-
-							</div>
-
-						</div>
-						
-					</div>
+												
 					
 				</div>
 			</section>

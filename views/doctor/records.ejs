@@ -114,11 +114,6 @@
 														<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %> | <%= diagnosis.phone %></p>
 													</div>
 												</div>
-												<div class="dropdown open">
-													<a href="#!" class="px-2" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">
-														<i class="fa fa-expand"></i>
-													</a>
-												</div>
 											</div>
 											<hr>
 											<div class="btn-records">
@@ -151,14 +146,9 @@
 														<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %> | <%= diagnosis.phone %></p>
 													</div>
 												</div>
-												<div class="dropdown open">
-													<a href="#!" class="px-2" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">
-														<i class="fa fa-expand"></i>
-													</a>
-												</div>
 											</div>
 											<hr>
-											<div class="btn-records"><a class="button" href="#!" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Records</a></div>
+											<div class="btn-records"><a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Records</a></div>
 										</div>
 									</div>
 								<% } %> 

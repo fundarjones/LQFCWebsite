@@ -108,7 +108,7 @@
 						
 							<div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
 								<div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
-									<h3 class="mb-4">Information Settings</h3>
+									<h3>Information Settings</h3>
 									<form action="/update-info?_method=PUT" method="POST">
 										<% if (typeof msg != "undefined"){ %> 
 											<% if (msg){%> 
@@ -128,51 +128,74 @@
 									   <% }) %>
 										<% } %>
 									<div class="row">
-										<div class="col-md-6">
+										<div class="col-md-12"><p class="email-disabled text-warning">You are prohibited to change your name, birthday, and email. If the information provided is incorrect, please contact the clinic's staff.</p></div>
+										<input type="text" name="first_name" class="form-control" value="<%= patient.first_name %>" hidden>
+										<input type="text" name="last_name" class="form-control" value="<%= patient.last_name %>" hidden>
+										<input type="text" name="" class="form-control" value="<%= patient.middle_name %>" hidden>
+										<input type="text" name="" class="form-control" value="<%= patient.suffix %>" hidden>
+										<div class="col-md-3">
 											<div class="text-group">
-												  <label>First Name</label>
-												  <input type="text" name="first_name" class="form-control" value="<%= patient.first_name %>" required>
+												  <label>First Name *</label>
+												  <input type="text" name="first_name" class="form-control" value="<%= patient.first_name %>" disabled>
 											</div>
 										</div>
-										<div class="col-md-6">
+										<div class="col-md-3">
 											<div class="text-group">
-												  <label>Last Name</label>
-												  <input type="text" name="last_name" class="form-control" value="<%= patient.last_name %>" required>
+												  <label>Last Name *</label>
+												  <input type="text" name="last_name" class="form-control" value="<%= patient.last_name %>" disabled>
 											</div>
 										</div>
-										<div class="col-md-6">
+										<div class="col-md-3">
 											<div class="text-group">
-												  <label>Email</label> 
+												  <label>Middle Name</label>
+												  <input type="text" name="" class="form-control" value="<%= patient.middle_name %>" disabled>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="text-group">
+												  <label>Suffix</label>
+												  <input type="text" name="" class="form-control" value="<%= patient.suffix %>" disabled>
+											</div>
+										</div>
+										<div class="col-md-12">
+											<div class="text-group">
+												  <label>Email *</label> 
 												  <input type="email" class="form-control" value="<%= patient.email %>" disabled>
 												  <input type="text" name="email" class="form-control" value="<%= patient.email %>" hidden>
-												  <p class="email-disabled text-warning">You are prohibited to change your email address.</p>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="text-group">
-												  <label>Phone</label>
+												  <label>Primary Phone Number *</label>
 												  <input type="number" id="phone" name="phone" class="form-control" value="<%= patient.phone %>" required>
 											</div>
 										</div>
+										<div class="col-md-6">
+											<div class="text-group">
+												  <label>Secondary Phone Number</label>
+												  <input type="number" id="phone" name="phone2" class="form-control" value="<%= patient.phone2 %>">
+											</div>
+										</div>
+
 	
 										<div class="col-md-4">
 											<div class="text-group">
-											   <label>Birthday</label>
+											   <label>Birthday *</label>
 											   <div class="input-group-icon">
-												  <input class="input--style-4 js-datepicker" type="date" name="birthday" id="date-no-future" value="<%= patient.birthday %>" disabled> 
-												  <input class="input--style-4 js-datepicker" type="date" name="birthday" id="date-no-future" value="<%= patient.birthday %>" hidden> 
-												  <p class="email-disabled text-warning">You are prohibited to change your birthday.</p>
+												  <input class="input--style-4 js-datepicker" type="date" name="birthday" id="date-no-future" value="<%= patient.birthday %>" hidden>
+												  <input class="input--style-4 js-datepicker disabled" type="date" name="birthday" id="date-no-future" value="<%= patient.birthday %>" disabled>
 											   </div>
 											</div>
 										 </div>
-										 <div class="col-4">
+										 <div class="col-md--4">
 											<div class="text-group">
 											 <label>Status</label>
 											   <div class="rs-select2 js-select-simple select--no-search">
-												 <select name="status" required>
-													<option>Single</option>
+												 <select name="status">
+													<option selected="selected">Single</option>
 													<option>Married</option>
 													<option>Divorced</option>
+													<option>Prefer Not to Say</option>
 												 </select>
 												 <div class="select-dropdown"></div>
 											  </div>
@@ -180,24 +203,25 @@
 										 </div>
 										 <div class="col-md-4">
 											<div class="text-group">
-											   <label>Gender</label>
+											   <label>Gender *</label>
 											   <div class="p-t-10">
-												  <label class="radio-container m-r-45">Male
-												  <input type="radio" name="sex" value="Male" required>
-												  <span class="checkmark"></span>
-												  </label>
-												  <label class="radio-container">Female
-												  <input type="radio" name="sex" value="Female" required>
-												  <span class="checkmark"></span>
-												  </label>
-											   </div>
+												<label class="radio-container m-r-45">Male
+												<input type="radio" name="sex" value="Male" required>
+												<span class="checkmark"></span>
+												</label>
+												<label class="radio-container">Female
+												<input type="radio" name="sex" value="Female">
+												<span class="checkmark"></span>
+												</label>
+											</div>
 											</div>
 										 </div>
 	
 										<div class="col-md-12">
 											<div class="text-group">
-												  <label>Bio</label>
-												<textarea class="form-control" rows="4" name="bio"><%= patient.bio %></textarea>
+												<label>Bio</label>
+												<textarea maxlength="280" rows="4" cols="50" class="form-control" wrap="hard"><%= patient.bio %></textarea>
+												<br> Remaining <span id="info"></span> characters
 											</div>
 										</div>
 									</div>
@@ -215,7 +239,7 @@
 											<input type="text" name="old_pass" value="<%= patient.password %>" hidden>
 											<div class="col-md-6">
 												<div class="text-group">
-													  <label>Old password</label>
+													  <label>Old Password *</label>
 													  <input type="password" name="old_password" class="form-control" required>
 												</div>
 											</div>
@@ -223,15 +247,18 @@
 										<div class="row">
 											<div class="col-md-6">
 												<div class="text-group">
-													  <label>New password</label>
-													  <input type="password" name="password pr-password" class="form-control" required>
+													  <label>New Password *</label>
+													  <input type="password" id="new_password" name="password" class="form-control pr-password" required>
 												</div>
 											</div>
 											<div class="col-md-6">
 												<div class="text-group">
-													  <label>Confirm new password</label>
-													  <input type="password" name="confirm_password" class="form-control pr-password" required>
+													  <label>Confirm New Password *</label>
+													  <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
 												</div>
+											</div>
+											<div class="col-md-12">
+												<span id='message-pw'></span>
 											</div>
 										</div>
 										<div>
@@ -376,6 +403,43 @@ $("#imageUpload").change(function() {
 	 var maxDate = year + '-' + month + '-' + day;    
 	 $('#date-no-future').attr('max', maxDate);
  });
+
+var max = 280;
+var textarea = document.querySelector('textarea');
+var info = document.querySelector('#info');
+
+//Init the count for the first time
+info.textContent = max - textarea.value.length;
+
+textarea.addEventListener('input', function() {
+  info.textContent = max - this.value.length;
+})
  </script>
+
+<!---LAGAY---->
+<script>
+	$('#new_password, #confirm_password').on('keyup', function () {
+		let password = document.getElementById("new_password").value;
+		let cnfrmPassword = document.getElementById("confirm_password").value;
+		let messagepw = document.getElementById("message-pw");
+		console.log(" Password:", password,'\n',"Confirm Password:",cnfrmPassword);
+	
+		if(password.length != 0){
+			if(password == cnfrmPassword){
+			 messagepw.textContent = "Passwords match!";
+			 messagepw.style.color = "#1dcd59";
+			}
+			else{
+			 messagepw.textContent = "Passwords do not match!";
+			 messagepw.style.color = "#ff4d4d";
+			}
+		}
+		else{
+		  messagepw.textContent = "";
+		}
+	});
+ 
+	</script>
+
 </body>
 </html>

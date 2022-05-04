@@ -815,7 +815,7 @@ app.get('/staff-login', checkNotAuthenticated, async (req, res) => {
   email => staff.find(user => user.email === email),
   id => staff.find(user => user.id === id)
   )
-  res.render('staff/login.ejs')
+  res.render('staff/staff-login.ejs')
 })
 
 app.get('/', checkNotAuthenticated, async(req,res) => {
@@ -2197,8 +2197,8 @@ app.post('/register', checkNotAuthenticated, urlencodedParser,[
     }),
   check('password', 'Password must include one lowercase character, one uppercase character, a number, and a special character.')
   .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, "i"),
-  check('password', 'Password must be greater than 5 characters.')
-  .isLength({min:6}),
+  check('password', 'Password must be atleast 8 characters.')
+  .isLength({min:8}),
   check('confirm_password')
     .custom(async (confirm_password, {req}) => {
       const password = req.body.password
@@ -2211,7 +2211,7 @@ app.post('/register', checkNotAuthenticated, urlencodedParser,[
 
 
 ], async (req, res) => {
-  const { email, first_name, last_name, birthday, sex, status, phone, password: plainTextPassword } = req.body
+  const { email, first_name, middle_name, suffix, phone2, last_name, birthday, sex, status, phone, password: plainTextPassword } = req.body
   const password = await bcrypt.hash(plainTextPassword, 10)
   const errors = validationResult(req)
     if(!errors.isEmpty()) {
@@ -2230,6 +2230,9 @@ app.post('/register', checkNotAuthenticated, urlencodedParser,[
                 first_name,
                 last_name,
                 birthday,
+                middle_name,
+                suffix,
+                phone2,
                 age: getYears(n - d),
                 bio: " ",
                 sex,
@@ -2239,6 +2242,9 @@ app.post('/register', checkNotAuthenticated, urlencodedParser,[
                 password
             })
       await response.save()
+      var token = crypto.randomBytes(32).toString('hex')
+      await resetToken({token: token, email: email}).save();
+      sendVerifyEmail(email, token)
       res.redirect('/patient-login')
       console.log('User created successfully: ', response)
     } catch {
@@ -2452,7 +2458,7 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
   check('birthday','Invalid Date of Birth!').isBefore(cA)
 ], async (req, res) => {
   const user_id = req.user._id
-  const { email, first_name, last_name, birthday, bio, sex, status, phone } = req.body
+  const { email, first_name, last_name, middle_name, suffix, phone2, birthday, bio, sex, status, phone } = req.body
   const errors = validationResult(req)
     if(!errors.isEmpty()) {
         const alert = errors.array()
@@ -2491,6 +2497,9 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
             user.age = getYears(n - d)
             user.sex = sex
             user.status = status
+            user.middle_name = middle_name
+            user.suffix = suffix
+            user.phone2 = phone2
             user.phone = phone
             user.bio = bio
             await user.save()

@@ -67,7 +67,6 @@
 
 		<!-- MAIN -->
 		<main>
-			<h1 class="title">Appointments</h1>
 			<% if(typeof alert != 'undefined') { %>
 			  <div class="alert">
 				<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;
@@ -78,7 +77,7 @@
 			<% } %>
 			<section class="ftco-section">
 				<div class="container">
-					
+			<h1 class="title">Appointments</h1>
 					<div class="row">
 						<div class="col-sm-9 col-md-9">
 							<form action="#">
@@ -113,10 +112,18 @@
 				
 									<!-- NOT POSITIVE SECTION-->
 									<section>
+
+										<h5 class="text-muted mb-3">Confirmed Appointments</h5>	
+										<div class="row justify-content-center" id="appointment-confirmed-not"></div>
+										<hr>
+										<h5 class="text-muted mb-3">Pending Appointments</h5>	
+										<div class="row justify-content-center" id="appointment-pending-not"></div>
+										<hr>
+
 										<div class="row">
 											<% appointment.reverse().forEach(function(appointments){ %>
 											<% if( appointments.pre_diagnose_result == "Not COVID-19" && appointments.appointment_status != "Approved" && staff.branch == appointments.branch && !appointments.approved_staff) { %> 
-											<div class="searchhide">
+											<div class="searchhide not">
 												<div class="card p-3 mb-4">
 													<div class="d-flex justify-content-between mb-4">
 														<div class="user-info">
@@ -126,16 +133,10 @@
 															<div class="user-info__basic">
 																<h6 class="mb-0"><%= appointments.img_id %></h6>
 																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %>ㅤㅤㅤㅤㅤㅤ</p>
 															</div>
 														</div>
-																		
-														<div class="dropdown open">
-															<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">
-																<i class="fa fa-expand"></i>
-															</a>
-															
-														</div>
+																
 														<% if (appointments.appointment_status != "Cancelled") {%> 
 															<div class="dropdown open">
 																<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -166,6 +167,15 @@
 																</div>
 														<% } %> 
 													</div>
+													
+													<center>
+													<hr>
+														<div class="mb-0"><p class="text-muted mb-0">Primary Phone</p></div>
+														<div class="mb-3"><h5><%= appointments.phone %></h5></div>
+														<div class="mb-0"><p class="text-muted mb-0">Secondary Phone</p></div>
+														<div class="mb-3"><h5>123456789</h5></div>
+													</center>
+
 													<div class="btn-records">
 														<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
 													</div>
@@ -205,7 +215,8 @@
 															<div class="user-info__basic">
 																<h6 class="mb-0"><%= appointments.img_id %></h6>
 																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %></p>
+																<p class="text-muted mb-0"><%= appointments.phone %> | SecondNumber</p>
 															</div>
 														</div>
 														<% if (appointments.appointment_status != "Cancelled") {%> 
@@ -263,14 +274,29 @@
 										<% }); %> 
 											
 										</div>
+
+										<h5 class="text-muted mb-3">Cancelled Appointments</h5>	
+										<div class="row justify-content-center" id="appointment-cancelled-not"></div>
+										<hr>
+										<h5 class="text-muted mb-3">Completed Appointments</h5>	
+										<div class="row justify-content-center" id="appointment-done-not"></div>
+
 									</section>
 
 									<!-- POSITIVE SECTION-->
 									<section>
+
+										<h5 class="text-muted mb-3">Confirmed Appointments</h5>	
+										<div class="row justify-content-center" id="appointment-confirmed-yes"></div>
+										<hr>
+										<h5 class="text-muted mb-3">Pending Appointments</h5>	
+										<div class="row justify-content-center" id="appointment-pending-yes"></div>
+										<hr>
+
 										<div class="row">
 											<% appointment.reverse().forEach(function(appointments){ %>
 											<% if( appointments.pre_diagnose_result == "Possible COVID-19" && appointments.appointment_status != "Approved" && staff.branch == appointments.branch && !appointments.approved_staff) { %> 
-											<div class="searchhide">
+											<div class="searchhide yes">
 												<div class="card p-3 mb-4">
 													<div class="d-flex justify-content-between mb-4">
 														<div class="user-info">
@@ -280,16 +306,10 @@
 															<div class="user-info__basic">
 																<h6 class="mb-0"><%= appointments.img_id %></h6>
 																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %>ㅤㅤㅤㅤㅤㅤ</p>
 															</div>
 														</div>
-																		
-														<div class="dropdown open">
-															<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">
-																<i class="fa fa-expand"></i>
-															</a>
-															
-														</div>
+
 														<% if (appointments.appointment_status != "Cancelled") {%> 
 															<div class="dropdown open">
 																<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -320,6 +340,16 @@
 																</div>
 														<% } %>  
 													</div>
+													
+														<center>
+															<hr>
+															<div class="mb-0"><p class="text-muted mb-0">Primary Phone</p></div>
+															<div class="mb-3"><h5><%= appointments.phone %></h5></div>
+															<div class="mb-0"><p class="text-muted mb-0">Secondary Phone</p></div>
+															<div class="mb-3"><h5>123456789</h5></div>
+														</center>
+														
+													<br>
 													<div class="btn-records">
 														<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
 													</div>
@@ -336,7 +366,6 @@
 														<% } %> 
 													</div>
 												</div>
-											</div>
 					
 											
 											
@@ -358,9 +387,11 @@
 															<div class="user-info__basic">
 																<h6 class="mb-0"><%= appointments.img_id %></h6>
 																<h2 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %></p>
+																<p class="text-muted mb-0"><%= appointments.phone %> | SecondNumber</p>
 															</div>
 														</div>
+
 														<% if (appointments.appointment_status != "Cancelled") {%> 
 															<div class="dropdown open">
 																<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -415,13 +446,27 @@
 										</div>
 										<% } %> 
 										<% }); %> 
-											
-										</div>
-									</section>
-								
+										
+									</div>
+
+									<h5 class="text-muted mb-3">Cancelled Appointments</h5>	
+									<div class="row justify-content-center" id="appointment-cancelled-yes"></div>
+									<hr>
+									<h5 class="text-muted mb-3">Completed Appointments</h5>	
+									<div class="row justify-content-center" id="appointment-done-yes"></div>
+
+								</section>
+				
+
 							</div>
+							</div>
+							</div>
+					
+					</section>
+								
+				</div>
 						
-						</section>
+			</section>
 							<!-- END OF POSITIVE SECTION-->
 					
 				</div>
@@ -501,6 +546,32 @@ $('.searchhide').show();
 }
 }
 </script>
+
+<script>
+	$(document).ready(function(){
+		
+			
+		$('.not:contains("Confirmed")').appendTo('#appointment-confirmed-not');
+		$('.not:contains("Pending")').appendTo('#appointment-pending-not');
+		$('.not:contains("Cancelled")').appendTo('#appointment-cancelled-not');
+		$('.not:contains("Completed")').appendTo('#appointment-done-not');
+		
+		$('.yes:contains("Confirmed")').appendTo('#appointment-confirmed-yes');
+		$('.yes:contains("Pending")').appendTo('#appointment-pending-yes');
+		$('.yes:contains("Cancelled")').appendTo('#appointment-cancelled-yes');
+		$('.yes:contains("Completed")').appendTo('#appointment-done-yes');
+
+
+	});
+
+	$.expr[":"].contains = $.expr.createPseudo(function(arg) {
+		return function( elem ) {
+		return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+		};
+	});
+
+</script>
+
 
 </body>
 </html>

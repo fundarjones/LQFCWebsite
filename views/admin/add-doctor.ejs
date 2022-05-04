@@ -109,34 +109,51 @@
 								   <% }) %>
 									<% } %>
 									<div class="row">
-										<div class="col-md-6">
+										<div class="col-md-3">
 											<div class="text-group">
-												  <label>First Name</label>
+												  <label>First Name *</label>
 												  <input type="text" name="first_name" class="form-control" placeholder="Enter First Name..." required>
 											</div>
 										</div>
-										<div class="col-md-6">
+										<div class="col-md-3">
 											<div class="text-group">
-												  <label>Last Name</label>
+												  <label>Last Name *</label>
 												  <input type="text" name="last_name" class="form-control" placeholder="Enter Last Name..." required>
 											</div>
 										</div>
-										<div class="col-md-6">
+										<div class="col-md-3">
 											<div class="text-group">
-												  <label>Email</label>
+												  <label>Middle Name</label>
+												  <input type="text" name="" class="form-control" value="" >
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="text-group">
+												  <label>Suffix</label>
+												  <input type="text" name="" class="form-control" value="" >
+											</div>
+										</div>
+										<div class="col-md-12">
+											<div class="text-group">
+												  <label>Email *</label>
 												  <input type="email" name="email" class="form-control" placeholder="Enter Email..." required>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="text-group">
-												  <label>Phone</label>
+												  <label>Primary Phone Number *</label>
 												  <input type="number" id="phone" name="phone" class="form-control" placeholder="Enter Number..." required>
 											</div>
 										</div>
-	
+										<div class="col-md-6">
+											<div class="text-group">
+												  <label>Secondary Phone Number</label>
+												  <input type="number" name="" class="form-control" id="phone" value="">
+											</div>
+										</div>
 										<div class="col-md-4">
 											<div class="text-group">
-												<label class="label">Birthday</label>
+												<label class="label">Birthday *</label>
 												<div class="input-group-icon">
 												   <input class="input--style-4 js-datepicker" type="date" name="birthday" id="date-no-future" placeholder="Enter Birthday..." required>
 												</div>
@@ -146,11 +163,11 @@
 											<div class="text-group">
 											 <label>Status</label>
 											 <div class="rs-select2 js-select-simple select--no-search">
-												<select name="status" required>
-												   <option disabled="disabled">Choose option</option>
+												<select name="status">
 												   <option selected="selected">Single</option>
 												   <option>Married</option>
 												   <option>Divorced</option>
+													<option>Prefer Not to Say</option>
 												</select>
 												<div class="select-dropdown"></div>
 											 </div>
@@ -158,10 +175,10 @@
 										 </div>
 										 <div class="col-md-4">
 											<div class="text-group">
-											   <label>Sex</label>
+											   <label>Gender *</label>
 											   <div class="p-t-10">
 												  <label class="radio-container m-r-45">Male
-												  <input type="radio" checked="checked" name="sex" value="Male">
+												  <input type="radio" name="sex" value="Male" required>
 												  <span class="checkmark"></span>
 												  </label>
 												  <label class="radio-container">Female
@@ -177,12 +194,12 @@
 									<h3 class="mb-4">Roles Settings</h3>
 									<div class="row">
 										<div class="col-md-12">
-										<label>Specialization</label>
+										<label>Specialization *</label>
 										<input type="text" class="form-control" name="specialization" id="specialization" required>
 										</div>
 										<br><br><br>
 										<div class="col-md-12">
-											<label>Assigned Branch</label>
+											<label>Assigned Branches *</label>
 											<select class="form-control" id="branches" name="branch" required>
 												<% branch.forEach(function(branches){ %>
 												<option value="<%= branches.branch_name %>" ><%= branches.branch_name %></option>
@@ -196,24 +213,27 @@
 									<div class="row">
 										<div class="col-md-6">
 											<div class="text-group">
-												  <label>New password</label>
-												  <input type="password" name="password" class="form-control" required>
+												  <label>New Password *</label>
+												  <input type="password" id="new_password" name="password" class="form-control pr-password" required>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="text-group">
-												  <label>Confirm new password</label>
-												  <input type="password" name="confirm_password" class="form-control" required>
+												  <label>Confirm Password *</label>
+												  <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
 											</div>
+										</div>
+										<div class="col-md-12">
+											<span id='message-pw'></span>
 										</div>
 									</div>
 								</div>
 								<div class="tab-pane fade" id="deactivation" role="tabpanel" aria-labelledby="notification-tab">
-									<h3 class="mb-4">Confirm Add Doctor</h3>
+									<h3 class="mb-4">Confirmation</h3>
 									<div class="row">
 										<div class="col-md-12">
 											<div class="text-group">
-												<p>If you wish to add this doctor's account profile in database. Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore vero enim error similique quia numquam ullam corporis officia odio repellendus aperiam consequatur laudantium porro voluptatibus, itaque laboriosam veritatis voluptatum distinctio!</p>
+												<p>If you wish to confirm and add this staff's account profile in the database, just click the button below!</p>
 											</div>
 										</div>
 									</div>
@@ -249,6 +269,8 @@
 	<script src="../assets/js/vendor/jquery/jquery.min.js"></script>
 	<script src="../assets/js/vendor/select2/select2.min.js"></script>
 	<script src="../assets/js/global.js"></script>
+	
+	<script src="../assets/js/vendor/password/jquery.passwordRequirements.min.js"></script>
 	
 	<!-- Multiple Select JS-->
 
@@ -321,6 +343,38 @@ $("#doctorUpload").change(function() {
 	 $('#date-no-future').attr('max', maxDate);
  });
  </script>
+
+<script>
+	$(document).ready(function (){
+		  $(".pr-password").passwordRequirements({
+
+		  });
+	});
+</script>
+
+<script>
+	$('#new_password, #confirm_password').on('keyup', function () {
+		let password = document.getElementById("new_password").value;
+		let cnfrmPassword = document.getElementById("confirm_password").value;
+		let messagepw = document.getElementById("message-pw");
+		console.log(" Password:", password,'\n',"Confirm Password:",cnfrmPassword);
+	
+		if(password.length != 0){
+			if(password == cnfrmPassword){
+			 messagepw.textContent = "Passwords match!";
+			 messagepw.style.color = "#1dcd59";
+			}
+			else{
+			 messagepw.textContent = "Passwords do not match!";
+			 messagepw.style.color = "#ff4d4d";
+			}
+		}
+		else{
+		  messagepw.textContent = "";
+		}
+	});
+
+	</script>
 	 
 </body>
 </html>
