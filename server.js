@@ -81,6 +81,8 @@ app.get('/dashboard', checkAuthenticated, async (req, res) => {
   const patients = await User.findById(user_id)
   const doctors = await Doctor.findById(user_id)
   const staffs = await Staff.findById(user_id)
+  const user_appointments = await Appointment.find({id: user_id})
+  const appointments = await Appointment.find()
   if (req.user.usertype == "patient") {
     Appointment.countDocuments({img_id: req.user.id}, function (err, appointments) {
       if (err){
@@ -91,7 +93,8 @@ app.get('/dashboard', checkAuthenticated, async (req, res) => {
               console.log(err)
           }else{
             const ttl = appointments + diagnosed
-            res.render('patient/dashboard.ejs', { verified: req.user.isVerified, total: ttl, patient: patients, base: 'base64' })
+            console.log(user_appointments)
+            res.render('patient/dashboard.ejs', { verified: req.user.isVerified, total: ttl, appointment: user_appointments, patient: patients, base: 'base64' })
           }
         })
       }
@@ -108,7 +111,7 @@ app.get('/dashboard', checkAuthenticated, async (req, res) => {
               console.log(err)
           }else{
             const count = count1 + count2
-            res.render('doctor/dashboard.ejs', { appointment: count, doctor: doctors, base: 'base64' })
+            res.render('doctor/dashboard.ejs', { appointment_count: count, appointment: appointments, doctor: doctors, base: 'base64' })
           }
         })
       }
@@ -128,7 +131,7 @@ app.get('/dashboard', checkAuthenticated, async (req, res) => {
                   console.log(err)
               }else{
                 const total = count + followup
-                res.render('staff/dashboard.ejs', {appointment: total, cancelled: cancel, staff: staffs, base: 'base64' })
+                res.render('staff/dashboard.ejs', {appointment_count: total, appointment: appointments, cancelled: cancel, staff: staffs, base: 'base64' })
               }
             })
           }
@@ -2224,6 +2227,7 @@ app.post('/register', checkNotAuthenticated, urlencodedParser,[
       try{
         let n = Date.now();
         let d = new Date(birthday);
+        console.log(email)
         const response = new User({
                 usertype: "patient",
                 id: Date.now().toString(),

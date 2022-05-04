@@ -8,7 +8,7 @@
 	<link href="assets/images/favicon/favicon.png" rel="icon">
 
 	<link href="assets/images/favicon/favicon.png" rel="icon">
-	<link rel="stylesheet" href="../css/doctors-list-style.css">
+	<link rel="stylesheet" href="../css/patients-list-style.css">
 	
 	<link href="../js/vendor/select2/select2.min.css" rel="stylesheet" media="all">
 	
@@ -27,7 +27,6 @@
 		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
 		<ul class="side-menu">
 			<li><a href="/dashboard" ><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
-			<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications</a></li>
 			<li class="divider" data-text="main">Main</li>
 			
 			<li><a href="/appointments"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
@@ -96,7 +95,7 @@
 												<% } %>
 											</div>
 											<div class="user-info__basic">
-												<h5 class="text-highlight mb-0"><%= users.first_name %> <%= users.last_name %></h5>
+												<h5 class="text-highlight mb-0"><%= users.first_name %> <%= users.middle_name %> <%= users.last_name %> <%= users.suffix %></h5>
 												<p class="text-muted mb-0"><%= users.age %> yrs | <%= users.sex %></p>
 											</div>
 										</div>
@@ -148,7 +147,7 @@
 											<% } %>
 										</div>
 										<div class="user-info__basic">
-											<h2 class="text-highlight mb-0"><%= users.first_name %> <%= users.last_name %></h5>
+											<h2 class="text-highlight mb-0"><%= users.first_name %> <%= users.middle_name %> <%= users.last_name %> <%= users.suffix %></h5>
 											<p class="text-muted mb-0"><%= users.age %> yrs | <%= users.sex %></p>
 										</div>
 									</div>
@@ -170,7 +169,6 @@
 										<div class="col-sm-12 col-md-12">
 											<div class="card-body">
 												<div class="about-text">
-													
 													<p><%= users.bio %></p>
 													<hr>
 													<div class="row about-list">
@@ -180,28 +178,32 @@
 																<p><%= users.email %></p>
 															</div>
 														</div>
-														<hr>
 														<div class="col-md-12">
 															<div class="media">
-																<label>Phone</label>
+																<label>Primary Phone Number</label>
 																<p><%= users.phone %></p>
 															</div>
 														</div>
-														<hr>
+														<% if(users.phone2) {%> 
+														<div class="col-md-12">
+															<div class="media">
+																<label>Secondary Phone Number</label>
+																<p><%= users.phone2 %></p>
+															</div>
+														</div>
+														<% } %> 
 														<div class="col-md-12">
 															<div class="media">
 																<label>Birthday</label>
 																<p><%= users.birthday %></p>
 															</div>
 														</div>
-														<hr>
 														<div class="col-md-12">
 															<div class="media">
-																<label>Sex</label>
+																<label>Gender</label>
 																<p><%= users.sex %></p>
 															</div>
 														</div>
-														<hr>
 														<div class="col-md-12">
 															<div class="media">
 																<label>Status</label>

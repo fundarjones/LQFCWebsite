@@ -22,8 +22,7 @@
 		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
 		<ul class="side-menu">
 			<li><a href="/dashboard"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
-			<% if(patient.isVerified == true) {%> 
-				<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications</a></li>
+			<% if(patient.isVerified == true) {%>
 				<li class="divider" data-text="main">Main</li>
 				<li><a href="/appointments" class="active"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
 			<% } %> 
@@ -115,7 +114,9 @@
 											<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
 											<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %></p>
 											<p class="text-muted mb-0"><%= appointments.phone %></p>
-											<p class="text-muted mb-0">SecondNumber</p>
+											<% if (appointments.phone2) {%> 
+											<p class="text-muted mb-0"><%= appointments.phone2 %></p>
+											<% } %> 
 										</div>
 									</div>
 													

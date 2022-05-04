@@ -8715,6 +8715,22 @@ nav .profile .profile-link button:hover {
   .modal-xl {
     max-width: 1140px; } }
 
+@media (min-width: 369px) {
+  .about-list label {
+    color: #20247b;
+    font-weight: 700;
+    width: 90px;
+    position: relative;
+  }
+  
+  .about-list p {
+    margin: 0;
+    font-size: 0.1rem;
+    padding-left: 30px;
+    padding-top: 3.4px;
+    font-size: 15px;
+  }
+}
 
     .about-list {
       padding-top: 10px;
@@ -8725,13 +8741,16 @@ nav .profile .profile-link button:hover {
     .about-list label {
       color: #20247b;
       font-weight: 700;
+      font-size: 1rem;
       width: 90px;
       position: relative;
     }
     
     .about-list p {
       margin: 0;
-      padding-left: 70px;
+      display: inline-block;
+      vertical-align: middle;
+      padding-left: 30px;
       padding-top: 3.4px;
       font-size: 15px;
     }

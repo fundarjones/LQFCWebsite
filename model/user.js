@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema(
 		suffix: { type: String },
 		birthday: { type: String, required: true },
 		age: { type: String, required: true },
-		bio: { type: String, required: true },
+		bio: { type: String },
 		sex: { type: String, required: true },
 		status: { type: String, required: true },
 		phone: { type: String, required: true },

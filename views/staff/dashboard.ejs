@@ -20,7 +20,6 @@
 		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
 		<ul class="side-menu">
 			<li><a href="/dashboard" class="active"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
-			<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications</a></li>
 			<li class="divider" data-text="main">Main</li>
 			
 			<li><a href="/appointments"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
@@ -124,7 +123,7 @@
 										
 										<div class="widget-info">
 											<h6>Pending Appointments for Today</h6>
-											<h5><%= appointment %></h5>
+											<h5><%= appointment_count %></h5>
 										</div>
 
 									</div>
@@ -150,7 +149,73 @@
 								<hr style="height:2px">
 							<div style="overflow-y: scroll; height:400px; padding: 10px;">
 							
-									<!--PASTE MO LANG DITO YUNG FOR LOOP-->
+								<% appointment.reverse().forEach(function(appointments){ %>
+									<% if( appointments.appointment_status == "Pending" && staff.branch == appointments.branch ) { %> 
+											<!--Notif Content-->
+											<div class="d-flex justify-content-between">
+												<div class="user-info">
+													<div class="user-info__img m-2">
+														<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+													</div>
+													<div class="user-info__basic">
+														<p class="inline"><b class="text-highlight"><%= appointments.first_name%> <%= appointments.last_name %></b> set an appointment for <%= appointments.date %> at <%= appointments.time %>.</p>
+														<medium class="text-muted mb-0"><%= appointments.date_timestamp %></medium> |
+														<medium class="text-muted mb-0"><%= appointments.time_timestamp %></medium>
+													</div>
+												</div>
+											</div>
+											<hr>
+											<!---->
+										<% } else if (appointments.appointment_status == "Cancelled" && staff.branch == appointments.branch){ %> 
+												<!--Notif Content-->
+												<div class="d-flex justify-content-between">
+													<div class="user-info">
+														<div class="user-info__img m-2">
+															<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+														</div>
+														<div class="user-info__basic">
+															<p class="inline"><b class="text-highlight"><%= appointments.first_name %> <%= appointments.last_name %></b> appointment for <%= appointments.date %> at <%= appointments.time %> has been cancelled by <b><%= appointments.cancelled_by %></b>.</p>
+															<medium class="text-muted mb-0"><%= appointments.date_cancelled %></medium> |
+															<medium class="text-muted mb-0"><%= appointments.time_cancelled %></medium>
+														</div>
+													</div>
+												</div>
+												<hr>
+												<!---->
+										<%} else if( appointments.appointment_status == "Approved" && staff.branch == appointments.branch ) { %> 
+												<!--Notif Content-->
+												<div class="d-flex justify-content-between mb-4">
+													<div class="user-info">
+														<div class="user-info__img m-2">
+															<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';"><ul class="profile-link">
+														</div>
+														<div class="user-info__basic">
+															<p class="inline"><b class="text-highlight"><%= appointments.first_name%> <%= appointments.last_name %></b> appointment for <%= appointments.date %> at <%= appointments.time %> has been approved by <span class="font-weight-bold"><%= appointments.approved_staff %>.</span></p>
+															<medium class="text-muted mb-0"><%= appointments.approved_date %></medium> |
+															<medium class="text-muted mb-0"><%= appointments.approved_time %></medium>
+														</div>
+													</div>
+												</div>
+												<hr>
+												<!---->
+										<% } else if (appointments.appointment_status == "Follow-Up" && staff.branch == appointments.branch){ %> 
+												<!--Notif Content-->
+												<div class="d-flex justify-content-between">
+													<div class="user-info">
+														<div class="user-info__img m-2">
+															<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+														</div>
+														<div class="user-info__basic">
+															<p class="inline"><b class="text-highlight"><%= appointments.first_name %> <%= appointments.last_name %></b> set up a follow-up appointment for <%= appointments.date %> at <%= appointments.time %>.</p>
+															<medium class="text-muted mb-0"><%= appointments.date_timestamp %></medium> | 
+															<medium class="text-muted mb-0"><%= appointments.time_timestamp %></medium>
+														</div>
+													</div>
+												</div>
+												<hr>
+												<!---->
+										<% } %> 
+								<% }); %> 
 
 							</div>
 							</div>
