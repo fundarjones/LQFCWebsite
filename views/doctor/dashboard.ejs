@@ -19,7 +19,6 @@
 		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
 		<ul class="side-menu">
 			<li><a href="/dashboard"  class="active"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
-			<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications</a></li>
 			<li class="divider" data-text="main">Main</li>
 			<li><a href="/appointments"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
 			<li><a href="/diagnosed-records"><i class='bx bxs-book-content icon' ></i>Diagnosed<br>Records</a></li>
@@ -74,7 +73,7 @@
 			<% } %>
 
 				<div class="row">
-					<div class="col-md-7">
+					<div class="col-md-12">
 						<div class="card p-4 mb-4">
 							<div class="d-flex justify-content-between mb-4">
 								<div class="user-info">
@@ -108,25 +107,14 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-5">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="card p-3 mb-4">
-
-									<div class="digital_clock_wrapper">
-										<div id="digit_clock_date"></div>
-										<div id="digit_clock_time"></div>
-									</div>
-
-									
-								</div>
-							</div>       
+					<div class="col-md-12">
+						<div class="row">     
 								<div class="col-md-12">
 									<div class="card p-3 mb-4">
 										
 										<div class="widget-info">
 											<h6>Number of Approved Appointments</h6>
-											<h5><%= appointment %></h5>
+											<h5><%= appointment_count %></h5>
 										</div>
 
 									</div>
@@ -143,7 +131,57 @@
 							<div style="overflow-y: scroll; height:400px; padding: 10px;">
 							
 
-									<!--PASTE MO LANG DITO YUNG FOR LOOP-->
+								<% appointment.reverse().forEach(function(appointments){ %>
+									<% if( appointments.appointment_status == "Approved" && doctor.branch == appointments.branch ) { %> 
+											<!--Notif Content-->
+											<div class="d-flex justify-content-between mb-4">
+												<div class="user-info">
+													<div class="user-info__img m-2">
+														<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';"><ul class="profile-link">
+													</div>
+													<div class="user-info__basic">
+														<p class="inline"><b class="text-highlight"><%= appointments.first_name%> <%= appointments.last_name %></b> appointment for <%= appointments.date %> at <%= appointments.time %> has been approved by <span class="font-weight-bold"><%= appointments.approved_staff %>.</span></p>
+														<medium class="text-muted mb-0"><%= appointments.approved_date %></medium> |
+														<medium class="text-muted mb-0"><%= appointments.approved_time %></medium>
+													</div>
+												</div>
+											</div>
+											<hr>
+											<!---->
+										<% } else if (appointments.appointment_status == "Cancelled" && doctor.branch == appointments.branch && appointments.approved_staff ){ %> 
+													<!--Notif Content-->
+												<div class="d-flex justify-content-between mb-4">
+													<div class="user-info">
+														<div class="user-info__img m-2">
+															<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+														</div>
+														<div class="user-info__basic">
+															<p class="inline"><b class="text-highlight"><%= appointments.first_name %> <%= appointments.last_name %></b> appointment for <%= appointments.date %> at <%= appointments.time %> has been cancelled by <b><%= appointments.cancelled_by %></b>.</p>
+															<medium class="text-muted mb-0"><%= appointments.date_cancelled %></medium> |
+															<medium class="text-muted mb-0"><%= appointments.time_cancelled %></medium>
+														</div>
+													</div>
+												</div>
+												<hr>
+												<!---->
+											<% } else if (appointments.appointment_status == "Follow-Up" && doctor.branch == appointments.branch){ %> 
+													<!--Notif Content-->
+													<div class="d-flex justify-content-between mb-4">
+														<div class="user-info">
+															<div class="user-info__img m-2">
+																<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+															</div>
+															<div class="user-info__basic">
+																<p class="inline"><b class="text-highlight"><%= appointments.first_name %> <%= appointments.last_name %></b> follow-up appointment for <%= appointments.date %> at <%= appointments.time %> has been approved by <b><%= appointments.approved_staff %></b>.</p>
+																<medium class="text-muted mb-0"><%= appointments.date_timestamp %></medium> |
+																<medium class="text-muted mb-0"><%= appointments.time_timestamp %></medium>
+															</div>
+														</div>
+													</div>
+													<hr>
+													<!---->
+											<% } %> 
+								<% }); %> 
 
 							</div>
 							</div>
@@ -176,45 +214,6 @@
 	}
 	</script>
 	
-	<script type="text/javascript">
-		function currentTime() {
-		  var date = new Date(); /* creating object of Date class */
-		  var hour = date.getHours();
-		  var min = date.getMinutes();
-		  var sec = date.getSeconds();
-		  var midday = "AM";
-		  midday = (hour >= 12) ? "PM" : "AM"; /* assigning AM/PM */
-		  hour = (hour == 0) ? 12 : ((hour > 12) ? (hour - 12): hour); /* assigning hour in 12-hour format */
-		  hour = changeTime(hour);
-		  min = changeTime(min);
-		  sec = changeTime(sec);
-		  document.getElementById("digit_clock_time").innerText = hour + " : " + min + " : " + sec + " " + midday; /* adding time to the div */
-		
-		  var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-		  var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-		
-		  var curWeekDay = days[date.getDay()]; // get day
-		  var curDay = date.getDate();  // get date
-		  var curMonth = months[date.getMonth()]; // get month
-		  var curYear = date.getFullYear(); // get year
-		  var date = curWeekDay+", "+curDay+" "+curMonth+" "+curYear; // get full date
-		  document.getElementById("digit_clock_date").innerHTML = date;
-		
-		  var t = setTimeout(currentTime, 1000); /* setting timer */
-		}
-		
-		function changeTime(k) { /* appending 0 before time elements if less than 10 */
-		  if (k < 10) {
-			return "0" + k;
-		  }
-		  else {
-			return k;
-		  }
-		}
-		
-		currentTime();
-		
-		</script> 
 
 </body>
 </html>

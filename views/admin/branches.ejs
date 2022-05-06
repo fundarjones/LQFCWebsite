@@ -102,9 +102,21 @@
 												<p class="text-muted mb-0"><%= branches.address %></p>
 												<hr>
 												<h5 class="mb-0">Weekdays:</h5>
-												<p>
-													<%= branches.set_time[0] %>  - <%= branches.set_time[branches.set_time.length-1] %> 
-												</p>
+												<p><%= branches.opening_weekdays %> - <%= branches.closing_weekdays %></p>
+												<% if(branches.opening_saturday != "Closed") {%> 
+													<h5 class="mb-0">Saturday:</h5>
+													<p><%= branches.opening_saturday %> - <%= branches.closing_saturday%></p>
+												<% } else { %>
+													<h5 class="mb-0">Saturday:</h5>
+													<p>Closed</p>
+												<% } %>  
+												<% if(branches.opening_sunday != "Closed") {%> 
+													<h5 class="mb-0">Sunday:</h5>
+													<p><%= branches.opening_sunday %> - <%= branches.closing_sunday %></p>
+												<% } else { %>
+													<h5 class="mb-0">Sunday:</h5>
+													<p>Closed</p>
+												<% } %> 
 											</div>
 										</div>
 										<div class="dropdown open">
@@ -119,7 +131,7 @@
 									<hr>
 									<div class="d-flex justify-content-between">
 										<div>
-											<h5 class="mb-0">Line:
+											<h5 class="mb-0">Contact Number:
 												<small class="ml-1"><%= branches.phone %></small>
 											</h5>
 										</div>

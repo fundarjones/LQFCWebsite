@@ -2648,7 +2648,7 @@ button:focus {
 	background-color: #2b3d6d
 }
 
-.btn__primary:hover {
+.btn__primary:hover:not([disabled]) {
 	color: #fff;
 	background-color: #0d1c42;
 }
@@ -3167,6 +3167,11 @@ button:focus {
    display: block;
    padding: 0.25rem 1.5rem;
    color: #212529; }
+
+  .btn:hover{
+    color: #fff !important;
+    text-decoration: none !important;
+  }
  
  .btn-group,
  .btn-group-vertical {

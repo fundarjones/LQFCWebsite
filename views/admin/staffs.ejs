@@ -82,25 +82,25 @@
 
 		   <% }) %>
 			<% } %>
-			<div class="row">
-				<div class="col-sm-9 col-md-9">
+			<div class="row justify-content-center">
+				<div class="col-md-9">
 					<form action="#">
 					<div class="form-group">
 						<input type="text" id="search" placeholder="Search...">
 					</div>
 					</form>
 				</div>
-				<div class="col-sm-3 col-md-3">
+				<div class="col-md-3">
 					<form action="/add-staff" method="GET">
 						<button class="button">Add Staff</button>
 					</form>
 				</div>
 			</div>
 					<br>
-					<div class="row">
+					<div class="row justify-content-center">
 						<% staff.forEach(function(staffs){ %>
 							<div class="searchhide">
-							<div class="card p-3 mb-4 col-sm-6 col-md-6 col-lg-4">
+							<div class="card p-3 mb-4">
 							<div class="d-flex justify-content-between mb-4">
 								<div class="user-info">
 									<div class="user-info__img">
@@ -113,12 +113,6 @@
 								</div>
 												
 								<div class="dropdown open">
-									<a href="#!" class="px-2" id="a<%= staffs.id %>" data-toggle="modal" data-target="#b<%= staffs.id %>" aria-haspopup="true" aria-expanded="false">
-										<i class="fa fa-expand"></i>
-									</a>
-									
-								</div>
-								<div class="dropdown open">
 									<a href="#!" class="px-2" id="a<%= staffs.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 										<i class="fa fa-ellipsis-v"></i>
 									</a>
@@ -127,13 +121,14 @@
 									</div>
 								</div>
 							</div>
-							<div class="d-flex justify-content-between mt-4">
-								<div>
-									<h5 class="mb-0">Contact:
-										<small class="ml-1"><%= staffs.phone %></small>
-									</h5>
-								</div>
+							
+							<div class="btn-records">
+								<a href="#!" class="button record-button" id="a<%= staffs.id %>" data-toggle="modal" data-target="#b<%= staffs.id %>" aria-haspopup="true" aria-expanded="false">
+									View Staff Info
+								</a>
+								
 							</div>
+
 						</div>
 						</div>
 						<!-- ============================
@@ -156,56 +151,58 @@
 										</div>
 									</div>
 									<div class="dropdown open">
-										<a href="#!" class="px-2" id="a<%= staffs.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<i class="fa fa-ellipsis-v"></i>
+										<a href="#!" class="px-2" id="a<%= staffs.id %>" data-dismiss="modal" aria-haspopup="true" aria-expanded="false">
+											<i class="fa fa-close"></i>
 										</a>
-										<div class="dropdown-menu dropdown-menu-right" aria-labelledby="a<%= staffs.id %>">
-											<a class="dropdown-item" href="/edit-staff/<%= staffs._id %>"><i class="fa fa-edit mr-1"></i>Edit</a>
-										</div>
 									</div>
 								</div>
-								<div class="d-flex justify-content-between mt-4">
-									<div>
-										<div class="col-sm-12 col-md-12">
-											<div class="card-body">
-												<div class="about-text">
-													
+													<div>
 													<p><%= staffs.bio %></p>
 													<hr>
+													</div>
 													<div class="row about-list">
 														<div class="col-md-12">
 															<div class="media">
 																<label>Email</label>
-																<p><%= staffs.email %></p>
 															</div>
+															<p><%= staffs.email %></p>
 														</div>
-														<hr>
-														<div class="col-md-12">
+														<div class="col-md-6">
 															<div class="media">
-																<label>Phone</label>
-																<p><%= staffs.phone %></p>
+																<label>Primary Phone</label>
 															</div>
+															<p><%= staffs.phone %></p>
 														</div>
-														<hr>
-														<div class="col-md-12">
+														<div class="col-md-6">
+															<div class="media">
+																<label>Secondary Phone</label>
+															</div>
+															<p><%= staffs.phone2 %></p>
+														</div>
+														<div class="col-md-6">
 															<div class="media">
 																<label>Birthday</label>
-																<p><%= staffs.birthday %></p>
 															</div>
+															<p><%= staffs.birthday %></p>
 														</div>
-														<hr>
-														<div class="col-md-12">
+														<div class="col-md-6">
+															<div class="media">
+																<label>Age</label>
+															</div>
+															<p><%= staffs.age %></p>
+														</div>
+														<div class="col-md-6">
 															<div class="media">
 																<label>Sex</label>
-																<p><%= staffs.sex %></p>
 															</div>
+															<p><%= staffs.sex %></p>
 														</div>
 														<hr>
-														<div class="col-md-12">
+														<div class="col-md-6">
 															<div class="media">
 																<label>Status</label>
-																<p><%= staffs.status %></p>
 															</div>
+															<p><%= staffs.status %></p>
 														</div>
 													</div>
 													<hr>
@@ -217,11 +214,6 @@
 														
 													</div>
 					
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
 							</div>
 						</div>
 						</div>

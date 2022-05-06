@@ -91,13 +91,37 @@ main {
           .wizard .content .purpose-radio .purpose-radio-input:checked + .purpose-radio-label .label-icon .label-icon-active {
             display: inline-block; }
         .wizard .content .purpose-radio .purpose-radio-input:checked + .purpose-radio-label .label-text {
-          color: #2413a0;
+          color: #2413a0;}
+          .wizard .content .purpose-radio .purpose-radio-input:checked + .purpose-radio-label .label-text-address  {
+            color: #2413a0;
           }
+
+
+
+          .wizard .content .purpose-radio .purpose-radio-input:checked + .purpose-radio-label2 {
+            border-color: #2413a0;
+             border-width: medium; }
+            .wizard .content .purpose-radio .purpose-radio-input:checked + .purpose-radio-label2 .label-icon {
+              color: #2413a0; }
+              .wizard .content .purpose-radio .purpose-radio-input:checked + .purpose-radio-label2 .label-icon .label-icon-default {
+                display: none; }
+              .wizard .content .purpose-radio .purpose-radio-input:checked + .purpose-radio-label2 .label-icon .label-icon-active {
+                display: inline-block; }
+            .wizard .content .purpose-radio .purpose-radio-input:checked + .purpose-radio-label2 .label-text {
+              color: #2413a0;}
+              .wizard .content .purpose-radio .purpose-radio-input:checked + .purpose-radio-label2 .label-text-address  {
+                color: #2413a0;
+              }
+              
+              .wizard .content .purpose-radio .purpose-radio-label:hover{
+                color: #2413a0;
+                border-color: #2413a0;
+                border-width: medium; }
     .wizard .content .purpose-radio .purpose-radio-label {
       display: -webkit-box;
       display: flex;
-      margin-bottom: 15px;
-      height: 100px;
+      height: 120px;
+      margin-bottom: 10px;
       border: 2px solid #7b7f89;
       border-radius: 4px;
       -webkit-box-orient: vertical;
@@ -110,23 +134,59 @@ main {
       -webkit-transition: all 0.2s ease-in-out;
       transition: all 0.2s ease-in-out;
       cursor: pointer; }
+
+      
       @media (max-width: 575px) {
+        
+   .wizard .content .purpose-radio {
+    position: relative;
+    display: block; }
+
         .wizard .content .purpose-radio .purpose-radio-label {
-          width: 100%; } }
+          width: 100%;
+          height: 150px;}}
       .wizard .content .purpose-radio .purpose-radio-label .label-icon {
         font-size: 21px;
         color: #000000;
-        margin-bottom: 17px;
+        margin-bottom: 10px;
         -webkit-transition: all 0.2s ease-in-out;
         transition: all 0.2s ease-in-out; }
         .wizard .content .purpose-radio .purpose-radio-label .label-icon .label-icon-active {
           display: none; }
       .wizard .content .purpose-radio .purpose-radio-label .label-text {
-        font-size: 16px;
+        font-weight: bold;
+        font-size: 18px;
         text-align: center;
         color: #030303;
         -webkit-transition: all 0.2s ease-in-out;
         transition: all 0.2s ease-in-out; }
+        .wizard .content .purpose-radio .purpose-radio-label .label-text-address {
+          font-size: 14px;
+          text-align: center;
+          color: #030303;
+          padding: 10px;
+          -webkit-transition: all 0.2s ease-in-out;
+          transition: all 0.2s ease-in-out; }
+      
+          
+      .wizard .content .purpose-radio .purpose-radio-label2 {
+        display: -webkit-box;
+        display: flex;
+        height: 40px;
+        margin-bottom: 10px;
+        border: 2px solid #7b7f89;
+        border-radius: 4px;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+                flex-direction: column;
+        -webkit-box-align: center;
+                align-items: center;
+        -webkit-box-pack: center;
+                justify-content: center;
+        -webkit-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer; }
+        
   .wizard .content .purpose-radios-wrapper {
     margin-top: 40px; }
     .wizard .content .purpose-radios-wrapper .purpose-radio {
@@ -137,7 +197,7 @@ main {
           margin-bottom: 1px;
           width: 100%;
           max-width: none; } }
-          @media (max-width: 768px) {
+          @media (max-width: 1200px) {
             .wizard .content .purpose-radios-wrapper .purpose-radio {
               margin-right: 2px;
               margin-bottom: 1px;
@@ -145,6 +205,32 @@ main {
               max-width: none; } }
       .wizard .content .purpose-radios-wrapper .purpose-radio:last-child {
         margin-right: 0; }
+
+
+        .wizard .content .purpose-radios-wrapper1 {
+          margin-top: 40px; }
+          .wizard .content .purpose-radios-wrapper1 .purpose-radio {
+            margin-right: 9px;
+            width: 25%;}
+            
+            @media (max-width: 575px) {
+              .wizard .content .purpose-radios-wrapper1 .purpose-radio {
+                margin-bottom: 1px;
+                width: 100%;
+                max-width: none; } }
+                @media (max-width: 1200px) {
+                  .wizard .content .purpose-radios-wrapper1 .purpose-radio {
+                    margin-right: 2px;
+                    margin-bottom: 1px;
+                    width: 100%;
+                    max-width: none; } }
+            .wizard .content .purpose-radios-wrapper1 .purpose-radio:last-child {
+              margin-right: 0; }
+      
+
+    
+
+        
   .wizard .content .form-control {
     padding: 26px 25px;
     min-height: 50px;
@@ -193,6 +279,7 @@ main {
 }
 
 .bd-wizard-btn{
+  font-style: normal;
   margin-top: 20px;
   text-decoration: none;
   cursor: pointer;
@@ -283,4 +370,15 @@ main {
 	-o-transform: translateY(-50%);
 	transform: translateY(-50%);
 	cursor: pointer
+}
+
+
+
+.appointment-message{
+  height: 100px;
+  width: 100%;
+  overflow-y: auto;
+  resize: none;
+  border-color: #dedede;
+	border-radius: 5px;
 }

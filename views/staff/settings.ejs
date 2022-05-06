@@ -140,13 +140,13 @@
 										<div class="col-md-3">
 											<div class="text-group">
 												  <label>Middle Name</label>
-												  <input type="text" name="" class="form-control" value="" >
+												  <input type="text" name="middle_name" class="form-control" value="" >
 											</div>
 										</div>
 										<div class="col-md-3">
 											<div class="text-group">
 												  <label>Suffix</label>
-												  <input type="text" name="" class="form-control" value="" >
+												  <input type="text" name="suffix" class="form-control" value="" >
 											</div>
 										</div>
 										<div class="col-md-12">
@@ -158,13 +158,13 @@
 										<div class="col-md-6">
 											<div class="text-group">
 												  <label>Primary Phone Number *</label>
-												  <input type="number" name="" class="form-control" id="phone" value="<%= staff.phone %>" required>
+												  <input type="number" name="phone" class="form-control" id="phone" value="<%= staff.phone %>" required>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="text-group">
 												  <label>Secondary Phone Number</label>
-												  <input type="number" name="" class="form-control" id="phone" value="">
+												  <input type="number" name="phone2" class="form-control" id="phone" value="">
 											</div>
 										</div>
 										<div class="col-md-4">
@@ -207,8 +207,9 @@
 	
 										<div class="col-md-12">
 											<div class="text-group">
-												  <label>Bio</label>
-												<textarea class="form-control" rows="4" name="bio"><%= staff.bio %></textarea>
+												<label>Bio</label>
+												<textarea maxlength="280" rows="4" cols="50" name="bio" class="form-control" wrap="hard"><%= staff.bio %></textarea>
+												<br> Remaining <span id="info"></span> characters
 											</div>
 										</div>
 									</div>
@@ -392,6 +393,17 @@ $("#imageUpload").change(function() {
 	 var maxDate = year + '-' + month + '-' + day;    
 	 $('#date-no-future').attr('max', maxDate);
  });
+
+ var max = 280;
+var textarea = document.querySelector('textarea');
+var info = document.querySelector('#info');
+
+//Init the count for the first time
+info.textContent = max - textarea.value.length;
+
+textarea.addEventListener('input', function() {
+  info.textContent = max - this.value.length;
+})
  </script>
 
 <script>

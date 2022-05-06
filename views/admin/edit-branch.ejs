@@ -20,7 +20,7 @@
 </head>
 <body>
 	
-	<!-- SIDEBAR -->
+	<!-- SIDEBAR --> 
 	<section id="sidebar">
 		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
 		<ul class="side-menu">
@@ -75,7 +75,7 @@
 				
 				<div class="container">
 					
-			<h1 class="title">Manage Branch</h1>
+			<h1 class="title">Edit Branch</h1>
 					<div class="bg-white shadow rounded-lg d-block d-sm-flex">
 						<div class="profile-tab-nav border-right">
 							<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -85,11 +85,11 @@
 								</a>
 								<a class="nav-link" id="notification-tab" data-toggle="pill" href="#timeslots" role="tab" aria-controls="notification" aria-selected="false">
 									<i class="fa fa-clock-o text-center mr-1"></i> 
-									Time Slots
+									Schedule
 									</a>
 								<a class="nav-link" id="notification-tab" data-toggle="pill" href="#deactivation" role="tab" aria-controls="notification" aria-selected="false">
 									<i class="fa fa-cog text-center mr-1"></i> 
-									Delete
+									Remove
 								</a>
 							</div>
 						</div>
@@ -113,8 +113,8 @@
 									</div>
 									<div class="col-md-6">
 										<div class="text-group">
-											  <label>Line</label>
-											  <input type="text" name="phone" id="phone" class="form-control" value="<%= edit.phone %>" required>
+											  <label>Contact Number</label>
+											  <input type="number" name="phone" id="phone" class="form-control" value="<%= edit.phone %>" required>
 										</div>
 									</div>
 									<div class="col-md-12">
@@ -130,53 +130,182 @@
 								</div>
 								</form>
 							</div>
+
 							<div class="tab-pane fade" id="timeslots" role="tabpanel" aria-labelledby="application-tab">
-								<h3 class="mb-3">Time Slots Settings</h3>
+								<h3 class="mb-3">Schedule Settings</h3>
 								<form action="/edit-branch-timeslot?_method=PUT" method="POST">
-								<div class="row">
-								   <div class="col-md-12">
-									  <div class="text-group">
-										 <p>Add time slots to the designated branch.</p>
-									  </div>
+							
+									<div class="text-group" style="color: black;">
+										<p>Edit schedule to the following days.</p>
+								   	</div>
+									   
 									  <input type="text" name="_id" value="<%= edit._id %>" hidden>
-									  <label>Set Time for Appointment</label>
-									<select id="set_time" name="set_time" multiple>
-										<option value="6:00AM" >6:00AM</option>
-										<option value="7:00AM">7:00AM</option>
-										<option value="8:00AM">8:00AM</option>
-										<option value="9:00AM">9:00AM</option>
-										<option value="10:00AM">10:00AM</option>
-										<option value="11:00AM">11:00AM</option>
-										<option value="12:00NN">12:00NN</option>
-										<option value="1:00PM">1:00PM</option>
-										<option value="2:00PM">2:00PM</option>
-										<option value="3:00PM">3:00PM</option>
-										<option value="4:00PM">4:00PM</option>
-										<option value="5:00PM">5:00PM</option>
-										<option value="6:00PM">6:00PM</option>
-										<option value="7:00PM">7:00PM</option>
-										<option value="8:00PM">8:00PM</option>
-										<option value="9:00PM">9:00PM</option>
-									</select>
-									</div>
-									<br>
+									  <h6>Monday - Friday</h6>
+									  <div class="row">
+											<div class="col-md-6">
+											  <p style="margin-bottom: 5px !important;">Opening Time</p>
+											<select id="set_time_weekdays_open" name="opening_weekdays" required>
+											  <option data-placeholder="true"></option>
+											  <option value="Closed">Closed</option>
+											  <option value="6:00AM" >6:00AM</option>
+											  <option value="7:00AM">7:00AM</option>
+											  <option value="8:00AM">8:00AM</option>
+											  <option value="9:00AM">9:00AM</option>
+											  <option value="10:00AM">10:00AM</option>
+											  <option value="11:00AM">11:00AM</option>
+											  <option value="12:00NN">12:00NN</option>
+											  <option value="1:00PM">1:00PM</option>
+											  <option value="2:00PM">2:00PM</option>
+											  <option value="3:00PM">3:00PM</option>
+											  <option value="4:00PM">4:00PM</option>
+											  <option value="5:00PM">5:00PM</option>
+											  <option value="6:00PM">6:00PM</option>
+											  <option value="7:00PM">7:00PM</option>
+											  <option value="8:00PM">8:00PM</option>
+											  <option value="9:00PM">9:00PM</option>
+										  </select>
+										  </div>
+										  <div class="col-md-6">
+											  <p style="margin-bottom: 5px !important;">Closing Time</p>
+											<select id="set_time_weekdays_close" name="closing_weekdays" required>
+											  <option data-placeholder="true"></option>
+											  <option value="Closed">Closed</option>
+											  <option value="6:00AM" >6:00AM</option>
+											  <option value="7:00AM">7:00AM</option>
+											  <option value="8:00AM">8:00AM</option>
+											  <option value="9:00AM">9:00AM</option>
+											  <option value="10:00AM">10:00AM</option>
+											  <option value="11:00AM">11:00AM</option>
+											  <option value="12:00NN">12:00NN</option>
+											  <option value="1:00PM">1:00PM</option>
+											  <option value="2:00PM">2:00PM</option>
+											  <option value="3:00PM">3:00PM</option>
+											  <option value="4:00PM">4:00PM</option>
+											  <option value="5:00PM">5:00PM</option>
+											  <option value="6:00PM">6:00PM</option>
+											  <option value="7:00PM">7:00PM</option>
+											  <option value="8:00PM">8:00PM</option>
+											  <option value="9:00PM">9:00PM</option>
+										  </select>
+										  </div>
+									  </div>
+	  
+											<h6 class="mt-4">Saturday</h6>
+									  <div class="row">
+											<div class="col-md-6">
+											  <p style="margin-bottom: 5px !important;">Opening Time</p>
+											<select id="set_time_sat_open" name="opening_saturday" required>
+											  <option data-placeholder="true"></option>
+											  <option value="Closed">Closed</option>
+											  <option value="6:00AM" >6:00AM</option>
+											  <option value="7:00AM">7:00AM</option>
+											  <option value="8:00AM">8:00AM</option>
+											  <option value="9:00AM">9:00AM</option>
+											  <option value="10:00AM">10:00AM</option>
+											  <option value="11:00AM">11:00AM</option>
+											  <option value="12:00NN">12:00NN</option>
+											  <option value="1:00PM">1:00PM</option>
+											  <option value="2:00PM">2:00PM</option>
+											  <option value="3:00PM">3:00PM</option>
+											  <option value="4:00PM">4:00PM</option>
+											  <option value="5:00PM">5:00PM</option>
+											  <option value="6:00PM">6:00PM</option>
+											  <option value="7:00PM">7:00PM</option>
+											  <option value="8:00PM">8:00PM</option>
+											  <option value="9:00PM">9:00PM</option>
+										  </select>
+										  </div>
+										  <div class="col-md-6">
+											  <p style="margin-bottom: 5px !important;">Closing Time</p>
+											<select id="set_time_sat_close" name="closing_saturday" required>
+										      <option data-placeholder="true"></option>
+											  <option value="Closed">Closed</option>
+											  <option value="6:00AM" >6:00AM</option>
+											  <option value="7:00AM">7:00AM</option>
+											  <option value="8:00AM">8:00AM</option>
+											  <option value="9:00AM">9:00AM</option>
+											  <option value="10:00AM">10:00AM</option>
+											  <option value="11:00AM">11:00AM</option>
+											  <option value="12:00NN">12:00NN</option>
+											  <option value="1:00PM">1:00PM</option>
+											  <option value="2:00PM">2:00PM</option>
+											  <option value="3:00PM">3:00PM</option>
+											  <option value="4:00PM">4:00PM</option>
+											  <option value="5:00PM">5:00PM</option>
+											  <option value="6:00PM">6:00PM</option>
+											  <option value="7:00PM">7:00PM</option>
+											  <option value="8:00PM">8:00PM</option>
+											  <option value="9:00PM">9:00PM</option>
+										  </select>
+										  </div>
+									  </div>
+	  
+											<h6 class="mt-4">Sunday</h6>
+									  <div class="row">
+											<div class="col-md-6">
+											  <p style="margin-bottom: 5px !important;">Opening Time</p>
+											<select id="set_time_sun_open" name="opening_sunday" required>
+											  <option data-placeholder="true"></option>
+											  <option value="Closed">Closed</option>
+											  <option value="6:00AM" >6:00AM</option>
+											  <option value="7:00AM">7:00AM</option>
+											  <option value="8:00AM">8:00AM</option>
+											  <option value="9:00AM">9:00AM</option>
+											  <option value="10:00AM">10:00AM</option>
+											  <option value="11:00AM">11:00AM</option>
+											  <option value="12:00NN">12:00NN</option>
+											  <option value="1:00PM">1:00PM</option>
+											  <option value="2:00PM">2:00PM</option>
+											  <option value="3:00PM">3:00PM</option>
+											  <option value="4:00PM">4:00PM</option>
+											  <option value="5:00PM">5:00PM</option>
+											  <option value="6:00PM">6:00PM</option>
+											  <option value="7:00PM">7:00PM</option>
+											  <option value="8:00PM">8:00PM</option>
+											  <option value="9:00PM">9:00PM</option>
+										  </select>
+										  </div>
+										  <div class="col-md-6">
+											  <p style="margin-bottom: 5px !important;">Closing Time</p>
+											<select id="set_time_sun_close" name="closing_sunday" required>
+										      <option data-placeholder="true"></option>
+											  <option value="Closed">Closed</option>
+											  <option value="6:00AM" >6:00AM</option>
+											  <option value="7:00AM">7:00AM</option>
+											  <option value="8:00AM">8:00AM</option>
+											  <option value="9:00AM">9:00AM</option>
+											  <option value="10:00AM">10:00AM</option>
+											  <option value="11:00AM">11:00AM</option>
+											  <option value="12:00NN">12:00NN</option>
+											  <option value="1:00PM">1:00PM</option>
+											  <option value="2:00PM">2:00PM</option>
+											  <option value="3:00PM">3:00PM</option>
+											  <option value="4:00PM">4:00PM</option>
+											  <option value="5:00PM">5:00PM</option>
+											  <option value="6:00PM">6:00PM</option>
+											  <option value="7:00PM">7:00PM</option>
+											  <option value="8:00PM">8:00PM</option>
+											  <option value="9:00PM">9:00PM</option>
+										  </select>
+										  </div>
+									  </div>
 		
-								   </div>
 								   <div>
 									<br>
-									<input class="btn btn__primary btn__rounded ml-30" type="submit" value="Update">
+									<input class="btn btn__primary btn__rounded ml-30" id="time_submit" type="submit" value="Update" disabled="disabled">
 								   </div>
 								</form>
-								</div>
+							</div>
+
 							<div class="tab-pane fade" id="deactivation" role="tabpanel" aria-labelledby="notification-tab">
-								<h3 class="mb-4">Delete Settings</h3>
+								<h3 class="mb-4">Removal Settings</h3>
 								<form action="/deactivate" method="POST">
 									<div class="row">
 										<input type="text" name="_id" value="<%= edit._id %>" hidden>
 										<input type="text" name="usertype" value="branches" hidden>
 										<div class="col-md-12">
 											<div class="text-group">
-												<p>Are you sure to remove this branch to the database? Your action can't be undone.</p>
+												<p>Are you sure to remove this branch? Your action can't be undone.</p>
 											</div>
 										</div>
 									</div>
@@ -184,9 +313,9 @@
 										<button class="btn btn__primary btn__rounded ml-30">Remove Branch</button>
 									</div>
 								</form>
-								</div>
-								
 							</div>
+								
+						</div>
 							
 							
 						</div>
@@ -224,11 +353,34 @@
 	
 	<script>
 		new SlimSelect({
-		select: '#set_time'
+		select: '#set_time_weekdays_open',
+		placeholder: 'Select Time'
 		});
-	</script>
+	   new SlimSelect({
+		select: '#set_time_weekdays_close',
+		placeholder: 'Select Time'
+		});
+		new SlimSelect({
+		select: '#set_time_sat_open',
+		placeholder: 'Select Time'
+		});
+		new SlimSelect({
+		select: '#set_time_sat_close',
+		placeholder: 'Select Time'
+		});
+		new SlimSelect({
+		select: '#set_time_sun_open',
+		placeholder: 'Select Time'
+		});
+		new SlimSelect({
+		select: '#set_time_sun_close',
+		placeholder: 'Select Time'
+		});
+  </script>
 
-
+<script>
+	
+</script>
 
 <script>
 	window.onload = function(){
@@ -253,6 +405,22 @@
          });
 	</script>
 	 
-	 
+<script>
+	$(document).ready(function() {
+  $('select').on('change', function() {
+    let empty = false;
+
+    $('select').each(function() {
+      empty = $(this).val().length == 0;
+    });
+
+    if (empty)
+      $('#time_submit').attr('disabled', 'disabled');
+    else
+      $('#time_submit').removeAttr('disabled')
+  });
+});
+</script>
+
 </body>
 </html>

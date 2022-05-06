@@ -93,7 +93,6 @@ app.get('/dashboard', checkAuthenticated, async (req, res) => {
               console.log(err)
           }else{
             const ttl = appointments + diagnosed
-            console.log(user_appointments)
             res.render('patient/dashboard.ejs', { verified: req.user.isVerified, total: ttl, appointment: user_appointments, patient: patients, base: 'base64' })
           }
         })
@@ -2432,16 +2431,16 @@ app.put('/edit-branch', checkAuthenticated, async (req, res) => {
 })
 
 app.put('/edit-branch-timeslot', checkAuthenticated, async (req, res) => {
-  const branch = new Branch();
-  if (req.body.set_time) {
-    branch.set_time = Array.isArray(req.body.set_time) ? req.body.set_time : [req.body.set_time]; 
-  }
-  const { set_time } = req.body
+  const { opening_weekdays, closing_weekdays, opening_saturday, closing_saturday, opening_sunday, closing_sunday, } = req.body
       const user_id = req.body._id
-      console.log(user_id)
       try{
         const branch = await Branch.findById(user_id)
-          branch.set_time = set_time
+          branch.opening_weekdays = opening_weekdays
+          branch.closing_weekdays = closing_weekdays
+          branch.opening_saturday = opening_saturday
+          branch.closing_saturday = closing_saturday
+          branch.opening_sunday = opening_sunday
+          branch.closing_sunday = closing_sunday
           await branch.save()
           const response = branch
           res.redirect('/branches')
@@ -3379,22 +3378,23 @@ console.log('Appointment cancelled successfully: ', response)
 
 
 app.post('/add-branch', checkAuthenticated, async (req, res) => {
-  const branch = new Branch();
-  if (req.body.set_time) {
-    branch.set_time = Array.isArray(req.body.set_time) ? req.body.set_time : [req.body.set_time]; 
-  }
-  const { branch_name, address, set_time, phone } = req.body
+  const { branch_name, address, opening_weekdays, closing_weekdays, opening_saturday, closing_saturday, opening_sunday, closing_sunday, phone } = req.body
       try{
         const response = new Branch({
                 id: Date.now().toString(),
                 branch_name,
+                opening_weekdays,
+                closing_weekdays,
+                opening_saturday,
+                closing_saturday,
+                opening_sunday,
+                closing_sunday,
                 address,
-                set_time,
                 phone,
             })
       await response.save()
       res.redirect('/branches')
-      console.log('User created successfully: ', response)
+      console.log('Branch created successfully: ', response)
     } catch (err){
       res.redirect('/dashboard')
       console.log(err)

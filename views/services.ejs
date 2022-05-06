@@ -260,15 +260,43 @@
                   <p class="process__desc justify"><%= branches.address %> </p>
                   <hr>
                   
+                  <% if(branches.opening_weekdays != "Closed"){ %> 
                     <span>Weekdays</span>
                     <ul class="black list-vertical list-unstyled font-weight-bold">
-                      <li><%= branches.set_time[0] %>  - <%= branches.set_time[branches.set_time.length-1] %> </li>
+                      <li><%= branches.opening_weekdays %> - <%= branches.closing_weekdays%></li>
                     </ul>
-
-                    <span>Weekends</span>
+                  <% } else { %> 
+                    <span>Weekdays</span>
                     <ul class="black list-vertical list-unstyled font-weight-bold">
                       <li>Closed</li>
                     </ul>
+                  <% } %> 
+
+                  <% if(branches.opening_saturday != "Closed"){ %> 
+                    <span>Saturday</span>
+                    <ul class="black list-vertical list-unstyled font-weight-bold">
+                      <li><%= branches.opening_saturday %> - <%= branches.closing_saturday %></li>
+                    </ul>
+                  <% } else { %> 
+                    <span>Saturday</span>
+                    <ul class="black list-vertical list-unstyled font-weight-bold">
+                      <li>Closed</li>
+                    </ul>
+                  <% } %> 
+
+                  <% if(branches.opening_sunday != "Closed"){ %> 
+                    <span>Sunday</span>
+                    <ul class="black list-vertical list-unstyled font-weight-bold">
+                      <li><%= branches.opening_sunday %> - <%= branches.closing_sunday %></li>
+                    </ul>
+                  <% } else { %> 
+                    <span>Sunday</span>
+                    <ul class="black list-vertical list-unstyled font-weight-bold">
+                      <li>Closed</li>
+                    </ul>
+                  <% } %> 
+
+                    
 
                     <hr>
                   <a href="https://goo.gl/maps/Kyn3rFzt5stUWV939" target="_blank" class="btn btn__secondary btn__link">

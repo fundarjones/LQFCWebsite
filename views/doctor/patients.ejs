@@ -23,7 +23,6 @@
 		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
 		<ul class="side-menu">
 			<li><a href="/dashboard" ><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
-			<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications</a></li>
 			<li class="divider" data-text="main">Main</li>
 			<li><a href="/appointments"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
 			<li><a href="/diagnosed-records"><i class='bx bxs-book-content icon' ></i>Diagnosed<br>Records</a></li>
@@ -79,7 +78,7 @@
 					<div class="row">
 						<% patients.forEach(function(users){ %>
 							<div class="searchhide">
-								<div class="card p-3 mb-4 col-sm-6 col-md-6 col-lg-4">
+								<div class="card p-3 mb-4">
 									<div class="d-flex justify-content-between mb-4">
 										<div class="user-info">
 											<div class="user-info__img">
@@ -95,12 +94,7 @@
 											</div>
 										</div>
 														
-										<div class="dropdown open">
-											<a href="#!" class="px-2" id="a<%= users.id %>" data-toggle="modal" data-target="#b<%= users.id %>" aria-haspopup="true" aria-expanded="false">
-												<i class="fa fa-expand"></i>
-											</a>
-											
-										</div>
+
 										<div class="dropdown open">
 											<a href="#!" class="px-2" id="a<%= users.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 												<i class="fa fa-ellipsis-v"></i>
@@ -113,14 +107,16 @@
 													</form>
 											</div>
 										</div>
+
 									</div>
-									<div class="d-flex justify-content-between">
-										<div>
-											<h5 class="mb-0">Contact:
-												<small class="ml-1"><%= users.phone %></small>
-											</h5>
+										
+										<div class="btn-records">
+											<a href="#!" class="button record-button" id="a<%= users.id %>" data-toggle="modal" data-target="#b<%= users.id %>" aria-haspopup="true" aria-expanded="false">
+												View Patient Info
+											</a>
 										</div>
-									</div>
+
+									
 								</div>
 							</div>
 						<!-- ============================
@@ -147,68 +143,60 @@
 										</div>
 									</div>
 									<div class="dropdown open">
-										<a href="#!" class="px-2" id="a<%= users.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<i class="fa fa-ellipsis-v"></i>
+										<a href="#!" class="px-2" id="a<%= users.id %>" data-dismiss="modal" aria-haspopup="true" aria-expanded="false">
+											<i class="fa fa-close"></i>
 										</a>
-										<div class="dropdown-menu dropdown-menu-right" aria-labelledby="a<%= users.id %>">
-											<form action="/deactivate" method="POST">
-												<input type="text" name="id" value="<%= users.id %>" hidden>
-												<input type="text" name="usertype" value="<%= users.usertype%>" hidden>
-												<input type="submit" class="dropdown-item text-danger" value="Remove">
-												</form>
-										</div>
+
 									</div>
 								</div>
-								<div class="d-flex justify-content-between mt-4">
+								
 									<div>
-										<div class="col-sm-12 col-md-12">
-											<div class="card-body">
-												<div class="about-text">
-													
-													<p><%= users.bio %></p>
-													<hr>
-													<div class="row about-list">
-														<div class="col-md-12">
-															<div class="media">
-																<label>Email</label>
-																<p><%= users.email %></p>
-															</div>
-														</div>
-														<hr>
-														<div class="col-md-12">
-															<div class="media">
-																<label>Phone</label>
-																<p><%= users.phone %></p>
-															</div>
-														</div>
-														<hr>
-														<div class="col-md-12">
-															<div class="media">
-																<label>Birthday</label>
-																<p><%= users.birthday %></p>
-															</div>
-														</div>
-														<hr>
-														<div class="col-md-12">
-															<div class="media">
-																<label>Sex</label>
-																<p><%= users.sex %></p>
-															</div>
-														</div>
-														<hr>
-														<div class="col-md-12">
-															<div class="media">
-																<label>Status</label>
-																<p><%= users.status %></p>
-															</div>
-														</div>
-													</div>
-					
-												</div>
+									<p><%= users.bio %></p>
+									<hr>
+									</div>
+									<div class="row about-list">
+										<div class="col-md-12 mb-1">
+											<div class="media">
+												<label>Email</label>
 											</div>
+											<p><%= users.email %></p>
+										</div>
+										<div class="col-md-6 mb-1">
+												<label>Primary Phone</label>
+											<p><%= users.phone %></p>
+										</div>
+										<div class="col-md-6">
+											<div class="media">
+												<label>Secondary Phone</label>
+											</div>
+											<p><%= users.phone2 %></p>
+										</div>
+										<div class="col-md-6 mb-1">
+											<div class="media">
+												<label>Birthday</label>
+											</div>
+											<p><%= users.birthday %></p>
+										</div>
+										<div class="col-md-6 mb-1">
+											<div class="media">
+												<label>Age</label>
+											</div>
+											<p><%= users.age %></p>
+										</div>
+										<div class="col-md-6 mb-1">
+											<div class="media">
+												<label>Sex</label>
+											</div>
+											<p><%= users.sex %></p>
+										</div>
+										<div class="col-md-6 mb-1">
+											<div class="media">
+												<label>Status</label>
+											</div>
+											<p><%= users.status %></p>
 										</div>
 									</div>
-								</div>
+
 							</div>
 						</div>
 						</div>
