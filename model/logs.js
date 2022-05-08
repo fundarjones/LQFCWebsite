@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const logSchema = new mongoose.Schema(
+const LogSchema = new mongoose.Schema(
 	{
 		usertype: { type: String, required: true },
 		id: { type: String, required: true },
@@ -8,14 +8,14 @@ const logSchema = new mongoose.Schema(
 		email: { type: String, required: true },
 		log_date: { type: String, required: true },
 		log_time: { type: String, required: true },
+		action: { type: String, required: true },
 		branch: { type: String },
 	},
 	{ collection: 'logs' }
 )
 
-
-
-const logs = mongoose.model('logSchema', logSchema)
+const logs = mongoose.model('LogSchema', LogSchema)
 
 module.exports = logs
+
 

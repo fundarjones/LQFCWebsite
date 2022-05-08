@@ -18,7 +18,7 @@
 		<title><%= admin.first_name %> <%= admin.last_name %> | Lagman Qualicare Family Clinic</title>
 </head>
 <body>
-	
+	 
 	<!-- SIDEBAR -->
 	<section id="sidebar">
 		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
@@ -73,8 +73,8 @@
 				
 				<div class="container">
 					
+	<form action="/add-doctors" method="POST">
 			<h1 class="title">Add Doctor</h1>
-					<form action="/add-doctors" method="POST">
 						<div class="bg-white shadow rounded-lg d-block d-sm-flex">
 							<div class="profile-tab-nav border-right">
 								<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -82,9 +82,9 @@
 										<i class="fa fa-info text-center mr-1"></i> 
 										Information
 									</a>
-									<a class="nav-link" id="application-tab" data-toggle="pill" href="#roles" role="tab" aria-controls="application" aria-selected="false">
+									<a class="nav-link" id="application-tab" data-toggle="pill" href="#schedule" role="tab" aria-controls="application" aria-selected="false">
 										<i class="fa fa-tasks text-center mr-1"></i> 
-										Roles
+										Schedule
 									</a>
 									<a class="nav-link" id="password-tab" data-toggle="pill" href="#password" role="tab" aria-controls="password" aria-selected="false">
 										<i class="fa fa-key text-center mr-1"></i> 
@@ -105,9 +105,17 @@
 										<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
 										<p class="error-msg"><%= error.msg %></p>
 									  </div>
-				   
 								   <% }) %>
 									<% } %>
+
+									<% if (typeof msg != 'undefined'){ %> 
+										<% if (msg){%> 
+										  <div class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
+											<%= msg %> 
+											<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+										  </div> 
+										<% } %> 
+										<% } %> 
 									<div class="row">
 										<div class="col-md-3">
 											<div class="text-group">
@@ -190,28 +198,379 @@
 										 </div>
 									</div>
 								</div>
-								<div class="tab-pane fade" id="roles" role="tabpanel" aria-labelledby="application-tab">
-									<h3 class="mb-4">Roles Settings</h3>
-									<p>Branch 1</p>
-									<div class="row roles-row">
-										<div class="col-md-12">
-										<label>Specialization *</label>
-										<input type="text" class="form-control" name="specialization" id="specialization" required>
-										</div>
-										<br><br><br>
 
-										<i id="add-branch" class="btn btn__primary btn__rounded ml-30">Add Assigned Branch</i>
-										<div class="col-md-12 add-branches">
-											<label>Assigned Branches *</label>
-											<select class="form-control" id="branches" name="branch" required>
-												<% branch.forEach(function(branches){ %>
-												<option value="<%= branches.branch_name %>" ><%= branches.branch_name %></option>
-												<% }); %> 
-											</select>
+								<div class="tab-pane fade" id="schedule" role="tabpanel" aria-labelledby="application-tab">
+									<h3 class="mb-4">Schedule Settings</h3>
+
+								<!----ASSIGNED BRANCH-------->
+
+								<div id="records-dropdown">
+
+									<!---------------BRANCH 1------------->
+									<div id="branch-1-show">
+										<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
+										data-toggle="collapse" href="#branch-1" role="button">
+										<div class="position-relative">
+											<small class="ml-1 font-weight-bold">Branch: <span id="selectedBranch1"></span></small>
+											<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
+											<i class="fa fa-plus"></i>
+											</div>
+										</div>
+										</a>
+										<div class="collapse" id="branch-1">
+											<div class="group border p-3 section-group-js" data-index="0">
+												<div class="form-floating mb-3">
+														<select id="branch1" name="branch1" class="form-control" required>
+															<% branch.forEach(function(branches){ %>
+																<option value="<%= branches.branch_name %>" ><%= branches.branch_name %></option>
+																<% }); %> 
+														</select>
+		
+														<div class="text-group mt-4" style="color: black;">
+															<p>Add schedule to the following days.</p>
+													   </div>
+														 <h6>Monday - Friday</h6>
+														   <div class="row">
+														 <div class="col-md-6 starttime1">
+														   <p style="margin-bottom: 5px !important;">Start Time</p>
+														 <select id="set_time_weekdays_open1" class="form-control" name="start_weekdays1">
+														
+														   <option value="None">None</option>
+														   <option value="6:00AM" >6:00 AM</option>
+														   <option value="7:00AM">7:00 AM</option>
+														   <option value="8:00AM">8:00 AM</option>
+														   <option value="9:00AM">9:00 AM</option>
+														   <option value="10:00AM">10:00 AM</option>
+														   <option value="11:00AM">11:00 AM</option>
+														   <option value="12:00NN">12:00 NN</option>
+														   <option value="1:00PM">1:00 PM</option>
+														   <option value="2:00PM">2:00 PM</option>
+														   <option value="3:00PM">3:00 PM</option>
+														   <option value="4:00PM">4:00 PM</option>
+														   <option value="5:00PM">5:00 PM</option>
+														   <option value="6:00PM">6:00 PM</option>
+														   <option value="7:00PM">7:00 PM</option>
+														   <option value="8:00PM">8:00 PM</option>
+														   <option value="9:00PM">9:00 PM</option>
+													   </select>
+													   </div>
+													   <div class="col-md-6 endtime1">
+														   <p style="margin-bottom: 5px !important;">End Time</p>
+														 <select id="set_time_weekdays_close1" class="form-control" name="end_weekdays1">
+														
+															<option value="None">None</option>
+															<option value="6:00AM" >6:00 AM</option>
+															<option value="7:00AM">7:00 AM</option>
+															<option value="8:00AM">8:00 AM</option>
+															<option value="9:00AM">9:00 AM</option>
+															<option value="10:00AM">10:00 AM</option>
+															<option value="11:00AM">11:00 AM</option>
+															<option value="12:00NN">12:00 NN</option>
+															<option value="1:00PM">1:00 PM</option>
+															<option value="2:00PM">2:00 PM</option>
+															<option value="3:00PM">3:00 PM</option>
+															<option value="4:00PM">4:00 PM</option>
+															<option value="5:00PM">5:00 PM</option>
+															<option value="6:00PM">6:00 PM</option>
+															<option value="7:00PM">7:00 PM</option>
+															<option value="8:00PM">8:00 PM</option>
+															<option value="9:00PM">9:00 PM</option>
+													   </select>
+													   </div>
+												   </div>
+				   
+														 <h6 class="mt-4">Saturday</h6>
+												   <div class="row">
+														 <div class="col-md-6 starttime2">
+														   <p style="margin-bottom: 5px !important;">Start Time</p>
+														 <select id="set_time_sat_open1" class="form-control" name="start_sat1">
+														
+														   <option value="None">None</option>
+														   <option value="6:00AM" >6:00 AM</option>
+														   <option value="7:00AM">7:00 AM</option>
+														   <option value="8:00AM">8:00 AM</option>
+														   <option value="9:00AM">9:00 AM</option>
+														   <option value="10:00AM">10:00 AM</option>
+														   <option value="11:00AM">11:00 AM</option>
+														   <option value="12:00NN">12:00 NN</option>
+														   <option value="1:00PM">1:00 PM</option>
+														   <option value="2:00PM">2:00 PM</option>
+														   <option value="3:00PM">3:00 PM</option>
+														   <option value="4:00PM">4:00 PM</option>
+														   <option value="5:00PM">5:00 PM</option>
+														   <option value="6:00PM">6:00 PM</option>
+														   <option value="7:00PM">7:00 PM</option>
+														   <option value="8:00PM">8:00 PM</option>
+														   <option value="9:00PM">9:00 PM</option>
+													   </select>
+													   </div>
+													   <div class="col-md-6 endtime2">
+														   <p style="margin-bottom: 5px !important;">End Time</p>
+														 <select id="set_time_sat_close1" class="form-control" name="end_sat1">
+													
+															<option value="None">None</option>
+															<option value="6:00AM" >6:00 AM</option>
+															<option value="7:00AM">7:00 AM</option>
+															<option value="8:00AM">8:00 AM</option>
+															<option value="9:00AM">9:00 AM</option>
+															<option value="10:00AM">10:00 AM</option>
+															<option value="11:00AM">11:00 AM</option>
+															<option value="12:00NN">12:00 NN</option>
+															<option value="1:00PM">1:00 PM</option>
+															<option value="2:00PM">2:00 PM</option>
+															<option value="3:00PM">3:00 PM</option>
+															<option value="4:00PM">4:00 PM</option>
+															<option value="5:00PM">5:00 PM</option>
+															<option value="6:00PM">6:00 PM</option>
+															<option value="7:00PM">7:00 PM</option>
+															<option value="8:00PM">8:00 PM</option>
+															<option value="9:00PM">9:00 PM</option>
+													   </select>
+													   </div>
+												   </div>
+				   
+														 <h6 class="mt-4">Sunday</h6>
+												   <div class="row">
+														 <div class="col-md-6 starttime3">
+														   <p style="margin-bottom: 5px !important;">Start Time</p>
+														 <select id="set_time_sun_open1" class="form-control" name="start_sun1">
+													
+														   <option value="None">None</option>
+														   <option value="6:00AM" >6:00 AM</option>
+														   <option value="7:00AM">7:00 AM</option>
+														   <option value="8:00AM">8:00 AM</option>
+														   <option value="9:00AM">9:00 AM</option>
+														   <option value="10:00AM">10:00 AM</option>
+														   <option value="11:00AM">11:00 AM</option>
+														   <option value="12:00NN">12:00 NN</option>
+														   <option value="1:00PM">1:00 PM</option>
+														   <option value="2:00PM">2:00 PM</option>
+														   <option value="3:00PM">3:00 PM</option>
+														   <option value="4:00PM">4:00 PM</option>
+														   <option value="5:00PM">5:00 PM</option>
+														   <option value="6:00PM">6:00 PM</option>
+														   <option value="7:00PM">7:00 PM</option>
+														   <option value="8:00PM">8:00 PM</option>
+														   <option value="9:00PM">9:00 PM</option>
+													   </select>
+													   </div>
+													   <div class="col-md-6 endtime3">
+														   <p style="margin-bottom: 5px !important;">End Time</p>
+														 <select id="set_time_sun_close1" class="form-control" name="end_sun1">
+													
+															<option value="None">None</option>
+															<option value="6:00AM" >6:00 AM</option>
+															<option value="7:00AM">7:00 AM</option>
+															<option value="8:00AM">8:00 AM</option>
+															<option value="9:00AM">9:00 AM</option>
+															<option value="10:00AM">10:00 AM</option>
+															<option value="11:00AM">11:00 AM</option>
+															<option value="12:00NN">12:00 NN</option>
+															<option value="1:00PM">1:00 PM</option>
+															<option value="2:00PM">2:00 PM</option>
+															<option value="3:00PM">3:00 PM</option>
+															<option value="4:00PM">4:00 PM</option>
+															<option value="5:00PM">5:00 PM</option>
+															<option value="6:00PM">6:00 PM</option>
+															<option value="7:00PM">7:00 PM</option>
+															<option value="8:00PM">8:00 PM</option>
+															<option value="9:00PM">9:00 PM</option>
+													   </select>
+													   </div>
+												   </div>
+												</div>
+											</div>
 										</div>
 									</div>
 									
+									<!--------------------------------->
+									<!------------BRANCH 2------------->
+									<div id="branch-2-show" style="display:none;">
+										<a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top"
+										data-toggle="collapse" href="#branch-2" role="button">
+										<div class="position-relative">
+											<small class="ml-1 font-weight-bold">Branch: <span id="selectedBranch2"></span></small>
+											<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
+											<i class="fa fa-plus"></i>
+											</div>
+										</div>
+										</a>
+										<div class="collapse" id="branch-2">
+											<div class="group border p-3 section-group-js" data-index="0">
+												<div class="form-floating mb-3">
+		
+														<select id="branch2" name="branch2" class="form-control" required>
+															
+															<% branch.forEach(function(branches){ %>
+																<option value="<%= branches.branch_name %>" ><%= branches.branch_name %></option>
+																<% }); %> 
+														</select>
+		
+														<div class="text-group mt-4" style="color: black;">
+															<p>Add schedule to the following days.</p>
+													   </div>
+														 <h6>Monday - Friday</h6>
+														   <div class="row">
+														 <div class="col-md-6 starttime4">
+														   <p style="margin-bottom: 5px !important;">Start Time</p>
+														 <select id="set_time_weekdays_open2" class="form-control" name="start_weekdays2">
+													
+														   <option value="None">None</option>
+														   <option value="6:00AM" >6:00 AM</option>
+														   <option value="7:00AM">7:00 AM</option>
+														   <option value="8:00AM">8:00 AM</option>
+														   <option value="9:00AM">9:00 AM</option>
+														   <option value="10:00AM">10:00 AM</option>
+														   <option value="11:00AM">11:00 AM</option>
+														   <option value="12:00NN">12:00 NN</option>
+														   <option value="1:00PM">1:00 PM</option>
+														   <option value="2:00PM">2:00 PM</option>
+														   <option value="3:00PM">3:00 PM</option>
+														   <option value="4:00PM">4:00 PM</option>
+														   <option value="5:00PM">5:00 PM</option>
+														   <option value="6:00PM">6:00 PM</option>
+														   <option value="7:00PM">7:00 PM</option>
+														   <option value="8:00PM">8:00 PM</option>
+														   <option value="9:00PM">9:00 PM</option>
+													   </select>
+													   </div>
+													   <div class="col-md-6 endtime4">
+														   <p style="margin-bottom: 5px !important;">End Time</p>
+														 <select id="set_time_weekdays_close2" class="form-control" name="end_weekdays2">
+														
+															<option value="None">None</option>
+															<option value="6:00AM" >6:00 AM</option>
+															<option value="7:00AM">7:00 AM</option>
+															<option value="8:00AM">8:00 AM</option>
+															<option value="9:00AM">9:00 AM</option>
+															<option value="10:00AM">10:00 AM</option>
+															<option value="11:00AM">11:00 AM</option>
+															<option value="12:00NN">12:00 NN</option>
+															<option value="1:00PM">1:00 PM</option>
+															<option value="2:00PM">2:00 PM</option>
+															<option value="3:00PM">3:00 PM</option>
+															<option value="4:00PM">4:00 PM</option>
+															<option value="5:00PM">5:00 PM</option>
+															<option value="6:00PM">6:00 PM</option>
+															<option value="7:00PM">7:00 PM</option>
+															<option value="8:00PM">8:00 PM</option>
+															<option value="9:00PM">9:00 PM</option>
+													   </select>
+													   </div>
+												   </div>
+				   
+														 <h6 class="mt-4">Saturday</h6>
+												   <div class="row">
+														 <div class="col-md-6 starttime5">
+														   <p style="margin-bottom: 5px !important;">Start Time</p>
+														 <select id="set_time_sat_open2" class="form-control" name="start_sat2">
+													
+														   <option value="None">None</option>
+														   <option value="6:00AM" >6:00 AM</option>
+														   <option value="7:00AM">7:00 AM</option>
+														   <option value="8:00AM">8:00 AM</option>
+														   <option value="9:00AM">9:00 AM</option>
+														   <option value="10:00AM">10:00 AM</option>
+														   <option value="11:00AM">11:00 AM</option>
+														   <option value="12:00NN">12:00 NN</option>
+														   <option value="1:00PM">1:00 PM</option>
+														   <option value="2:00PM">2:00 PM</option>
+														   <option value="3:00PM">3:00 PM</option>
+														   <option value="4:00PM">4:00 PM</option>
+														   <option value="5:00PM">5:00 PM</option>
+														   <option value="6:00PM">6:00 PM</option>
+														   <option value="7:00PM">7:00 PM</option>
+														   <option value="8:00PM">8:00 PM</option>
+														   <option value="9:00PM">9:00 PM</option>
+													   </select>
+													   </div>
+													   <div class="col-md-6 endtime5">
+														   <p style="margin-bottom: 5px !important;">End Time</p>
+														 <select id="set_time_sat_close2" class="form-control" name="end_sat2">
+												
+														   <option value="None">None</option>
+														   <option value="6:00AM" >6:00 AM</option>
+														   <option value="7:00AM">7:00 AM</option>
+														   <option value="8:00AM">8:00 AM</option>
+														   <option value="9:00AM">9:00 AM</option>
+														   <option value="10:00AM">10:00 AM</option>
+														   <option value="11:00AM">11:00 AM</option>
+														   <option value="12:00NN">12:00 NN</option>
+														   <option value="1:00PM">1:00 PM</option>
+														   <option value="2:00PM">2:00 PM</option>
+														   <option value="3:00PM">3:00 PM</option>
+														   <option value="4:00PM">4:00 PM</option>
+														   <option value="5:00PM">5:00 PM</option>
+														   <option value="6:00PM">6:00 PM</option>
+														   <option value="7:00PM">7:00 PM</option>
+														   <option value="8:00PM">8:00 PM</option>
+														   <option value="9:00PM">9:00 PM</option>
+													   </select>
+													   </div>
+												   </div>
+				   
+														 <h6 class="mt-4">Sunday</h6>
+												   <div class="row">
+														 <div class="col-md-6 starttime6">
+														   <p style="margin-bottom: 5px !important;">Start Time</p>
+														 <select id="set_time_sun_open2" class="form-control" name="start_sun2">
+												
+														   <option value="None">None</option>
+														   <option value="6:00AM" >6:00 AM</option>
+														   <option value="7:00AM">7:00 AM</option>
+														   <option value="8:00AM">8:00 AM</option>
+														   <option value="9:00AM">9:00 AM</option>
+														   <option value="10:00AM">10:00 AM</option>
+														   <option value="11:00AM">11:00 AM</option>
+														   <option value="12:00NN">12:00 NN</option>
+														   <option value="1:00PM">1:00 PM</option>
+														   <option value="2:00PM">2:00 PM</option>
+														   <option value="3:00PM">3:00 PM</option>
+														   <option value="4:00PM">4:00 PM</option>
+														   <option value="5:00PM">5:00 PM</option>
+														   <option value="6:00PM">6:00 PM</option>
+														   <option value="7:00PM">7:00 PM</option>
+														   <option value="8:00PM">8:00 PM</option>
+														   <option value="9:00PM">9:00 PM</option>
+													   </select>
+													   </div>
+													   <div class="col-md-6 endtime6">
+														   <p style="margin-bottom: 5px !important;">End Time</p>
+														 <select id="set_time_sun_close2" class="form-control" name="end_sun2">
+														
+														   <option value="None">None</option>
+														   <option value="6:00AM" >6:00 AM</option>
+														   <option value="7:00AM">7:00 AM</option>
+														   <option value="8:00AM">8:00 AM</option>
+														   <option value="9:00AM">9:00 AM</option>
+														   <option value="10:00AM">10:00 AM</option>
+														   <option value="11:00AM">11:00 AM</option>
+														   <option value="12:00NN">12:00 NN</option>
+														   <option value="1:00PM">1:00 PM</option>
+														   <option value="2:00PM">2:00 PM</option>
+														   <option value="3:00PM">3:00 PM</option>
+														   <option value="4:00PM">4:00 PM</option>
+														   <option value="5:00PM">5:00 PM</option>
+														   <option value="6:00PM">6:00 PM</option>
+														   <option value="7:00PM">7:00 PM</option>
+														   <option value="8:00PM">8:00 PM</option>
+														   <option value="9:00PM">9:00 PM</option>
+													   </select>
+													   </div>
+												   </div>
+												</div>
+											<button type="button" id="remove-branch-2" class="btn btn-danger remove-js" onclick="removeBranch2()"><i class="fa fa-trash"></i></button>
+											</div>
+										</div>
+									</div>
+
+									<!-------------------------->
+									
+									<button type="button" id="button-branch-1" class="btn btn__primary btn__rounded mt-3" onclick="showBranch2()" > Add Another Branch </button>
+									
 								</div>
+								</div>
+
 								<div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
 									<h3 class="mb-4">Security Settings</h3>
 									<div class="row">
@@ -386,5 +745,732 @@ $("#doctorUpload").change(function() {
 
 	</script>
 	 
+<!-----HIDING BRANCHES------>
+
+<script>
+	function showBranch2() {
+	   document.getElementById('branch-2-show').style.display = "block";
+	   document.getElementById('button-branch-1').style.display = "none";
+	   document.getElementById('button-branch-2').style.display = "block";
+	}
+
+	function showBranch3() {
+	   document.getElementById('branch-3-show').style.display = "block";
+	   document.getElementById('button-branch-2').style.display = "none";
+	}
+
+
+	function removeBranch2() {
+	   document.getElementById('branch-2-show').style.display = "none";
+	   document.getElementById('button-branch-1').style.display = "block";
+	   document.getElementById('button-branch-2').style.display = "none";
+	
+	   $("#branch2").val([]);
+	   $("#set_time_weekdays_open2").val([]);
+	   $("#set_time_weekdays_close2").val([]);
+	   $("#set_time_sat_open2").val([]);
+	   $("#set_time_sat_close2").val([]);
+	   $("#set_time_sun_open2").val([]);
+	   $("#set_time_sun_close2").val([]);
+     
+	}
+
+
+	$(document).ready(function(){
+
+		$('#branch1').on("keyup change", function(){
+		var selectedBranch1 = $(this).val();
+		document.getElementById("selectedBranch1").innerHTML = selectedBranch1;
+	});
+		$('#branch2').on("keyup change", function(){
+			var selectedBranch2 = $(this).val();
+			document.getElementById("selectedBranch2").innerHTML = selectedBranch2;
+		});
+
+	});
+</script>
+
+<script>
+	$('.endtime1').hide()
+	$('.endtime2').hide()
+	$('.endtime3').hide()
+	$('.endtime4').hide()
+	$('.endtime5').hide()
+	$('.endtime6').hide()
+	$(document).ready(function() {
+	  $('.starttime1 select').on('change', function() {
+		if ( $(".starttime1 select").val() != "None" ){
+			$('#updatesched').attr('disabled', 'disabled');
+			$('.starttime2 select').attr('disabled', 'disabled');
+			$('.starttime3 select').attr('disabled', 'disabled');
+			$('.starttime4 select').attr('disabled', 'disabled');
+			$('.starttime5 select').attr('disabled', 'disabled');
+			$('.starttime6 select').attr('disabled', 'disabled');
+			if ( $(".endtime2 select").val() != "None"){
+				$('.endtime2 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime3 select").val() != "None"){
+				$('.endtime3 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime4 select").val() != "None"){
+				$('.endtime4 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime5 select").val() != "None"){
+				$('.endtime5 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime6 select").val() != "None"){
+				$('.endtime6 select').attr('disabled', 'disabled');
+			}
+			let empty = false;
+			$('.endtime1').show()
+			$('.endtime1 select').on('change', function() {
+				if ( $(".endtime1 select").val() != "None" ){
+					empty = true
+					$('.starttime1 select').attr('disabled', 'disabled');
+					if (empty){
+						$('#updatesched').removeAttr('disabled')
+						if ( $(".endtime2 select").val() == "None"){
+							$('.starttime2 select').removeAttr('disabled')
+						}
+						if ( $(".endtime3 select").val() == "None"){
+							$('.starttime3 select').removeAttr('disabled')
+						}
+						if ( $(".endtime4 select").val() == "None"){
+							$('.starttime4 select').removeAttr('disabled')
+						}
+						if ( $(".endtime5 select").val() == "None"){
+							$('.starttime5 select').removeAttr('disabled')
+						}
+						if ( $(".endtime6 select").val() == "None"){
+							$('.starttime6 select').removeAttr('disabled')
+						}
+						$('.endtime2 select').removeAttr('disabled');
+						$('.endtime3 select').removeAttr('disabled');
+						$('.endtime4 select').removeAttr('disabled');
+						$('.endtime5 select').removeAttr('disabled');
+						$('.endtime6 select').removeAttr('disabled');
+					}
+					else
+						$('#updatesched').attr('disabled', 'disabled');
+				} else {
+					$('#updatesched').attr('disabled', 'disabled');
+					$('.starttime1 select').removeAttr('disabled');
+					$('.starttime2 select').attr('disabled', 'disabled');
+					$('.starttime3 select').attr('disabled', 'disabled');
+					$('.starttime4 select').attr('disabled', 'disabled');
+					$('.starttime5 select').attr('disabled', 'disabled');
+					$('.starttime6 select').attr('disabled', 'disabled');
+					$('.endtime2 select').attr('disabled', 'disabled');
+					$('.endtime3 select').attr('disabled', 'disabled');
+					$('.endtime4 select').attr('disabled', 'disabled');
+					$('.endtime5 select').attr('disabled', 'disabled');
+					$('.endtime6 select').attr('disabled', 'disabled');
+				}
+				
+					
+			});
+		
+		} else {
+			$('.endtime1').hide()
+			if ( $(".endtime2 select").val() == "None"){
+				$('.starttime2 select').removeAttr('disabled')
+			}
+			if ( $(".endtime3 select").val() == "None"){
+				$('.starttime3 select').removeAttr('disabled')
+			}
+			if ( $(".endtime4 select").val() == "None"){
+				$('.starttime4 select').removeAttr('disabled')
+			}
+			if ( $(".endtime5 select").val() == "None"){
+				$('.starttime5 select').removeAttr('disabled')
+			}
+			if ( $(".endtime6 select").val() == "None"){
+				$('.starttime6 select').removeAttr('disabled')
+			}
+			if ( $(".endtime2 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime3 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime4 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime5 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime6 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			$('.endtime2 select').removeAttr('disabled');
+			$('.endtime3 select').removeAttr('disabled');
+			$('.endtime4 select').removeAttr('disabled');
+			$('.endtime5 select').removeAttr('disabled');
+			$('.endtime6 select').removeAttr('disabled');
+		}
+	  });
+	  $('.starttime2 select').on('change', function() {
+		if ( $(".starttime2 select").val() != "None" ){
+			$('#updatesched').attr('disabled', 'disabled');
+			$('.starttime1 select').attr('disabled', 'disabled');
+			$('.starttime3 select').attr('disabled', 'disabled');
+			$('.starttime4 select').attr('disabled', 'disabled');
+			$('.starttime5 select').attr('disabled', 'disabled');
+			$('.starttime6 select').attr('disabled', 'disabled');
+			if ( $(".endtime1 select").val() != "None"){
+				$('.endtime1 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime3 select").val() != "None"){
+				$('.endtime3 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime4 select").val() != "None"){
+				$('.endtime4 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime5 select").val() != "None"){
+				$('.endtime5 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime6 select").val() != "None"){
+				$('.endtime6 select').attr('disabled', 'disabled');
+			}
+			let empty = false;
+			$('.endtime2').show()
+	
+			$('.endtime2 select').on('change', function() {
+				if ( $(".endtime2 select").val() != "None" ){
+					empty = true
+					$('.starttime2 select').attr('disabled', 'disabled');
+					if (empty){
+						$('#updatesched').removeAttr('disabled')
+						if ( $(".endtime1 select").val() == "None"){
+							$('.starttime1 select').removeAttr('disabled')
+						}
+						if ( $(".endtime3 select").val() == "None"){
+							$('.starttime3 select').removeAttr('disabled')
+						}
+						if ( $(".endtime4 select").val() == "None"){
+							$('.starttime4 select').removeAttr('disabled')
+						}
+						if ( $(".endtime5 select").val() == "None"){
+							$('.starttime5 select').removeAttr('disabled')
+						}
+						if ( $(".endtime6 select").val() == "None"){
+							$('.starttime6 select').removeAttr('disabled')
+						}
+						$('.endtime1 select').removeAttr('disabled');
+						$('.endtime3 select').removeAttr('disabled');
+						$('.endtime4 select').removeAttr('disabled');
+						$('.endtime5 select').removeAttr('disabled');
+						$('.endtime6 select').removeAttr('disabled');
+					}
+					else
+						$('#updatesched').attr('disabled', 'disabled');
+				} else {
+					$('#updatesched').attr('disabled', 'disabled');
+					$('.starttime2 select').removeAttr('disabled');
+					$('.starttime1 select').attr('disabled', 'disabled');
+					$('.starttime3 select').attr('disabled', 'disabled');
+					$('.starttime4 select').attr('disabled', 'disabled');
+					$('.starttime5 select').attr('disabled', 'disabled');
+					$('.starttime6 select').attr('disabled', 'disabled');
+					$('.endtime1 select').attr('disabled', 'disabled');
+					$('.endtime3 select').attr('disabled', 'disabled');
+					$('.endtime4 select').attr('disabled', 'disabled');
+					$('.endtime5 select').attr('disabled', 'disabled');
+					$('.endtime6 select').attr('disabled', 'disabled');
+				}
+				
+					
+			});
+		
+		} else {
+			$('.endtime2').hide()
+			if ( $(".endtime1 select").val() == "None"){
+				$('.starttime1 select').removeAttr('disabled')
+			}
+			if ( $(".endtime3 select").val() == "None"){
+				$('.starttime3 select').removeAttr('disabled')
+			}
+			if ( $(".endtime4 select").val() == "None"){
+				$('.starttime4 select').removeAttr('disabled')
+			}
+			if ( $(".endtime5 select").val() == "None"){
+				$('.starttime5 select').removeAttr('disabled')
+			}
+			if ( $(".endtime6 select").val() == "None"){
+				$('.starttime6 select').removeAttr('disabled')
+			}
+			if ( $(".endtime1 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime3 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime4 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime5 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime6 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			$('.endtime1 select').removeAttr('disabled');
+			$('.endtime3 select').removeAttr('disabled');
+			$('.endtime4 select').removeAttr('disabled');
+			$('.endtime5 select').removeAttr('disabled');
+			$('.endtime6 select').removeAttr('disabled');
+		}
+	  });
+	  $('.starttime3 select').on('change', function() {
+		if ( $(".starttime3 select").val() != "None" ){
+			$('.starttime2 select').attr('disabled', 'disabled');
+			$('.starttime1 select').attr('disabled', 'disabled');
+			$('.starttime4 select').attr('disabled', 'disabled');
+			$('.starttime5 select').attr('disabled', 'disabled');
+			$('.starttime6 select').attr('disabled', 'disabled');
+			if ( $(".endtime2 select").val() != "None"){
+				$('.endtime2 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime1 select").val() != "None"){
+				$('.endtime1 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime4 select").val() != "None"){
+				$('.endtime4 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime5 select").val() != "None"){
+				$('.endtime5 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime6 select").val() != "None"){
+				$('.endtime6 select').attr('disabled', 'disabled');
+			}
+			$('#updatesched').attr('disabled', 'disabled');
+			let empty = false;
+			$('.endtime3').show()
+	
+			$('.endtime3 select').on('change', function() {
+				if ( $(".endtime3 select").val() != "None" ){
+					empty = true
+					$('.starttime3 select').attr('disabled', 'disabled');
+					if (empty){
+						$('#updatesched').removeAttr('disabled')
+						if ( $(".endtime2 select").val() == "None"){
+							$('.starttime2 select').removeAttr('disabled')
+						}
+						if ( $(".endtime1 select").val() == "None"){
+							$('.starttime1 select').removeAttr('disabled')
+						}
+						if ( $(".endtime4 select").val() == "None"){
+							$('.starttime4 select').removeAttr('disabled')
+						}
+						if ( $(".endtime5 select").val() == "None"){
+							$('.starttime5 select').removeAttr('disabled')
+						}
+						if ( $(".endtime6 select").val() == "None"){
+							$('.starttime6 select').removeAttr('disabled')
+						}
+						$('.endtime1 select').removeAttr('disabled');
+						$('.endtime2 select').removeAttr('disabled');
+						$('.endtime4 select').removeAttr('disabled');
+						$('.endtime5 select').removeAttr('disabled');
+						$('.endtime6 select').removeAttr('disabled');
+					}
+					else
+						$('#updatesched').attr('disabled', 'disabled');
+				} else {
+					$('#updatesched').attr('disabled', 'disabled');
+					$('.starttime3 select').removeAttr('disabled');
+					$('.starttime2 select').attr('disabled', 'disabled');
+					$('.starttime1 select').attr('disabled', 'disabled');
+					$('.starttime4 select').attr('disabled', 'disabled');
+					$('.starttime5 select').attr('disabled', 'disabled');
+					$('.starttime6 select').attr('disabled', 'disabled');
+					$('.endtime1 select').attr('disabled', 'disabled');
+					$('.endtime2 select').attr('disabled', 'disabled');
+					$('.endtime4 select').attr('disabled', 'disabled');
+					$('.endtime5 select').attr('disabled', 'disabled');
+					$('.endtime6 select').attr('disabled', 'disabled');
+				}
+				
+					
+			});
+		
+		} else {
+			$('.endtime3').hide()
+			if ( $(".endtime2 select").val() == "None"){
+				$('.starttime2 select').removeAttr('disabled')
+			}
+			if ( $(".endtime1 select").val() == "None"){
+				$('.starttime1 select').removeAttr('disabled')
+			}
+			if ( $(".endtime4 select").val() == "None"){
+				$('.starttime4 select').removeAttr('disabled')
+			}
+			if ( $(".endtime5 select").val() == "None"){
+				$('.starttime5 select').removeAttr('disabled')
+			}
+			if ( $(".endtime6 select").val() == "None"){
+				$('.starttime6 select').removeAttr('disabled')
+			}
+			if ( $(".endtime2 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime1 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime4 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime5 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime6 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			$('.endtime1 select').removeAttr('disabled');
+			$('.endtime2 select').removeAttr('disabled');
+			$('.endtime4 select').removeAttr('disabled');
+			$('.endtime5 select').removeAttr('disabled');
+			$('.endtime6 select').removeAttr('disabled');
+		}
+	  });
+	  $('.starttime4 select').on('change', function() {
+		if ( $(".starttime4 select").val() != "None" ){
+			$('#updatesched').attr('disabled', 'disabled');
+			$('.starttime2 select').attr('disabled', 'disabled');
+			$('.starttime3 select').attr('disabled', 'disabled');
+			$('.starttime1 select').attr('disabled', 'disabled');
+			$('.starttime5 select').attr('disabled', 'disabled');
+			$('.starttime6 select').attr('disabled', 'disabled');
+			if ( $(".endtime2 select").val() != "None"){
+				$('.endtime2 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime1 select").val() != "None"){
+				$('.endtime1 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime3 select").val() != "None"){
+				$('.endtime4 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime5 select").val() != "None"){
+				$('.endtime5 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime6 select").val() != "None"){
+				$('.endtime6 select').attr('disabled', 'disabled');
+			}
+			let empty = false;
+			$('.endtime4').show()
+	
+			$('.endtime4 select').on('change', function() {
+				if ( $(".endtime4 select").val() != "None" ){
+					empty = true
+					$('.starttime4 select').attr('disabled', 'disabled');
+					if (empty){
+						$('#updatesched').removeAttr('disabled')
+						if ( $(".endtime2 select").val() == "None"){
+							$('.starttime2 select').removeAttr('disabled')
+						}
+						if ( $(".endtime1 select").val() == "None"){
+							$('.starttime1 select').removeAttr('disabled')
+						}
+						if ( $(".endtime3 select").val() == "None"){
+							$('.starttime3 select').removeAttr('disabled')
+						}
+						if ( $(".endtime5 select").val() == "None"){
+							$('.starttime5 select').removeAttr('disabled')
+						}
+						if ( $(".endtime6 select").val() == "None"){
+							$('.starttime6 select').removeAttr('disabled')
+						}
+						$('.endtime1 select').removeAttr('disabled');
+						$('.endtime2 select').removeAttr('disabled');
+						$('.endtime3 select').removeAttr('disabled');
+						$('.endtime5 select').removeAttr('disabled');
+						$('.endtime6 select').removeAttr('disabled');
+					}
+					else
+						$('#updatesched').attr('disabled', 'disabled');
+				} else {
+					$('#updatesched').attr('disabled', 'disabled');
+					$('.starttime4 select').removeAttr('disabled');
+					$('.starttime2 select').attr('disabled', 'disabled');
+					$('.starttime3 select').attr('disabled', 'disabled');
+					$('.starttime1 select').attr('disabled', 'disabled');
+					$('.starttime5 select').attr('disabled', 'disabled');
+					$('.starttime6 select').attr('disabled', 'disabled');
+					$('.endtime1 select').attr('disabled', 'disabled');
+					$('.endtime2 select').attr('disabled', 'disabled');
+					$('.endtime3 select').attr('disabled', 'disabled');
+					$('.endtime5 select').attr('disabled', 'disabled');
+					$('.endtime6 select').attr('disabled', 'disabled');
+				}
+				
+					
+			});
+		
+		} else {
+			$('.endtime4').hide()
+			if ( $(".endtime2 select").val() == "None"){
+				$('.starttime2 select').removeAttr('disabled')
+			}
+			if ( $(".endtime1 select").val() == "None"){
+				$('.starttime1 select').removeAttr('disabled')
+			}
+			if ( $(".endtime3 select").val() == "None"){
+				$('.starttime3 select').removeAttr('disabled')
+			}
+			if ( $(".endtime5 select").val() == "None"){
+				$('.starttime5 select').removeAttr('disabled')
+			}
+			if ( $(".endtime6 select").val() == "None"){
+				$('.starttime6 select').removeAttr('disabled')
+			}
+			if ( $(".endtime2 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime1 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime3 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime5 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime6 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			$('.endtime1 select').removeAttr('disabled');
+			$('.endtime2 select').removeAttr('disabled');
+			$('.endtime3 select').removeAttr('disabled');
+			$('.endtime5 select').removeAttr('disabled');
+			$('.endtime6 select').removeAttr('disabled');
+		}
+	  });
+	  $('.starttime5 select').on('change', function() {
+		if ( $(".starttime5 select").val() != "None" ){
+			$('#updatesched').attr('disabled', 'disabled');
+			$('.starttime2 select').attr('disabled', 'disabled');
+			$('.starttime3 select').attr('disabled', 'disabled');
+			$('.starttime1 select').attr('disabled', 'disabled');
+			$('.starttime4 select').attr('disabled', 'disabled');
+			$('.starttime6 select').attr('disabled', 'disabled');
+			if ( $(".endtime2 select").val() != "None"){
+				$('.endtime2 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime1 select").val() != "None"){
+				$('.endtime1 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime3 select").val() != "None"){
+				$('.endtime4 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime4 select").val() != "None"){
+				$('.endtime4 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime6 select").val() != "None"){
+				$('.endtime6 select').attr('disabled', 'disabled');
+			}
+			let empty = false;
+			$('.endtime5').show()
+	
+			$('.endtime5 select').on('change', function() {
+				if ( $(".endtime5 select").val() != "None" ){
+					empty = true
+					$('.starttime5 select').attr('disabled', 'disabled');
+					if (empty){
+						$('#updatesched').removeAttr('disabled')
+						if ( $(".endtime2 select").val() == "None"){
+							$('.starttime2 select').removeAttr('disabled')
+						}
+						if ( $(".endtime1 select").val() == "None"){
+							$('.starttime1 select').removeAttr('disabled')
+						}
+						if ( $(".endtime3 select").val() == "None"){
+							$('.starttime3 select').removeAttr('disabled')
+						}
+						if ( $(".endtime4 select").val() == "None"){
+							$('.starttime4 select').removeAttr('disabled')
+						}
+						if ( $(".endtime6 select").val() == "None"){
+							$('.starttime6 select').removeAttr('disabled')
+						}
+						$('.endtime1 select').removeAttr('disabled');
+						$('.endtime2 select').removeAttr('disabled');
+						$('.endtime3 select').removeAttr('disabled');
+						$('.endtime4 select').removeAttr('disabled');
+						$('.endtime6 select').removeAttr('disabled');
+					}
+					else
+						$('#updatesched').attr('disabled', 'disabled');
+				} else {
+					$('#updatesched').attr('disabled', 'disabled');
+					$('.starttime5 select').removeAttr('disabled');
+					$('.starttime2 select').attr('disabled', 'disabled');
+					$('.starttime3 select').attr('disabled', 'disabled');
+					$('.starttime1 select').attr('disabled', 'disabled');
+					$('.starttime4 select').attr('disabled', 'disabled');
+					$('.starttime6 select').attr('disabled', 'disabled');
+					$('.endtime1 select').attr('disabled', 'disabled');
+					$('.endtime2 select').attr('disabled', 'disabled');
+					$('.endtime3 select').attr('disabled', 'disabled');
+					$('.endtime4 select').attr('disabled', 'disabled');
+					$('.endtime6 select').attr('disabled', 'disabled');
+				}
+				
+					
+			});
+		
+		} else {
+			$('.endtime5').hide()
+			if ( $(".endtime2 select").val() == "None"){
+				$('.starttime2 select').removeAttr('disabled')
+			}
+			if ( $(".endtime1 select").val() == "None"){
+				$('.starttime1 select').removeAttr('disabled')
+			}
+			if ( $(".endtime4 select").val() == "None"){
+				$('.starttime4 select').removeAttr('disabled')
+			}
+			if ( $(".endtime3 select").val() == "None"){
+				$('.starttime3 select').removeAttr('disabled')
+			}
+			if ( $(".endtime6 select").val() == "None"){
+				$('.starttime6 select').removeAttr('disabled')
+			}
+			if ( $(".endtime2 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime1 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime4 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime3 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime6 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			$('.endtime1 select').removeAttr('disabled');
+			$('.endtime2 select').removeAttr('disabled');
+			$('.endtime4 select').removeAttr('disabled');
+			$('.endtime3 select').removeAttr('disabled');
+			$('.endtime6 select').removeAttr('disabled');
+		}
+	  });
+	  $('.starttime6 select').on('change', function() {
+		if ( $(".starttime6 select").val() != "None" ){
+			$('#updatesched').attr('disabled', 'disabled');
+			$('.starttime2 select').attr('disabled', 'disabled');
+			$('.starttime3 select').attr('disabled', 'disabled');
+			$('.starttime1 select').attr('disabled', 'disabled');
+			$('.starttime5 select').attr('disabled', 'disabled');
+			$('.starttime4 select').attr('disabled', 'disabled');
+			if ( $(".endtime2 select").val() != "None"){
+				$('.endtime2 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime1 select").val() != "None"){
+				$('.endtime1 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime3 select").val() != "None"){
+				$('.endtime4 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime4 select").val() != "None"){
+				$('.endtime4 select').attr('disabled', 'disabled');
+			}
+			if ( $(".endtime5 select").val() != "None"){
+				$('.endtime5 select').attr('disabled', 'disabled');
+			}
+			let empty = false;
+			$('.endtime6').show()
+	
+			$('.endtime6 select').on('change', function() {
+				if ( $(".endtime6 select").val() != "None" ){
+					empty = true
+					$('.starttime6 select').attr('disabled', 'disabled');
+					if (empty){
+						$('#updatesched').removeAttr('disabled')
+						if ( $(".endtime2 select").val() == "None"){
+							$('.starttime2 select').removeAttr('disabled')
+						}
+						if ( $(".endtime1 select").val() == "None"){
+							$('.starttime1 select').removeAttr('disabled')
+						}
+						if ( $(".endtime3 select").val() == "None"){
+							$('.starttime3 select').removeAttr('disabled')
+						}
+						if ( $(".endtime4 select").val() == "None"){
+							$('.starttime4 select').removeAttr('disabled')
+						}
+						if ( $(".endtime5 select").val() == "None"){
+							$('.starttime5 select').removeAttr('disabled')
+						}
+						$('.endtime1 select').removeAttr('disabled');
+						$('.endtime2 select').removeAttr('disabled');
+						$('.endtime3 select').removeAttr('disabled');
+						$('.endtime4 select').removeAttr('disabled');
+						$('.endtime5 select').removeAttr('disabled');
+					}
+					else
+						$('#updatesched').attr('disabled', 'disabled');
+				} else {
+					$('#updatesched').attr('disabled', 'disabled');
+					$('.starttime6 select').removeAttr('disabled');
+					$('.starttime2 select').attr('disabled', 'disabled');
+					$('.starttime3 select').attr('disabled', 'disabled');
+					$('.starttime1 select').attr('disabled', 'disabled');
+					$('.starttime5 select').attr('disabled', 'disabled');
+					$('.starttime4 select').attr('disabled', 'disabled');
+					$('.endtime1 select').attr('disabled', 'disabled');
+					$('.endtime2 select').attr('disabled', 'disabled');
+					$('.endtime3 select').attr('disabled', 'disabled');
+					$('.endtime4 select').attr('disabled', 'disabled');
+					$('.endtime5 select').attr('disabled', 'disabled');
+				}
+				
+					
+			});
+		
+		} else {
+			$('.endtime6').hide()
+			if ( $(".endtime2 select").val() == "None"){
+				$('.starttime2 select').removeAttr('disabled')
+			}
+			if ( $(".endtime1 select").val() == "None"){
+				$('.starttime1 select').removeAttr('disabled')
+			}
+			if ( $(".endtime4 select").val() == "None"){
+				$('.starttime4 select').removeAttr('disabled')
+			}
+			if ( $(".endtime3 select").val() == "None"){
+				$('.starttime3 select').removeAttr('disabled')
+			}
+			if ( $(".endtime5 select").val() == "None"){
+				$('.starttime5 select').removeAttr('disabled')
+			}
+			if ( $(".endtime2 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime1 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime4 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime3 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			if ( $(".endtime5 select").val() != "None"){
+				$('#updatesched').removeAttr('disabled')
+			}
+			$('.endtime1 select').removeAttr('disabled');
+			$('.endtime2 select').removeAttr('disabled');
+			$('.endtime4 select').removeAttr('disabled');
+			$('.endtime3 select').removeAttr('disabled');
+			$('.endtime5 select').removeAttr('disabled');
+		}
+	  });
+	});
+	</script>
+
 </body>
 </html>

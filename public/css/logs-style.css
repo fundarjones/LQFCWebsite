@@ -8163,6 +8163,7 @@ main .btn-send:hover {
     margin-right: 15px;
     height: 55px;
     width: 55px;
+    object-fit: cover;
     border-radius: 45px;
     border: 3px solid #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -8851,4 +8852,56 @@ table.dataTable td {
 	.dataTables_wrapper .dataTables_filter {
 		margin-top: .5em
 	}
+}
+
+.profile button{
+	border: none;
+	background-color: #fff;
+}
+
+nav .profile {
+	position: relative;
+}
+nav .profile img {
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	object-fit: cover;
+	cursor: pointer;
+}
+nav .profile .profile-link {
+	position: absolute;
+	top: calc(100% + 10px);
+	right: 0;
+	background: var(--light);
+	padding: 10px 0;
+	box-shadow: 4px 4px 16px rgba(0, 0, 0, .1);
+	border-radius: 10px;
+	width: 160px;
+	opacity: 0;
+	pointer-events: none;
+	transition: all .3s ease;
+}
+nav .profile .profile-link.show {
+	opacity: 1;
+	pointer-events: visible;
+	top: 100%;
+}
+nav .profile .profile-link button {
+	padding: 10px 16px;
+	display: flex;
+	grid-gap: 10px;
+	font-size: 14px;
+	color: var(--dark);
+  width: 100%;
+	align-items: center;
+	transition: all .3s ease;
+}
+nav .profile .profile-link button:hover {
+	background: var(--grey);
+
+}
+
+.usertype{
+  text-transform: uppercase;
 }

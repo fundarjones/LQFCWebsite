@@ -9,15 +9,16 @@ const UserSchema = new mongoose.Schema(
 		last_name: { type: String, required: true },
 		suffix: { type: String },
 		birthday: { type: String, required: true },
-		age: { type: String, required: true },
 		bio: { type: String },
 		sex: { type: String, required: true },
 		status: { type: String, required: true },
 		phone: { type: String, required: true },
+		address: { type: String, required: true },
 		phone2: { type: String },
 		isVerified: { type: Boolean, default: false },
 		email: { type: String, required: true, unique: true },
 		password: { type: String, required: true },
+		date_created: { type: String, required: true },
 		img:
 		{
 			data: Buffer,

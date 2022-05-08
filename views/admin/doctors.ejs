@@ -86,6 +86,15 @@
 						<p class="error-msg"><%= error.msg %></p>
 					</div>
 
+					<% if (typeof msg != "undefined"){ %> 
+						<% if (msg){%> 
+						  <div class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
+							<%= msg %> 
+							<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+						  </div> 
+						<% } %> 
+						<% } %> 
+
 		   <% }) %>
 			<% } %>
 					<div class="row justify-content-center">
@@ -220,18 +229,16 @@
 														</div>
 													</div>
 													<hr>
-													<h6>Specialization</h6>
+													<h6><b>Assigned Branches</b></h6>
 													<div class="row">
 														<div class="col-md-12">
-																<p><%= doctors.specialization %> </p>
-															</div>
-													</div>
-													<hr>
-													<h6>Assigned Branch</h6>
-													<div class="row">
-														<div class="col-md-12">
-																<p><%= doctors.branch %></p>
+																<p><%= doctors.branch1 %></p>
 														</div>
+														<% if (doctors.branch2) {%>
+														<div class="col-md-12">
+															<p><%= doctors.branch2 %></p>
+														</div>
+														<% } %>  
 													</div>
 					
 							

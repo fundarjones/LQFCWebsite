@@ -564,6 +564,7 @@ app.get('/logs', checkAuthenticated, async (req, res) => {
   const patients = await User.findById(user_id)
   const doctors = await Doctor.findById(user_id)
   const admins = await Admin.findById(user_id)
+  const logs = await Logs.find()
   if (req.user.usertype == "patient") {
     res.redirect("/dashboard")
   }
@@ -571,7 +572,7 @@ app.get('/logs', checkAuthenticated, async (req, res) => {
     res.redirect("/dashboard")
   }
   else if (req.user.usertype == "admin"){
-    res.render('admin/logs.ejs', {  branches: branch , admin: admins , base: 'base64'})
+    res.render('admin/logs.ejs', {  branches: branch , logs: logs, admin: admins , base: 'base64'})
   }
   else{
     res.redirect("/dashboard")
@@ -685,12 +686,12 @@ app.get('/patients', checkAuthenticated, async (req, res) => {
 app.get('/set-appointment', checkAuthenticated, async (req, res) => {
   const user_id = req.user._id
   const patients = await User.findById(user_id) 
-  const doctors = await Doctor.findById(user_id)
+  const doctors = await Doctor.find()
   const admins = await Admin.findById(user_id)
   const branches = await Branch.find()
   const appointments = await Appointment.find()
   if (req.user.usertype == "patient") {
-    res.render('patient/set-appointment.ejs',{ appointment: appointments, branch: branches, patient: patients, base: 'base64'})
+    res.render('patient/set-appointment.ejs',{ appointment: appointments, branch: branches, doctor: doctors, patient: patients, base: 'base64'})
   }
   else if (req.user.usertype == "doctor") {
     res.redirect("/dashboard")
@@ -2213,7 +2214,7 @@ app.post('/register', checkNotAuthenticated, urlencodedParser,[
 
 
 ], async (req, res) => {
-  const { email, first_name, middle_name, suffix, phone2, last_name, birthday, sex, status, phone, password: plainTextPassword } = req.body
+  const { email, first_name, middle_name, suffix, address, phone2, last_name, birthday, sex, status, phone, password: plainTextPassword } = req.body
   const password = await bcrypt.hash(plainTextPassword, 10)
   const errors = validationResult(req)
     if(!errors.isEmpty()) {
@@ -2224,8 +2225,20 @@ app.post('/register', checkNotAuthenticated, urlencodedParser,[
     }
     else{
       try{
-        let n = Date.now();
-        let d = new Date(birthday);
+        let date_ob = new Date();
+        let set_date = ("0" + date_ob.getDate()).slice(-2);
+        let year = date_ob.getFullYear();
+        let hours = date_ob.getHours();
+        let min = ("0" + date_ob.getMinutes()).slice(-2);
+        var midday = "AM";
+        midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+        hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours);
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ];
+        const created_time = hours + ":" + min + " " + midday
+        const created_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+        const date_created = created_date + " | " + created_time
         console.log(email)
         const response = new User({
                 usertype: "patient",
@@ -2233,10 +2246,11 @@ app.post('/register', checkNotAuthenticated, urlencodedParser,[
                 first_name,
                 last_name,
                 birthday,
+                address,
                 middle_name,
+                date_created,
                 suffix,
                 phone2,
-                age: getYears(n - d),
                 bio: " ",
                 sex,
                 status,
@@ -2293,7 +2307,8 @@ app.post('/add-doctors', checkAuthenticated, urlencodedParser,[
     }),
 
 ], async (req, res) => {
-  const { email, first_name, last_name, birthday, specialization, branch, sex, status, phone, password: plainTextPassword } = req.body
+  const { email, first_name, branch1, branch2, start_weekdays1, end_weekdays1, start_sat1, end_sat1, start_sun1 , end_sun1 , start_weekdays2 , end_weekdays2 , start_sat2 , end_sat2 , start_sun2 , end_sun2, last_name, birthday, branch, sex, status, phone, password: plainTextPassword } = req.body
+  
   const errors = validationResult(req)
     if(!errors.isEmpty()) {
         const alert = errors.array()
@@ -2305,28 +2320,62 @@ app.post('/add-doctors', checkAuthenticated, urlencodedParser,[
     }
     else{
       try{
-        const password = await bcrypt.hash(plainTextPassword, 10)
-        let n = Date.now();
-        let d = new Date(birthday);
-        const response = new Doctor({
-                usertype: "doctor",
-                id: Date.now().toString(),
-                first_name,
-                last_name,
-                birthday,
-                specialization,
-                branch,
-                age: getYears(n - d),
-                bio: " ",
-                sex,
-                status,
-                phone,
-                email,
-                password
-            })
-      await response.save()
-      res.redirect('/doctors')
-      console.log('User created successfully: ', response)
+        if (start_weekdays1 != "None" && end_weekdays1 == "None" || start_sat1 != "None" && end_sat1 != "None" || start_sun1 != "None" && end_sun1 == "None" || start_weekdays2 != "None" && end_weekdays2 == "None" || start_sat2 != "None" && end_sat2 == "None" || start_sun2 != "None" && end_sun2 == "None") {
+          const message = "Invalid schedule input, make sure to have a start time and end time same with the following days you are scheduling."
+          const doc = await Doctor.find();
+          const branches = await Branch.find();
+          const user_id = req.user._id
+          const admins = await Admin.findById(user_id)
+          res.render('admin/add-doctor.ejs', { branch: branches, msg: message, type: "danger", doctors: doc, admin: admins , base: 'base64'})
+        } else {
+          const password = await bcrypt.hash(plainTextPassword, 10)
+          const response = new Doctor({
+                  usertype: "doctor",
+                  id: Date.now().toString(),
+                  first_name,
+                  last_name,
+                  birthday,
+                  branch,
+                  bio: " ",
+                  sex,
+                  branch1, branch2, start_weekdays1, end_weekdays1, start_sat1, end_sat1, start_sun1 , end_sun1 , start_weekdays2 , end_weekdays2 , start_sat2 , end_sat2 , start_sun2 , end_sun2,
+                  status,
+                  phone,
+                  email,
+                  password
+              })
+          await response.save()
+          const user_usertype = req.user.usertype
+          const userlog_id = req.user.id
+          const user_first_name = req.user.first_name
+          const user_last_name = req.user.last_name
+          const user_email = req.user.email
+          let date_ob = new Date();
+          let set_date = ("0" + date_ob.getDate()).slice(-2);
+          let year = date_ob.getFullYear();
+          let hours = date_ob.getHours();
+          let min = ("0" + date_ob.getMinutes()).slice(-2);
+          var midday = "AM";
+          midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+                  hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+          const log_time = hours + ":" + min + " " + midday
+          const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+          const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+          const log = new Logs({
+            usertype: user_usertype,
+            id: userlog_id,
+            first_name: user_first_name,
+            last_name: user_last_name,
+            email: user_email,
+            log_time,
+            log_date,
+            action: "Add Doctor"
+          })
+          await log.save()
+          console.log( 'Add doctor logged', log)
+          res.redirect('/doctors')
+          console.log('User created successfully: ', response)
+        }
     } catch (err){
       res.redirect('/dashboard')
       console.log(err)
@@ -2383,8 +2432,6 @@ app.post('/add-staff', checkAuthenticated, urlencodedParser,[
     else{
       try{
         const password = await bcrypt.hash(plainTextPassword, 10)
-        let n = Date.now();
-        let d = new Date(birthday);
         const response = new Staff({
                 usertype: "staff",
                 id: Date.now().toString(),
@@ -2392,7 +2439,6 @@ app.post('/add-staff', checkAuthenticated, urlencodedParser,[
                 last_name,
                 birthday,
                 branch,
-                age: getYears(n - d),
                 bio: " ",
                 sex,
                 status,
@@ -2401,8 +2447,36 @@ app.post('/add-staff', checkAuthenticated, urlencodedParser,[
                 password
             })
       await response.save()
+      const user_usertype = req.user.usertype
+      const user_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: user_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        action: "Add Staff"
+      })
+      await log.save()
+      console.log( 'Add staff logged', log)
       res.redirect('/staffs')
-      console.log('User created successfully: ', response)
+      console.log('Staff created successfully: ', response)
     } catch (err){
       res.redirect('/dashboard')
       console.log(err)
@@ -2419,6 +2493,34 @@ app.put('/edit-branch', checkAuthenticated, async (req, res) => {
           branch.phone = phone
           branch.address = address
           await branch.save()
+          const user_usertype = req.user.usertype
+          const userlog_id = req.user.id
+          const user_first_name = req.user.first_name
+          const user_last_name = req.user.last_name
+          const user_email = req.user.email
+          let date_ob = new Date();
+          let set_date = ("0" + date_ob.getDate()).slice(-2);
+          let year = date_ob.getFullYear();
+          let hours = date_ob.getHours();
+          let min = ("0" + date_ob.getMinutes()).slice(-2);
+          var midday = "AM";
+          midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+                  hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+          const log_time = hours + ":" + min + " " + midday
+          const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+          const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+          const log = new Logs({
+            usertype: user_usertype,
+            id: userlog_id,
+            first_name: user_first_name,
+            last_name: user_last_name,
+            email: user_email,
+            log_time,
+            log_date,
+            action: "Edit Branch"
+          })
+          await log.save()
+          console.log( 'Edit branch logged', log)
           const response = branch
           res.redirect('/branches')
           console.log('Branch updated successfully: ', response)
@@ -2442,6 +2544,34 @@ app.put('/edit-branch-timeslot', checkAuthenticated, async (req, res) => {
           branch.opening_sunday = opening_sunday
           branch.closing_sunday = closing_sunday
           await branch.save()
+          const user_usertype = req.user.usertype
+          const userlog_id = req.user.id
+          const user_first_name = req.user.first_name
+          const user_last_name = req.user.last_name
+          const user_email = req.user.email
+          let date_ob = new Date();
+          let set_date = ("0" + date_ob.getDate()).slice(-2);
+          let year = date_ob.getFullYear();
+          let hours = date_ob.getHours();
+          let min = ("0" + date_ob.getMinutes()).slice(-2);
+          var midday = "AM";
+          midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+                  hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+          const log_time = hours + ":" + min + " " + midday
+          const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+          const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+          const log = new Logs({
+            usertype: user_usertype,
+            id: userlog_id,
+            first_name: user_first_name,
+            last_name: user_last_name,
+            email: user_email,
+            log_time,
+            log_date,
+            action: "Edit Branch Timeslot"
+          })
+          await log.save()
+          console.log( 'Edit branch timeslot logged', log)
           const response = branch
           res.redirect('/branches')
           console.log('Branch timeslot updated successfully: ', response)
@@ -2488,8 +2618,6 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
         }
     }
     else{
-        let n = Date.now();
-        let d = new Date(birthday);
         try {
           if (req.user.usertype == "patient") {
             const user = await User.findById(user_id)
@@ -2497,7 +2625,6 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
             user.first_name = first_name
             user.last_name = last_name
             user.birthday = birthday
-            user.age = getYears(n - d)
             user.sex = sex
             user.status = status
             user.middle_name = middle_name
@@ -2516,7 +2643,6 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
             doctor.first_name = first_name
             doctor.last_name = last_name
             doctor.birthday = birthday
-            doctor.age = getYears(n - d)
             doctor.sex = sex
             doctor.status = status
             doctor.phone = phone
@@ -2532,7 +2658,6 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
             staff.first_name = first_name
             staff.last_name = last_name
             staff.birthday = birthday
-            staff.age = getYears(n - d)
             staff.sex = sex
             staff.status = status
             staff.phone = phone
@@ -2548,7 +2673,6 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
             admin.first_name = first_name
             admin.last_name = last_name
             admin.birthday = birthday
-            admin.age = getYears(n - d)
             admin.sex = sex
             admin.status = status
             admin.phone = phone
@@ -2558,7 +2682,36 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
             res.redirect('/profile')
             console.log('User updated successfully: ', response)
           }
-          
+          const user_usertype = req.user.usertype
+          const userlog_id = req.user.id
+          const user_first_name = req.user.first_name
+          const user_last_name = req.user.last_name
+          const user_email = req.user.email
+          const user_branch = req.user.branch
+          let date_ob = new Date();
+          let set_date = ("0" + date_ob.getDate()).slice(-2);
+          let year = date_ob.getFullYear();
+          let hours = date_ob.getHours();
+          let min = ("0" + date_ob.getMinutes()).slice(-2);
+          var midday = "AM";
+          midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+                  hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+          const log_time = hours + ":" + min + " " + midday
+          const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+          const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+          const log = new Logs({
+            usertype: user_usertype,
+            id: userlog_id,
+            first_name: user_first_name,
+            last_name: user_last_name,
+            email: user_email,
+            log_time,
+            log_date,
+            branch: user_branch,
+            action: "Update Information"
+          })
+          await log.save()
+          console.log( 'Update information logged', log)
         } catch (err){
           res.redirect("/dashboard")
           console.log(err)
@@ -2957,6 +3110,36 @@ app.put('/confirm-appointment', checkAuthenticated, async (req, res) => {
     const confirm = await Appointment.findOne({id:user_id, appointment_status : { $ne: "Cancelled" }})
     confirm.isConfirmed = true
     await confirm.save()
+    const user_usertype = req.user.usertype
+    const userlog_id = req.user.id
+    const user_first_name = req.user.first_name
+    const user_last_name = req.user.last_name
+    const user_email = req.user.email
+    const user_branch = req.user.branch
+    let date_ob = new Date();
+    let set_date = ("0" + date_ob.getDate()).slice(-2);
+    let year = date_ob.getFullYear();
+    let hours = date_ob.getHours();
+    let min = ("0" + date_ob.getMinutes()).slice(-2);
+    var midday = "AM";
+    midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+            hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+    const log_time = hours + ":" + min + " " + midday
+    const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+    const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+    const log = new Logs({
+      usertype: user_usertype,
+      id: userlog_id,
+      first_name: user_first_name,
+      last_name: user_last_name,
+      email: user_email,
+      log_time,
+      log_date,
+      branch: user_branch,
+      action: "Confirm Appointment"
+    })
+    await log.save()
+    console.log( 'Confirm Appointment logged', log)
     console.log("Appointment has been confirmed: ", confirm)
     const patients = await User.findById(user_id)
     const patient_appointments = await Appointment.find({ img_id: req.user.id })
@@ -2973,19 +3156,19 @@ app.put('/confirm-appointment', checkAuthenticated, async (req, res) => {
 app.put('/approve-appointment', checkAuthenticated, async (req, res) => {
     const user_id = req.body._id
     let date_ob = new Date();
-let set_date = ("0" + date_ob.getDate()).slice(-2);
-let year = date_ob.getFullYear();
-let hours = date_ob.getHours();
-let min = ("0" + date_ob.getMinutes()).slice(-2);
-var midday = "AM";
-midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
-hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours);
-const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
-const approved_time = hours + ":" + min + " " + midday
-const approved_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
-const approved_staff = req.user.first_name + " " + req.user.last_name
+    let set_date = ("0" + date_ob.getDate()).slice(-2);
+    let year = date_ob.getFullYear();
+    let hours = date_ob.getHours();
+    let min = ("0" + date_ob.getMinutes()).slice(-2);
+    var midday = "AM";
+    midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+    hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours);
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const approved_time = hours + ":" + min + " " + midday
+    const approved_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+    const approved_staff = req.user.first_name + " " + req.user.last_name
     try {
       var appointment_status = " "
       const approve = await Appointment.findById(user_id)
@@ -3006,7 +3189,6 @@ const approved_staff = req.user.first_name + " " + req.user.last_name
         exp_symptoms: approve.exp_symptoms,
         date_timestamp: approve.date_timestamp,
         time_timestamp: approve.time_timestamp,
-        age: approve.age,
         sex: approve.sex,
         status: approve.status,
         phone: approve.phone,
@@ -3020,6 +3202,25 @@ const approved_staff = req.user.first_name + " " + req.user.last_name
         approved_staff
     })
 await response.save()
+const user_usertype = req.user.usertype
+const user_id = req.user.id
+const user_first_name = req.user.first_name
+const user_last_name = req.user.last_name
+const user_email = req.user.email
+const user_branch = req.user.branch
+const log = new Logs({
+  usertype: user_usertype,
+  id: user_id,
+  first_name: user_first_name,
+  last_name: user_last_name,
+  email: user_email,
+  log_time: time_timestamp,
+  log_date: date_timestamp,
+  branch: user_branch,
+  action: "Approve Appointment"
+})
+await log.save()
+console.log( 'Approve Appointment logged', log)
 const delete_response = await Appointment.deleteOne({_id: user_id})
 res.redirect('/appointments')
 sendApproveAppointment(approved_date, approved_time, approve.email, approve.date, approve.time, approve.first_name, approve.last_name)
@@ -3062,20 +3263,47 @@ app.put('/edit-info', checkAuthenticated, urlencodedParser,[
     return
   }
   try {
-    let n = Date.now();
-    let d = new Date(birthday);
     if (usertype == "doctor") {
       const doctor = await Doctor.findById(_id)
       doctor.email = email
       doctor.first_name = first_name
       doctor.last_name = last_name
       doctor.birthday = birthday
-      doctor.age = getYears(n - d)
       doctor.sex = sex
       doctor.status = status
       doctor.phone = phone
       doctor.bio = bio
       await doctor.save()
+      const user_usertype = req.user.usertype
+      const userlog_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: userlog_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Edit Doctor Information"
+      })
+      await log.save()
+      console.log( 'Edit Doctor Information logged', log)
       const response = doctor
       res.redirect('/doctors')
       console.log('Doctor information updated successfully: ', response) 
@@ -3085,12 +3313,41 @@ app.put('/edit-info', checkAuthenticated, urlencodedParser,[
       staff.first_name = first_name
       staff.last_name = last_name
       staff.birthday = birthday
-      staff.age = getYears(n - d)
       staff.sex = sex
       staff.status = status
       staff.phone = phone
       staff.bio = bio
       await staff.save()
+      const user_usertype = req.user.usertype
+      const userlog_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: userlog_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Edit Staff Information"
+      })
+      await log.save()
+      console.log( 'Edit Staff Information logged', log)
       const response = staff
       res.redirect('/staffs')
       console.log('staff information updated successfully: ', response) 
@@ -3105,17 +3362,67 @@ app.put('/edit-info', checkAuthenticated, urlencodedParser,[
 })
 
 app.put('/edit-doctor-roles', checkAuthenticated, async (req, res) => {
-  const { specialization, branch, _id } = req.body
+  const { branch1, branch2, start_weekdays1, end_weekdays1, start_sat1, end_sat1, start_sun1 , end_sun1 , start_weekdays2 , end_weekdays2 , start_sat2 , end_sat2 , start_sun2 , end_sun2, _id } = req.body
   try {
-    const doctor = await Doctor.findById(_id)
-    doctor.specialization = specialization
-    doctor.branch = branch
-    await doctor.save()
-    const response = doctor
-    res.redirect('/doctors')
-    console.log('Doctor roles updated successfully: ', response) 
-  } catch {
+    if (start_weekdays1 != "None" && end_weekdays1 == "None" || start_sat1 != "None" && end_sat1 != "None" || start_sun1 != "None" && end_sun1 == "None" || start_weekdays2 != "None" && end_weekdays2 == "None" || start_sat2 != "None" && end_sat2 == "None" || start_sun2 != "None" && end_sun2 == "None") {
+      const msg = "Invalid schedule input, make sure to have a start time and end time same with the following days you are scheduling."
+      const doc = await Doctor.find();
+      const admins = await Admin.findById(req.user._id)
+      res.render('admin/doctors.ejs', { doctors: doc, msg: msg, type:"danger", admin: admins, base: 'base64' })
+    } else {
+      const doctor = await Doctor.findById(_id)
+      doctor.branch1 = branch1
+      doctor.branch2 = branch2
+      doctor.start_weekdays1 = start_weekdays1
+      doctor.end_weekdays1 = end_weekdays1
+      doctor.start_sat1 = start_sat1
+      doctor.end_sat1 = end_sat1
+      doctor.start_sun1 = start_sun1
+      doctor.end_sun1 = end_sun1
+      doctor.start_weekdays2 = start_weekdays2
+      doctor.end_weekdays2 = end_weekdays2
+      doctor.start_sat2 = start_sat2
+      doctor.end_sat2 = end_sat2
+      doctor.start_sun2 = start_sun2
+      doctor.end_sun2 = end_sun2
+      await doctor.save()
+      const user_usertype = req.user.usertype
+      const userlog_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: userlog_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Edit Doctor Roles"
+      })
+      await log.save()
+      console.log( 'Edit Doctor Roles logged', log)
+      const response = doctor
+      res.redirect('/doctors')
+      console.log('Doctor roles updated successfully: ', response) 
+    }
+  } catch (err) {
     res.redirect("/dashboard")
+    console.log(err)
   }
 })
 
@@ -3125,6 +3432,36 @@ app.put('/edit-staff-role', checkAuthenticated, async (req, res) => {
     const staff = await Staff.findById(_id)
     staff.branch = branch
     await staff.save()
+    const user_usertype = req.user.usertype
+    const userlog_id = req.user.id
+    const user_first_name = req.user.first_name
+    const user_last_name = req.user.last_name
+    const user_email = req.user.email
+    const user_branch = req.user.branch
+    let date_ob = new Date();
+    let set_date = ("0" + date_ob.getDate()).slice(-2);
+    let year = date_ob.getFullYear();
+    let hours = date_ob.getHours();
+    let min = ("0" + date_ob.getMinutes()).slice(-2);
+    var midday = "AM";
+    midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+            hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+    const log_time = hours + ":" + min + " " + midday
+    const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+    const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+    const log = new Logs({
+      usertype: user_usertype,
+      id: userlog_id,
+      first_name: user_first_name,
+      last_name: user_last_name,
+      email: user_email,
+      log_time,
+      log_date,
+      branch: user_branch,
+      action: "Edit Staff Role"
+    })
+    await log.save()
+    console.log( 'Edit Staff Role logged', log)
     const response = staff
     res.redirect('/staffs')
     console.log('Staff role updated successfully: ', response) 
@@ -3139,24 +3476,144 @@ app.post('/deactivate', checkAuthenticated, async (req, res) => {
   try {
     if (usertype == "doctor") {
       const doctor = await Doctor.deleteOne({_id: _id})
+      const user_usertype = req.user.usertype
+      const user_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: user_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Remove Doctor"
+      })
+      await log.save()
+      console.log( 'Remove Doctor logged', log)
       const response = doctor
       res.redirect('/doctors')
       console.log('Doctor removed successfully: ', response) 
     }
     else if (usertype == "staff") {
       const staff = await Staff.deleteOne({_id: _id})
+      const user_usertype = req.user.usertype
+      const user_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: user_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Remove Staff"
+      })
+      await log.save()
+      console.log( 'Remove Staff logged', log)
       const response = staff
       res.redirect('/staffs')
       console.log('Staff removed successfully: ', response) 
     }
     else if (usertype == "patient") {
       const patient = await User.deleteOne({_id: _id})
+      const user_usertype = req.user.usertype
+      const user_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: user_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Remove Patient"
+      })
+      await log.save()
+      console.log( 'Remove patient logged', log)
       const response = patient
       res.redirect('/patients')
       console.log('Patient removed successfully: ', response) 
     }
     else if (req.user.usertype == "staff" || req.user.usertype == "doctor") {
       const appointment = await Appointment.deleteOne({_id: _id})
+      const user_usertype = req.user.usertype
+      const user_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: user_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Remove Appointment"
+      })
+      await log.save()
+      console.log( 'Remove appointment logged', log)
       const response = appointment
       res.redirect('/appointments')
       console.log('Appointment removed successfully: ', response) 
@@ -3164,11 +3621,71 @@ app.post('/deactivate', checkAuthenticated, async (req, res) => {
     else if (req.user.usertype == "admin") {
       if (usertype == "branches") {
         const branch = await Branch.deleteOne({_id: _id})
+        const user_usertype = req.user.usertype
+        const user_id = req.user.id
+        const user_first_name = req.user.first_name
+        const user_last_name = req.user.last_name
+        const user_email = req.user.email
+        const user_branch = req.user.branch
+        let date_ob = new Date();
+        let set_date = ("0" + date_ob.getDate()).slice(-2);
+        let year = date_ob.getFullYear();
+        let hours = date_ob.getHours();
+        let min = ("0" + date_ob.getMinutes()).slice(-2);
+        var midday = "AM";
+        midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+                hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+        const log_time = hours + ":" + min + " " + midday
+        const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+        const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+        const log = new Logs({
+          usertype: user_usertype,
+          id: user_id,
+          first_name: user_first_name,
+          last_name: user_last_name,
+          email: user_email,
+          log_time,
+          log_date,
+          branch: user_branch,
+          action: "Remove Branch"
+        })
+        await log.save()
+        console.log( 'Remove Branch logged', log)
         const response = branch
         res.redirect('/branches')
         console.log('Branch removed successfully: ', response) 
       } else if (usertype == "appointments"){
         const appointment = await Appointment.deleteOne({_id: _id})
+        const user_usertype = req.user.usertype
+      const user_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: user_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Remove Branch"
+      })
+      await log.save()
+      console.log( 'Remove Branch logged', log)
         const response = appointment
         res.redirect('/appointments')
         console.log('Appointment removed successfully: ', response) 
@@ -3262,6 +3779,36 @@ app.put('/edit-security', checkAuthenticated,urlencodedParser,[
       const doctor = await Doctor.findById(_id)
       doctor.password = password
       await doctor.save()
+      const user_usertype = req.user.usertype
+      const userlog_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: userlog_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Change Password"
+      })
+      await log.save()
+      console.log( 'Change Password logged', log)
       const response = doctor
       res.redirect('/doctors')
       console.log('Doctor password updated successfully: ', response) 
@@ -3270,6 +3817,36 @@ app.put('/edit-security', checkAuthenticated,urlencodedParser,[
       const staff = await Staff.findById(_id)
       staff.password = password
       await staff.save()
+      const user_usertype = req.user.usertype
+      const userlog_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: userlog_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Change Password"
+      })
+      await log.save()
+      console.log( 'Change Password logged', log)
       const response = staff
       res.redirect('/staffs')
       console.log('Staff password updated successfully: ', response) 
@@ -3278,6 +3855,36 @@ app.put('/edit-security', checkAuthenticated,urlencodedParser,[
       const doctor = await Doctor.findById(_id)
       doctor.password = password
       await doctor.save()
+      const user_usertype = req.user.usertype
+      const userlog_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: userlog_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Change Password"
+      })
+      await log.save()
+      console.log( 'Change Password logged', log)
       const response = doctor
       res.render('patient/settings.ejs', { 
       doctor: doctor, msg: "Your password successfully changed.", type: "success", base: 'base64'})
@@ -3287,6 +3894,36 @@ app.put('/edit-security', checkAuthenticated,urlencodedParser,[
       const staff = await Staff.findById(_id)
       staff.password = password
       await staff.save()
+      const user_usertype = req.user.usertype
+      const userlog_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: userlog_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Change Password"
+      })
+      await log.save()
+      console.log( 'Change Password logged', log)
       const response = staff
       res.render('patient/settings.ejs', { 
       staff: staff, msg: "Your password successfully changed.", type: "success", base: 'base64'})
@@ -3296,6 +3933,36 @@ app.put('/edit-security', checkAuthenticated,urlencodedParser,[
       const admin = await Admin.findById(_id)
       admin.password = password
       await admin.save()
+      const user_usertype = req.user.usertype
+      const userlog_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: userlog_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Change Password"
+      })
+      await log.save()
+      console.log( 'Change Password logged', log)
       const response = admin
       res.render('admin/settings.ejs', { 
       admin: admin, msg: "Your password successfully changed.", type: "success", base: 'base64'})
@@ -3305,6 +3972,36 @@ app.put('/edit-security', checkAuthenticated,urlencodedParser,[
       const patient = await User.findById(_id)
       patient.password = password
       await patient.save()
+      const user_usertype = req.user.usertype
+      const userlog_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: userlog_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Change Password"
+      })
+      await log.save()
+      console.log( 'Change Password logged', log)
       const response = patient
       res.render('patient/settings.ejs', { 
       patient: patient, msg: "Your password successfully changed.", type: "success", base: 'base64'})
@@ -3347,7 +4044,6 @@ app.put('/cancel-appointment', checkAuthenticated, async (req, res) => {
         exp_symptoms: cancel.exp_symptoms,
         date_timestamp: cancel.date_timestamp,
         time_timestamp: cancel.time_timestamp,
-        age: cancel.age,
         sex: cancel.sex,
         status: cancel.status,
         phone: cancel.phone,
@@ -3361,6 +4057,36 @@ app.put('/cancel-appointment', checkAuthenticated, async (req, res) => {
         cancelled_by
     })
 await response.save()
+const user_usertype = req.user.usertype
+const userid = req.user.id
+const user_first_name = req.user.first_name
+const user_last_name = req.user.last_name
+const user_email = req.user.email
+const user_branch = req.user.branch
+let date_ob = new Date();
+let set_date = ("0" + date_ob.getDate()).slice(-2);
+let year = date_ob.getFullYear();
+let hours = date_ob.getHours();
+let min = ("0" + date_ob.getMinutes()).slice(-2);
+var midday = "AM";
+midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+        hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+const log_time = hours + ":" + min + " " + midday
+const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+const log = new Logs({
+  usertype: user_usertype,
+  id: userid,
+  first_name: user_first_name,
+  last_name: user_last_name,
+  email: user_email,
+  log_time,
+  log_date,
+  branch: user_branch,
+  action: "Cancel Appointment"
+})
+await log.save()
+console.log( 'Cancel Appointment logged', log)
 const cancel_response = await Appointment.deleteOne({_id: user_id})
 res.redirect('/appointments')
 console.log('Pending or Approved Appointment deleted successfully: ', cancel_response)
@@ -3393,6 +4119,36 @@ app.post('/add-branch', checkAuthenticated, async (req, res) => {
                 phone,
             })
       await response.save()
+      const user_usertype = req.user.usertype
+      const user_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype: user_usertype,
+        id: user_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time,
+        log_date,
+        branch: user_branch,
+        action: "Add Branch"
+      })
+      await log.save()
+      console.log( 'Add branch logged', log)
       res.redirect('/branches')
       console.log('Branch created successfully: ', response)
     } catch (err){
@@ -3425,6 +4181,31 @@ app.put('/change-profile-picture', upload.single('imageUpload'),checkAuthenticat
         contentType: 'image/png'
       }
       await user.save()
+      const { usertype, id, first_name, last_name, email, branch } = req.user
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype,
+        id,
+        first_name,
+        last_name,
+        email,
+        log_time,
+        log_date,
+        branch,
+        action: "Change Profile Picture"
+      })
+      await log.save()
+      console.log( 'Change profile picture logged', log)
       const response = user
       res.redirect('/profile')
       console.log('Profile image updated successfully: ', response)
@@ -3436,6 +4217,31 @@ app.put('/change-profile-picture', upload.single('imageUpload'),checkAuthenticat
         contentType: 'image/png'
       }
       await doctor.save()
+      const { usertype, id, first_name, last_name, email, branch } = req.user
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype,
+        id,
+        first_name,
+        last_name,
+        email,
+        log_time,
+        log_date,
+        branch,
+        action: "Change Profile Picture"
+      })
+      await log.save()
+      console.log( 'Change profile picture logged', log)
       const response = doctor
       res.redirect('/profile')
       console.log('Profile image updated successfully: ', response)
@@ -3447,6 +4253,31 @@ app.put('/change-profile-picture', upload.single('imageUpload'),checkAuthenticat
         contentType: 'image/png'
       }
       await staff.save()
+      const { usertype, id, first_name, last_name, email, branch } = req.user
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype,
+        id,
+        first_name,
+        last_name,
+        email,
+        log_time,
+        log_date,
+        branch,
+        action: "Change Profile Picture"
+      })
+      await log.save()
+      console.log( 'Change profile picture logged', log)
       const response = staff
       res.redirect('/profile')
       console.log('Profile image updated successfully: ', response)
@@ -3458,6 +4289,31 @@ app.put('/change-profile-picture', upload.single('imageUpload'),checkAuthenticat
         contentType: 'image/png'
       }
       await admin.save()
+      const { usertype, id, first_name, last_name, email, branch } = req.user
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const log = new Logs({
+        usertype,
+        id,
+        first_name,
+        last_name,
+        email,
+        log_time,
+        log_date,
+        branch,
+        action: "Change Profile Picture"
+      })
+      await log.save()
+      console.log( 'Change profile picture logged', log)
       const response = admin
       res.redirect('/profile')
       console.log('Profile image updated successfully: ', response)
@@ -3494,70 +4350,34 @@ app.put('/change-profile-picture', upload.single('imageUpload'),checkAuthenticat
 
 })
 
-app.post('/set-appointment', checkAuthenticated, async (req, res) => {
+app.post('/request-appointment', checkAuthenticated, async (req, res) => {
   const appointment = new Appointment();
   if (req.body.exp_symptoms) {
     appointment.exp_symptoms = Array.isArray(req.body.exp_symptoms) ? req.body.exp_symptoms : [req.body.exp_symptoms]; 
   }
-  const {time, exp_symptoms, branch} = req.body
-  const {email, first_name, last_name, phone, sex, status, age, birthday} = req.user
-  var covid19symptoms = ['Headache', 'Fever', 'Cough', 'Tiredness', 'Loss of Taste or Smell', 'Sore Throat', 'Aches and Pains', 'Diarrhoea', 'Shortness of breath', 'Fatigue'];
-
-  const temp_date = req.body.date
+  if (req.body.service) {
+    appointment.exp_symptoms = Array.isArray(req.body.exp_symptoms) ? req.body.exp_symptoms : [req.body.exp_symptoms]; 
+  }
+  const {exp_symptoms, service, branch, checker} = req.body
+  const {email, first_name, last_name, phone, sex, status, birthday} = req.user
   
-  if (!Date.parse(temp_date) || !time) {
-    const alert = "Please input a day and time of your appointment."
+  if (!service) {
+    const alert = "Please input a service for your appointment."
     const patients = await User.findById(req.user._id) 
     const branches = await Branch.find()
     const appointments = await Appointment.find()
-    res.render('patient/set-appointment.ejs',{ alert: alert, appointment: appointments, branch: branches, patient: patients, base: 'base64'})
+    const doctors = await Doctor.find()
+    res.render('patient/set-appointment.ejs',{ alert: alert, appointment: appointments, doctor: doctors, branch: branches, patient: patients, base: 'base64'})
     console.log(alert)
   } else {
-    console.log(exp_symptoms)
-    function checkSymptom(value, arr) {
-      var status = 'Not Detected';
-  
-      for (var i = 0; i < arr.length; i++) {
-          var name = arr[i];
-          if (name == value) {
-              status = 'Detected';
-              break;
-          }
-      }
-  
-      return status;
-    }
-    var covid_status = 0
     var pre_diagnose_result = " "
-    console.log(Array.isArray(exp_symptoms))
-    if (Array.isArray(exp_symptoms) == true) {
-      exp_symptoms.forEach(function(el, i) {
-        const covid_symptom_checker = checkSymptom(exp_symptoms[i], covid19symptoms) 
-        if (covid_symptom_checker == "Detected") {
-          covid_status += 1
-          console.log(covid_status," Symptom ",checkSymptom(exp_symptoms[i], covid19symptoms), " for COVID-19 ", "| ",exp_symptoms[i])
-        }
-      })
-    } else {
-      console.log(exp_symptoms)
-    }
-    const symptoms_detected = covid_status
-    if (covid_status > 2) {
-      pre_diagnose_result = "Possible COVID-19"
-      covid_status = 0
+    if (checker == "yes") {
+      pre_diagnose_result = "Patient Has Infectious Symptoms"
     }
     else{
-      pre_diagnose_result = "Not COVID-19"
-      covid_status = 0
+      pre_diagnose_result = "Patient Has Non Infectious Symptoms"
     }
           try{
-            
-            var input_date = " "
-            temp_date.forEach(function(el, i) {
-              if (temp_date[i] != "") {
-                input_date = temp_date[i]
-              }
-            });
             const id = req.user._id
             const img_id = req.user.id
             const appointment_status = "Pending"
@@ -3566,10 +4386,6 @@ app.post('/set-appointment', checkAuthenticated, async (req, res) => {
             let year = date_ob.getFullYear();
             let hours = date_ob.getHours();
             let min = ("0" + date_ob.getMinutes()).slice(-2);
-            var b = input_date.split(/\D/);
-            var date_temp = new Date(b[0], --b[1], b[2]);
-            let set_date_appointment = ("0" + date_temp.getDate()).slice(-2);
-            let year_appointment = date_temp.getFullYear();
             var midday = "AM";
             midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
             hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
@@ -3579,7 +4395,7 @@ app.post('/set-appointment', checkAuthenticated, async (req, res) => {
       "July", "August", "September", "October", "November", "December"
     ];
     const date_timestamp = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
-    const date = monthNames[date_temp.getMonth()] + " " + set_date_appointment + ", " + year_appointment
+    
             const response = new Appointment({
                     id,
                     img_id,
@@ -3587,21 +4403,37 @@ app.post('/set-appointment', checkAuthenticated, async (req, res) => {
                     last_name,
                     branch,
                     birthday,
-                    time,
-                    date,
+                    service,
                     exp_symptoms,
                     date_timestamp,
                     time_timestamp,
-                    age,
                     sex,
                     status,
                     phone,
                     email,
-                    symptoms_detected,
                     pre_diagnose_result,
                     appointment_status
                 })
           await response.save()
+          const user_usertype = req.user.usertype
+          const user_id = req.user.id
+          const user_first_name = req.user.first_name
+          const user_last_name = req.user.last_name
+          const user_email = req.user.email
+          const user_branch = req.user.branch
+          const log = new Logs({
+            usertype: user_usertype,
+            id: user_id,
+            first_name: user_first_name,
+            last_name: user_last_name,
+            email: user_email,
+            log_time: time_timestamp,
+            log_date: date_timestamp,
+            branch: user_branch,
+            action: "Request Appointment"
+          })
+          await log.save()
+          console.log( 'Request logged', log)
           res.redirect('/appointments')
           console.log('Appointment created successfully: ', response)
         } catch (err) {
@@ -3618,7 +4450,7 @@ app.post('/set-appointment', checkAuthenticated, async (req, res) => {
 
 app.post('/set-followup-appointment', checkAuthenticated, async (req, res) => {
   const time = req.body.time
-  const {email, first_name, last_name, phone, sex, status, age, birthday} = req.user
+  const {email, first_name, last_name, phone, sex, status, birthday} = req.user
   const temp_date = req.body.date
   
   if (!Date.parse(temp_date) || !time) {
@@ -3670,7 +4502,6 @@ app.post('/set-followup-appointment', checkAuthenticated, async (req, res) => {
                     exp_symptoms,
                     date_timestamp,
                     time_timestamp,
-                    age,
                     sex,
                     status,
                     phone,
@@ -3681,6 +4512,20 @@ app.post('/set-followup-appointment', checkAuthenticated, async (req, res) => {
                     appointment_status
                 })
           await response.save()
+          const { usertype, first_name, last_name, email } = req.user
+          const log = new Logs({
+            usertype,
+            id,
+            first_name,
+            last_name,
+            email,
+            log_time: time_timestamp,
+            log_date: date_timestamp,
+            branch,
+            action: "Set Follow-Up Appointment"
+          })
+          await response.save()
+          console.log( 'Set follow-up appointment logged', log)
           res.redirect('/appointments')
           console.log('Follow Up Appointment created successfully: ', response)
         } catch (err) {
@@ -3692,7 +4537,7 @@ app.post('/set-followup-appointment', checkAuthenticated, async (req, res) => {
 })
 
 app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
-  const {id, img_id, first_name, last_name, branch, date, time, sex, age, status, phone, email, pre_diagnose_result, diagnosed_disease, medicine, laboratory, approved_staff, next_checkup, next_checkup_note, notes} = req.body
+  const {id, img_id, first_name, last_name, branch, date, time, sex, status, phone, email, pre_diagnose_result, diagnosed_disease, medicine, laboratory, approved_staff, next_checkup, next_checkup_note, notes} = req.body
       try{
         let date_ob = new Date();
         let set_date = ("0" + date_ob.getDate()).slice(-2);
@@ -3728,7 +4573,6 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
                 exp_symptoms,
                 date_timestamp,
                 time_timestamp,
-                age,
                 sex,
                 status,
                 phone,
@@ -3753,6 +4597,24 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
         console.log(records)
       }
       await response.save()
+      const doc_usertype = req.user.usertype
+      const doc_id = req.user.id
+      const doc_first_name = req.user.first_name
+      const doc_last_name = req.user.last_name
+      const doc_email = req.user.email
+      const log = new Logs({
+        usertype: doc_usertype,
+        id: doc_id,
+        first_name: doc_first_name,
+        last_name: doc_last_name,
+        email: doc_email,
+        log_time: time_timestamp,
+        log_date: date_timestamp,
+        branch,
+        action: "Diagnose Patient"
+      })
+      await log.save()
+      console.log( 'Diagnosis logged', log)
       const doctors = await Doctor.findById(req.user._id)
       const appointments = await Appointment.find()
       res.render('doctor/appointments.ejs', { appointment: appointments, doctor: doctors, base: 'base64', msg: "Patient successfully diagnosed", type: "success"})
@@ -3766,31 +4628,87 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
   
 })
 
+app.get('/login-success', checkAuthenticated, async (req,res) =>{
+  const { usertype, id, first_name, last_name, email, branch } = req.user
+  let date_ob = new Date();
+  let set_date = ("0" + date_ob.getDate()).slice(-2);
+  let year = date_ob.getFullYear();
+  let hours = date_ob.getHours();
+  let min = ("0" + date_ob.getMinutes()).slice(-2);
+  var midday = "AM";
+  midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+          hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+  const log_time = hours + ":" + min + " " + midday
+  const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+  const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+  const response = new Logs({
+    usertype,
+    id,
+    first_name,
+    last_name,
+    email,
+    log_time,
+    log_date,
+    branch,
+    action: "Login"
+  })
+  await response.save()
+  console.log( 'Login logged', response)
+  res.redirect("/dashboard")
+})
+
 app.post('/patient-login', checkNotAuthenticated, passport.authenticate('patient-local', {
-  successRedirect: '/dashboard',
+  successRedirect: '/login-success',
   failureRedirect: '/patient-login',
   failureFlash: true
-}))
+}), async (req,res) =>{
+  console.log(req.user)
+})
 
 app.post('/admin-login', checkNotAuthenticated, passport.authenticate('admin-local', {
-  successRedirect: '/dashboard',
+  successRedirect: '/login-success',
   failureRedirect: '/admin-login',
   failureFlash: true
 }))
 
 app.post('/staff-login', checkNotAuthenticated, passport.authenticate('staff-local', {
-  successRedirect: '/dashboard',
+  successRedirect: '/login-success',
   failureRedirect: '/staff-login',
   failureFlash: true
 }))
 
 app.post('/doctor-login', checkNotAuthenticated, passport.authenticate('doctor-local', {
-  successRedirect: '/dashboard',
+  successRedirect: '/login-success',
   failureRedirect: '/doctor-login',
   failureFlash: true
 }))
 
 app.delete('/logout', async (req, res) => {
+  const { usertype, id, first_name, last_name, email, branch } = req.user
+  let date_ob = new Date();
+  let set_date = ("0" + date_ob.getDate()).slice(-2);
+  let year = date_ob.getFullYear();
+  let hours = date_ob.getHours();
+  let min = ("0" + date_ob.getMinutes()).slice(-2);
+  var midday = "AM";
+  midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+          hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+  const log_time = hours + ":" + min + " " + midday
+  const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+  const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+  const response = new Logs({
+    usertype,
+    id,
+    first_name,
+    last_name,
+    email,
+    log_time,
+    log_date,
+    branch,
+    action: "Logout"
+  })
+  await response.save()
+  console.log( 'Logout logged', response)
   req.logOut()
   res.redirect('/')
 })

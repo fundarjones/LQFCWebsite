@@ -2648,7 +2648,7 @@ button:focus {
 	background-color: #2b3d6d
 }
 
-.btn__primary:hover:not([disabled]) {
+.btn__primary:hover {
 	color: #fff;
 	background-color: #0d1c42;
 }
@@ -3167,11 +3167,6 @@ button:focus {
    display: block;
    padding: 0.25rem 1.5rem;
    color: #212529; }
-
-  .btn:hover{
-    color: #fff !important;
-    text-decoration: none !important;
-  }
  
  .btn-group,
  .btn-group-vertical {
@@ -9445,9 +9440,32 @@ nav .profile .profile-link button:hover {
       color: white;
       }
     
-      #records-dropdown p{
-        font-size: 1rem;
-      }
+
+      
+.right-0 {
+  right: 0;
+}
+
+.top-0 {
+  top: 0;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+#records-dropdown .fa-plus {
+  transition: -webkit-transform 0.25s ease-in-out;
+  transition: transform 0.25s ease-in-out;
+  transition: transform 0.25s ease-in-out, -webkit-transform 0.25s ease-in-out;
+}
+
+#records-dropdown a[aria-expanded=true] .fa-plus {
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+
     
       .error-msg a{
         color: white;

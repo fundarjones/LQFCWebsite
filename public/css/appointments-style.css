@@ -8,7 +8,7 @@
   font-size: 1rem;
 }
 
-:root {
+:root { 
 	--grey: #F1F0F6;
 	--dark-grey: #8D8D8D;
 	--light: #fff;
@@ -2680,8 +2680,10 @@ main .btn-send:hover {
    list-style: none;
    background-color: #fff;
    background-clip: padding-box;
+   box-shadow: 4px 4px 16px rgba(0, 0, 0, .1);
    border: 1px solid rgba(0, 0, 0, 0.15);
    border-radius: 0.25rem; }
+
  
  .dropdown-menu-left {
    right: auto;
@@ -4441,6 +4443,8 @@ main .btn-send:hover {
     height: 100%;
     overflow: hidden;
     outline: 0; }
+    
+
   
   .modal-dialog {
     position: relative;
@@ -4515,6 +4519,10 @@ main .btn-send:hover {
     -ms-flex-direction: column;
     flex-direction: column;
     width: 100%;
+    margin-top: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 50px;
     pointer-events: auto;
     background-color: #fff;
     background-clip: padding-box;
@@ -7733,7 +7741,7 @@ main .btn-send:hover {
    color: #0056b3 !important; }
  
  .text-secondary {
-   color: #6c757d !important; }
+   color: #52687b !important; }
  
  a.text-secondary:hover, a.text-secondary:focus {
    color: #494f54 !important; }
@@ -7873,6 +7881,7 @@ main .btn-send:hover {
      border-color: #dee2e6; } }
  
  body {
+   
    font-family: "Lato", Arial, sans-serif;
    font-size: 16px;
    line-height: 1.8;
@@ -8465,6 +8474,12 @@ nav .profile .profile-link button:hover {
   font-size: 0.8rem !important;
 }
 
+.confirm-button{
+  color: white !important;
+  padding: 9px 20px;
+  font-size: 0.8rem !important;
+}
+
 @media only screen and (max-width: 398px) {
   .button{
     padding: 20px 15px;
@@ -8533,4 +8548,75 @@ h4{
       margin-right: auto;
     }
 
-    
+
+
+  
+    body.modal-open {
+      overflow: hidden !important;
+   }
+    .modal {
+      overflow: auto !important;
+  }
+  
+  .modal[style] {
+      padding-right: 0px !important;
+  }
+
+
+  .input--style-4 {
+    background-color: white;
+    width:  90%;
+    line-height: 40px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    padding: 0 20px;
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    -webkit-transition: all .4s ease;
+    -o-transition: all .4s ease;
+    -moz-transition: all .4s ease;
+    transition: all .4s ease
+  }
+
+  
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  background: transparent;
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: auto;
+}
+
+
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
+}
+
+.center{
+  text-align: center;
+}
+
+.black{
+  color: #000 !important;
+}

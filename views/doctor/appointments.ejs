@@ -102,8 +102,8 @@
 						<input type="radio" id="tab2" name="tab-control">
 						<hr>
 						<ul>
-						  <li title="normal"><label for="tab1" role="button"><span>Normal</span></label></li>
-						  <li title="positive"><label for="tab2" role="button"><span>Possible COVID-19</span></label></li>
+						  <li title="normal"><label for="tab1" role="button"><span>With Non Infectious Symptoms</span></label></li>
+						  <li title="positive"><label for="tab2" role="button"><span>With Infectious Symptoms</span></label></li>
 							
 						</ul>
 						<hr>
@@ -114,7 +114,7 @@
 							<section>
 								<div class="row">
 									<% appointment.reverse().forEach(function(appointments){ %>
-									<% if( appointments.pre_diagnose_result == "Not COVID-19" && appointments.appointment_status == "Approved" && appointments.branch == doctor.branch) { %> 
+									<% if( appointments.pre_diagnose_result == "Patient Has Non Infectious Symptoms" && appointments.appointment_status == "Approved" && appointments.branch == doctor.branch) { %> 
 									<div class="searchhide">
 										<div class="card p-3 mb-4">
 											<div class="d-flex justify-content-between mb-4">
@@ -125,7 +125,7 @@
 													<div class="user-info__basic">
 														<h6 class="mb-0"><%= appointments.img_id %></h6>
 														<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-														<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+														<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 													</div>
 												</div>
 																
@@ -179,7 +179,6 @@
 															<div class="user-info__basic">
 																<h6 class="mb-0"><%= appointments.img_id %></h6>
 																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
 															</div>
 														</div>
 														<% if (appointments.appointment_status != "Cancelled") {%> 
@@ -261,7 +260,7 @@
 															<div class="user-info__basic">
 																<h6 class="mb-0"><%= appointments.img_id %></h6>
 																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+																<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 															</div>
 														</div>
 														<% if (appointments.appointment_status != "Cancelled") {%> 
@@ -323,7 +322,7 @@
 											</div>
 										</div>
 									
-									<% } else if( appointments.pre_diagnose_result == "Not COVID-19" && appointments.appointment_status == "Follow-Up" && appointments.branch == doctor.branch) { %> 
+									<% } else if( appointments.pre_diagnose_result == "Patient Has Non Infectious Symptoms" && appointments.appointment_status == "Follow-Up" && appointments.branch == doctor.branch) { %> 
 										<div class="searchhide">
 											<div class="card p-3 mb-4">
 												<div class="d-flex justify-content-between mb-4">
@@ -334,7 +333,7 @@
 														<div class="user-info__basic">
 															<h6 class="mb-0"><%= appointments.img_id %></h6>
 															<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-															<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+															<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 														</div>
 													</div>
 																
@@ -389,7 +388,6 @@
 															<div class="user-info__basic">
 																<h6 class="mb-0"><%= appointments.img_id %></h6>
 																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
 															</div>
 														</div>
 														<% if (appointments.appointment_status != "Cancelled") {%> 
@@ -448,6 +446,13 @@
 											</div>
 										</div>
 								<% } %> 
+								<script>
+									var now = Date.now();
+									var bday = new Date("<%= appointments.birthday%>");
+									var minus = now-bday
+									var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
+									document.getElementById("age<%= appointments._id %>").innerText = age + " yrs | <%= appointments.sex %>"
+								</script>
 								<% }); %> 
 									
 								</div>
@@ -460,7 +465,7 @@
 						<section>
 							<div class="row">
 								<% appointment.reverse().forEach(function(appointments){ %>
-								<% if( appointments.pre_diagnose_result == "Possible COVID-19" && appointments.appointment_status == "Approved" && appointments.branch == doctor.branch) { %> 
+								<% if( appointments.pre_diagnose_result == "Patient Has Infectious Symptoms" && appointments.appointment_status == "Approved" && appointments.branch == doctor.branch) { %> 
 								<div class="searchhide">
 									<div class="card p-3 mb-4">
 										<div class="d-flex justify-content-between mb-4">
@@ -471,7 +476,7 @@
 												<div class="user-info__basic">
 													<h6 class="mb-0"><%= appointments.img_id %></h6>
 													<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-													<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+													<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 												</div>
 											</div>
 															
@@ -527,7 +532,6 @@
 															<div class="user-info__basic">
 																<h6 class="mb-0"><%= appointments.img_id %></h6>
 																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
 															</div>
 														</div>
 														<% if (appointments.appointment_status != "Cancelled") {%> 
@@ -593,7 +597,7 @@
 							</div>
 
 							<div class="row">
-								<% } else if( appointments.pre_diagnose_result == "Possible COVID-19" && appointments.appointment_status == "Cancelled" && appointments.branch == doctor.branch && appointments.approved_staff) { %> 
+								<% } else if( appointments.pre_diagnose_result == "Patient Has Infectious Symptoms" && appointments.appointment_status == "Cancelled" && appointments.branch == doctor.branch && appointments.approved_staff) { %> 
 								<div class="searchhide">
 									<div class="card p-3 mb-4">
 										<div class="d-flex justify-content-between mb-4">
@@ -604,7 +608,7 @@
 												<div class="user-info__basic">
 													<h6 class="mb-0"><%= appointments.img_id %></h6>
 													<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-													<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+													<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 												</div>
 											</div>
 															
@@ -661,7 +665,6 @@
 															<div class="user-info__basic">
 																<h6 class="mb-0"><%= appointments.img_id %></h6>
 																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
 															</div>
 														</div>
 														<% if (appointments.appointment_status != "Cancelled") {%> 
@@ -727,7 +730,7 @@
 							</div>
 
 							<div class="row">
-								<% } else if( appointments.pre_diagnose_result == "Possible COVID-19" && appointments.appointment_status == "Follow-Up" && appointments.branch == doctor.branch ) { %> 
+								<% } else if( appointments.pre_diagnose_result == "Patient Has Infectious Symptoms" && appointments.appointment_status == "Follow-Up" && appointments.branch == doctor.branch ) { %> 
 								<div class="searchhide">
 									<div class="card p-3 mb-4">
 										<div class="d-flex justify-content-between mb-4">
@@ -738,7 +741,7 @@
 												<div class="user-info__basic">
 													<h6 class="mb-0"><%= appointments.img_id %></h6>
 													<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-													<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
+													<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 												</div>
 											</div>
 											
@@ -794,7 +797,6 @@
 															<div class="user-info__basic">
 																<h6 class="mb-0"><%= appointments.img_id %></h6>
 																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
 															</div>
 														</div>
 														<% if (appointments.appointment_status != "Cancelled") {%> 
@@ -857,6 +859,13 @@
 											</div>
 										</div>
 							<% } %> 
+							<script>
+								var now = Date.now();
+								var bday = new Date("<%= appointments.birthday%>");
+								var minus = now-bday
+								var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
+								document.getElementById("age<%= appointments._id %>").innerText = age + " yrs | <%= appointments.sex %>"
+							</script>
 							<% }); %> 
 								
 							</div>

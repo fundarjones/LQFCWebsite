@@ -74,7 +74,7 @@
 			<section class="ftco-section">
 				<div class="container">
 					
-				<h1 class="title">Notifications</h1>
+				<h1 class="title">Logs</h1>
 					<div class="row">
 							<div class="col-sm-6 col-md-9">
 								<form action="#">
@@ -92,32 +92,36 @@
 
 							
 						<div class="col-lg-12">
-						<div class="card p-3">
+						<div class="card p-3" style="overflow-y: scroll; height:600px;">
 
 							<!---dito start yung loop-->
+							<% logs.reverse().forEach(function(logs){ %>
 							<div class="logs">
 								<div class="d-flex justify-content-between mb-2">
 									<div class="user-info">
 										<div class="user-info__img">
-											<img src="uploads/<%= admin.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
+											<img src="uploads/<%= logs.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
 										</div>
 										<div class="user-info__basic">
-											<h4 class="text-highlight">Jones Fundar</h4>
+											<h4 class="text-highlight"><%= logs.first_name %> <%= logs.last_name %></h4>
 											<br>
-											<medium class="text-muted mb-0 ">Doctor</medium> |
-											<medium class="text-muted mb-0 inline">Angeles City Branch</medium>
+											<medium class="text-muted mb-0 usertype"><%= logs.usertype%></medium> 
+											<% if (logs.branch) {%> 
+											<medium class="text-muted mb-0 inline">| <%= logs.branch %></medium>
+											<% } %> 
 											<br>
 										</div>
 									</div>
 									<div>
-										<p class='text-primary' style="float: right;">Login</p>
+										<p class='text-primary' style="float: right;"><%= logs.action %></p>
 										<br>
-										<medium class="mb-0 ">April 25, 2022</medium> |
-										<medium class="mb-0 inline">3:30PM</medium>
+										<medium class="mb-0 "><%= logs.log_date %></medium> |
+										<medium class="mb-0 inline"><%= logs.log_time %></medium>
 									</div>
 								</div>
 							<hr>
 							</div>
+							<% }) %> 
 							<!---->
 
 							
@@ -192,7 +196,7 @@ window.onload = function(){
 	  if (checkBox.checked == true){
 
 		var objToday = new Date(),
-		dayOfMonth = today + ( objToday.getDate() < 10) ? '0' + objToday.getDate() : objToday.getDate(),
+		dayOfMonth = ("0" + objToday.getDate()).slice(-2);
 		months = new Array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'),
 		curMonth = months[objToday.getMonth()],
 		curYear = objToday.getFullYear();

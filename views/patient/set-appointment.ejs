@@ -35,7 +35,7 @@
 
 
   </header>
-  <form action="/set-appointment" method="POST">
+  <form action="/request-appointment" method="POST">
   <main class="d-flex">
     
     <div class="container">
@@ -67,9 +67,10 @@
                         <span class="label-text-address"><%= branches.address %> </span>
                       </label>
                     </div>
-
+                  
                     
                      <!--Modal-->
+                     
                      <div class="modal fade time-slot" id="a<%= branches._id %>" tabindex="-1" role="dialog">
                       <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
@@ -87,25 +88,42 @@
                             <p>Here are the schedules for this branch.</p>
                           <section class="text-center">
                             <div class="card-container mt-4 mb-4">
-
                                   <div class="time text-center mx-0">
+                                    <% doctor.forEach(function(doctors){ %>
+                                    <% if(doctors.branch1 == branches.branch_name) {%> 
                                         <div class="doctors-schedule">
-                                          <h5>Dr. Lagman</h5>
-                                          <p class="text-muted font-weight-bold">Monday - Friday</p>
-                                          <p class="font-weight-bold">9:00AM - 12:00PM</p>
+                                          <h5>Dr. <%= doctors.first_name %> <%= doctors.last_name%></h5>
+                                          <% if(doctors.start_weekdays1 != "None") {%> 
+                                            <p class="text-muted font-weight-bold">Monday - Friday</p>
+                                            <p class="font-weight-bold"><%= doctors.start_weekdays1 %> - <%= doctors.end_weekdays1 %></p>
+                                          <% } else if(doctors.start_sat1 != "None") {%> 
+                                            <p class="text-muted font-weight-bold">Saturday</p>
+                                            <p class="font-weight-bold"><%= doctors.start_sat1 %> - <%= doctors.end_sat1 %></p>
+                                          <% } else if(doctors.start_sun1 != "None") {%> 
+                                            <p class="text-muted font-weight-bold">Saturday</p>
+                                            <p class="font-weight-bold"><%= doctors.start_sun1 %> - <%= doctors.end_sun1 %></p>
+                                          <% } %>
                                           <hr>
                                         </div>
-
-                                        <div class="doctors-schedule">
-                                          <h5>Dr. Number 2</h5>
+                                    <% } else if(doctors.branch2 == branches.branch_name) {%> 
+                                      <div class="doctors-schedule">
+                                        <h5>Dr. <%= doctors.first_name %> <%= doctors.last_name%></h5>
+                                        <% if(doctors.start_weekdays2 != "None") {%> 
                                           <p class="text-muted font-weight-bold">Monday - Friday</p>
-                                          <p class="font-weight-bold">1:00PM - 7:00PM</p>
+                                          <p class="font-weight-bold"><%= doctors.start_weekdays2 %> - <%= doctors.end_weekdays2 %></p>
+                                        <% } else if(doctors.start_sat2 != "None") {%> 
                                           <p class="text-muted font-weight-bold">Saturday</p>
-                                          <p class="font-weight-bold">1:00PM - 7:00PM</p>
-                                          <hr>
-                                        </div>
+                                          <p class="font-weight-bold"><%= doctors.start_sat2 %> - <%= doctors.end_sat2 %></p>
+                                        <% } else if(doctors.start_sun2 != "None") {%> 
+                                          <p class="text-muted font-weight-bold">Saturday</p>
+                                          <p class="font-weight-bold"><%= doctors.start_sun2 %> - <%= doctors.end_sun2 %></p>
+                                        <% } %>
+                                        <hr>
+                                      </div>
+                                  <% } %>
+                                    <% }) %>
                                   </div>
-                                  
+                                   
                               <input type="button" class="bd-wizard-btn" data-step="previous" data-dismiss="modal" aria-label="Close" value="Previous">
                               <input type="button" class="bd-wizard-btn" data-step="next" data-dismiss="modal" aria-label="Close" value="Next">
                             </div>
@@ -113,8 +131,7 @@
                           </div>
                         </div>
                      </div>
-                <% }); %> 
-                  
+                    <% }) %> 
                 
               </div>
           </section>
@@ -125,7 +142,7 @@
                           
                       <h5 class="bd-wizard-step-title">Step: 2 of 4</h5>
                           <h4>What type of service are you looking for:</h4>
-                          <select id="services-database" class="mt-4" multiple required>
+                          <select id="services-database" name="service" class="mt-4" multiple required>
                             <!--insert symptoms database-->
                             <option value="Regular Health Checkup" >Regular Health Checkup</option>
                             <option value="General Internal Medicine">General Internal Medicine</option>
@@ -143,7 +160,7 @@
                         </div>
                       <div class="col-md-12">
                       <input type="button" class="bd-wizard-btn" data-step="previous" aria-label="Close" value="Previous">
-                      <input type="button" class="bd-wizard-btn" data-step="next" aria-label="Close" value="Next">
+                      <input type="button" id="next" class="bd-wizard-btn" data-step="next" aria-label="Close" value="Next" disabled = "disabled">
                       </div>
              </section>     
 
@@ -164,9 +181,6 @@
                                               <ul>
                                                   <li>Fever</li>
                                                   <li>Cough</li>
-                                                  <li>Shortness of Breath</li>
-                                                  <li>Vomiting</li>
-                                                  <li>Diarrhea</li>
                                               </ul>
                                           </div>
                                       </div>
@@ -177,11 +191,8 @@
                                     <div class="row-fluid">
                                         <div class="span6">
                                             <ul>
-                                                <li>Fever</li>
-                                                <li>Cough</li>
-                                                <li>Shortness of Breath</li>
-                                                <li>Vomiting</li>
-                                                <li>Diarrhea</li>
+                                              <li>Difficulty Breathing</li>
+                                              <li>Colds</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -192,11 +203,7 @@
                                   <div class="row-fluid">
                                       <div class="span6">
                                           <ul>
-                                              <li>Fever1</li>
-                                              <li>Cough2</li>
-                                              <li>Shortness of Breath3</li>
-                                              <li>Vomiting4</li>
-                                              <li>Diarrhea5</li>
+                                              <li>Sore Throat</li>
                                           </ul>
                                       </div>
                                   </div>
@@ -205,14 +212,14 @@
                               </div>
 
                           <div class="purpose-radio radio-toolbar" data-step="next">
-                            <input type="radio" name="purpose" id="no" value="no">
+                            <input type="radio" name="checker" id="no" value="no">
                           <label for="no" class="purpose-radio-label">
                             <span class="label-text">NO</span>
                           </label>
                           </div>
 
                           <div class="purpose-radio radio-toolbar">
-                              <input type="radio" name="yes" id="yes" value="yes" data-toggle="modal" data-target="#yes-symptoms">
+                              <input type="radio" name="checker" id="yes" value="yes" data-toggle="modal" data-target="#yes-symptoms">
                               <label for="yes" class="purpose-radio-label">
                               <span class="label-text">YES</span>
                             </label>
@@ -237,49 +244,17 @@
                                     <div class="card-container mt-4 mb-3">
                                     
                                       <div class="col-md-12">
-                                        <select id="symptoms-database" name="exp_symptoms" multiple required>
+                                        <select id="symptoms-database" name="exp_symptoms" multiple>
                                           <!--insert symptoms database-->
-                                          <option value="Headache" >Headache</option>
                                           <option value="Fever">Fever</option>
                                           <option value="Cough">Cough</option>
-                                          <option value="Tiredness">Tiredness</option>
-                                          <option value="Loss of Taste or Smell">Loss of Taste or Smell</option>
-                                          <option value="Sore Throat">Sore Throat</option>
-                                          <option value="Aches and Pains">Aches and Pains</option>
-                                          <option value="Diarrhoea">Diarrhoea</option>
-                                          <option value="Shortness of breath">Shortness of breath</option>
-                                          <option value="Vomiting">Vomiting</option>
-                                          <option value="Cognitive Impairment">Cognitive Impairment</option>
-                                          <option value="Confusion">Confusion</option>
-                                          <option value="Decline in memory or other thinking skills">Decline in memory or other thinking skills</option>
-                                          <option value="Memory Loss">Memory Loss</option>
-                                          <option value="Sore Eye">Sore Eye</option>
-                                          <option value="Nose bleed">Nose bleed</option>
-                                          <option value="Itchy Throat">Itchy Throat</option>
-                                          <option value="Neck hurts">Neck hurts</option>
+                                          <option value="Difficulty Breathing">Difficulty Breathing</option>
                                           <option value="Colds">Colds</option>
-                                          <option value="Sore Eye">Sore Eye</option>
-                                          <option value="Nausea">Nausea</option>
-                                          <option value="Reflux">Reflux</option>
-                                          <option value="Stomach pain lower left side">Stomach pain lower left side</option>
-                                          <option value="Stomach pain lower right side">Stomach pain lower right side</option>
-                                          <option value="Blood in urine">Blood in urine</option>
-                                          <option value="Difficult to pee">Difficult to pee</option>
-                                          <option value="Genital pain">Genital pain</option>
-                                          <option value="Chills">Chills</option>
-                                          <option value="Anxiety">Anxiety</option>
-                                          <option value="Fatigue">Fatigue</option>
-                                          <option value="Self injury">Self injury</option>
-                                          <option value="Wound">Wound</option>
-                                          <option value="Shaking">Shaking</option>
-                                          <option value="Nervousness">Nervousness</option>
-                                          <option value="Anal bleeding">Anal bleeding</option>
-                                          <option value="Constipation">Constipation</option>
-                                          <option value="Nausea">Nausea</option>
+                                          <option value="Sore Throat">Sore Throat</option>
                                         </select>
                                       </div>
                                      
-                                      <input type="button" class="bd-wizard-btn" data-step="next" data-dismiss="modal" aria-label="Close" value="Proceed">
+                                      <input type="button" id="proceed" class="bd-wizard-btn" data-step="next" data-dismiss="modal" aria-label="Close" value="Proceed" disabled = "disabled">
                                     </div>
                                   </div>
       
@@ -420,6 +395,38 @@
  
    }
  </script>
+
+<script>
+	$(document).ready(function() {
+  $('#symptoms-database').on('change', function() {
+    let empty = false;
+
+    $('#symptoms-database').each(function() {
+      empty = $(this).val().length == 0;
+    });
+
+    if (empty)
+      $('#proceed').attr('disabled', 'disabled');
+    else
+      $('#proceed').removeAttr('disabled')
+  });
+});
+
+$(document).ready(function() {
+  $('#services-database').on('change', function() {
+    let empty = false;
+
+    $('#services-database').each(function() {
+      empty = $(this).val().length == 0;
+    });
+
+    if (empty)
+      $('#next').attr('disabled', 'disabled');
+    else
+      $('#next').removeAttr('disabled')
+  });
+});
+</script>
 
 
 <script src="../js/global.js"></script>
