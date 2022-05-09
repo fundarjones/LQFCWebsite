@@ -147,7 +147,7 @@
 														<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
 													</div>
 													<div class="user-info__basic">
-														<p class="inline"><b class="text-highlight"><%= appointments.first_name%> <%= appointments.last_name %></b> set an appointment for <%= appointments.date %> at <%= appointments.time %>.</p>
+														<p class="inline"><b class="text-highlight"><%= appointments.first_name%> <%= appointments.last_name %></b> has requested an appointment for <%= appointments.service %>.</p>
 														<medium class="text-muted mb-0"><%= appointments.date_timestamp %></medium> |
 														<medium class="text-muted mb-0"><%= appointments.time_timestamp %></medium>
 													</div>
@@ -274,6 +274,34 @@
 	
 	}
 	</script>
+
+<script>
+	var modalCancel = false;
+	$('.modal-info').on('hidden.bs.modal', function () {
+		if (modalCancel) {
+			$('.modal-cancel').modal('show');
+			modalCancel = false;
+		}
+	});
+	
+	$(".cancel-date-time-action").click(function() {
+		$('.modal-info').modal('hide');
+		modalCancel = true;
+	});
+	
+	var modalApprove = false;
+	$('.modal-info').on('hidden.bs.modal', function () {
+		if (modalApprove) {
+			$('.modal-approve').modal('show');
+			modalApprove = false;
+		}
+	});
+	
+	$(".approve-date-time-action").click(function() {
+		$('.modal-info').modal('hide');
+		modalApprove = true;
+	});
+</script>
 
 </body>
 </html>

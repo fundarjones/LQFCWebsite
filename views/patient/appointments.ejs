@@ -22,11 +22,11 @@
 		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
 		<ul class="side-menu">
 			<li><a href="/dashboard"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
-			<% if(patient.isVerified == true) {%>
+			<% if(patient.isVerified == true) {%> 
 				<li class="divider" data-text="main">Main</li>
 				<li><a href="/appointments" class="active"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
 			<% } %> 
-		</ul>
+		</ul> 
 	</section>
 	<!-- SIDEBAR -->
 
@@ -93,18 +93,32 @@
 										<p hidden><%= diagnosis.appointment_status %></p>
 									<% }) %>
 									<form action="/set-appointment" method="GET">
-										<button class="button recordbutton">Request Appointment</button>
+										<button class="button going record-button">Request Appointment</button>
 									</form>
 								</div>
 					</div>
 
-					<br>
+						<br>
+
+						<div class="row" id="appointment-card-at-top">
+						</div>
+						<hr>
+						<h5 class="text-muted mb-3">Approved Appointments</h5>	
+						<div class="row justify-content-center" id="appointment-approved"></div>
+						<hr>
+						<h5 class="text-muted mb-3">Pending & Follow-up Appointments</h5>	
+						<div class="row justify-content-center" id="appointment-pending"></div>
+						<hr>
+						<h5 class="text-muted mb-3">Cancelled Appointments</h5>	
+						<div class="row justify-content-center" id="appointment-cancelled"></div>
+
+					
 
 					<div class="row justify-content-center">
 						<% appointment.reverse().forEach(function(appointments){ %>
 						<div class="searchhide">
 							<div class="card p-3 mb-4">
-								<div class="d-flex justify-content-between mb-4">
+								<div class="d-flex justify-content-between mb-3">
 									<div class="user-info">
 										<div class="user-info__img">
 											<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
@@ -113,17 +127,7 @@
 											<h6 class="mb-0"><%= appointments.img_id %></h6>
 											<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
 											<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %></p>
-											<p class="text-muted mb-0"><%= appointments.phone %></p>
-											<% if (appointments.phone2) {%> 
-											<p class="text-muted mb-0"><%= appointments.phone2 %></p>
-											<% } %> 
 										</div>
-									</div>
-													
-									<div class="dropdown open">
-										<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="modal" data-target="#a<%= appointments._id %>" aria-haspopup="true" aria-expanded="false">
-											<i class="fa fa-expand"></i>
-										</a>
 									</div>
 
 									<% if (appointments.appointment_status != "Cancelled") {%> 
@@ -142,37 +146,38 @@
 										
 									</div>
 									<% } else { %> 
-									<div class="dropdown open">
-										<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-											
-											<form action="/deactivate" method="POST">
-												<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-												<input type="submit" class="dropdown-item text-danger" value="Remove">
-											</form>
-										</div>
-									</div>
 									<% } %> 
 								</div>
-								<h6>Symptoms:</h6>
-									<p><%= appointments.exp_symptoms %></p>
+
+								<div class="btn-records m-1 mt-2">
+									<a class="button record-button m-1" href="#!" id="b<%= appointments.id %>"
+										data-toggle="modal" data-target="#a<%= appointments._id %>" aria-haspopup="true"
+										aria-expanded="false">View Appointment Info</a>
+								</div>
+
+								<% if (appointments.appointment_status == "Approved" && appointments.isConfirmed == false || appointments.appointment_status == "Follow-Up" && appointments.isConfirmed == false && appointments.approved_staff){%> 
+									<div class="btn-records m-1 mb-1">
+									<form action="/confirm-appointment?_method=PUT" method="POST">
+										<input type="submit" class="button record-button going m-1" value="Confirm Going">
+									</form>
+									</div>
+								<% } %> 
+
 								<hr>
-									<% if (appointments.appointment_status == "Approved" && appointments.isConfirmed == false || appointments.appointment_status == "Follow-Up" && appointments.isConfirmed == false && appointments.approved_staff){%> 
-										<div class="btn-records">
-										<form action="/confirm-appointment?_method=PUT" method="POST">
-											<input type="submit" class="button record-button" value="Confirm Going">
-										</form>
-									</div>
-									<% } %> 
-								<div class="d-flex justify-content-between mt-4">
-									<div>
-										<h5 class="mb-0"><%= appointments.time %>
-											<small class="ml-1"><%= appointments.date %></small>
-										</h5>
-									</div>
-									<% if(appointments.appointment_status == "Cancelled") { %> 
-									<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
+
+								<div class="d-flex justify-content-between">
+									<% if(appointments.appointment_status =="Cancelled") { %> 
+									<span class="text-warning font-weight-bold mt-2"><%= appointments.appointment_status %></span>
 									<% } else { %> 
-										<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+										<span class="text-primary font-weight-bold mt-2"><%= appointments.appointment_status %></span>
+									<% } %> 
+
+									<% if (appointments.appointment_status == "Approved" && appointments.isConfirmed == false || appointments.appointment_status == "Follow-Up" && appointments.isConfirmed == false && appointments.approved_staff){%> 	
+										<div>
+											<h5 class="mb-0 mb-n1">2:00 PM
+											</h5>
+											<medium class="mb-0">May 2, 2022</medium>
+										</div>
 									<% } %> 
 								</div>
 							</div>
@@ -180,11 +185,11 @@
 						
 						
 					<!-- ============================
-						Zoom Card
+						APPOINTMENT VIEW CARD
 					============================== -->
 
 
-					<div class="modal fade" id="a<%= appointments._id %>" tabindex="-1" role="dialog">
+					<div class="modal fade modal-info" id="a<%= appointments._id %>" tabindex="-1" role="dialog">
 						<div class="modal-dialog modal-dialog-centered" role="document">
 						<div class="modal-content">
 							<div class="p-4">
@@ -197,8 +202,6 @@
 											<h6 class="mb-0"><%= appointments.img_id %></h6>
 											<h2 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
 											<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %></p>
-											<p class="text-muted mb-0"><%= appointments.phone %></p>
-											<p class="text-muted mb-0"><%= appointments.phone2 %></p>
 										</div>
 									</div>
 									<% if (appointments.appointment_status != "Cancelled") {%> 
@@ -216,23 +219,99 @@
 											</div>
 											
 										</div>
+									<% } else { %> 
 										<% } %> 
 								</div>
-								<h6>Symptoms:</h6>
-									<p><%= appointments.exp_symptoms %></p>
-									<hr>
-									
-								<div class="d-flex justify-content-between mt-4">
-									<div>
-									<h5 class="mb-0"><%= appointments.time %>
-															<small class="ml-1"><%= appointments.date %></small>
-									</h5>
+
+								<p class="font-weight-bold text-info center"><%= appointments.service %></p>
+								<hr>
+								<div class="row">
+									<div class="col-md-6 col-xs-6 col-sm-6">
+											<center>
+											<p class="text-muted mb-0 mt-2">Primary Phone</p>
+											<h6 id="first_num"><%= appointments.phone %></h6>
+											</center>
 									</div>
+									<div class="col-md-6 col-xs-6 col-sm-6">
+											<center>
+											<p class="text-muted mb-0 mt-2">Secondary Phone</p>
+											<% if (appointments.phone2) {%> 
+												<h6 id="second_num"><%= appointments.phone2 %></h6>
+											<% } else { %> 
+												<h6 id="second_num">None</h6>
+											<% } %> 
+											</center>
+											<script>
+												var second_num = document.getElementById("second_num").textContent;
+												if (second_num.length === 0 ) {
+												document.getElementById("second_num").innerHTML = "None";
+												}
+											</script>
+									</div>
+								</div>
+								<hr>
+
+								<% if (appointments.appointment_status == "Approved" && appointments.isConfirmed == false || appointments.appointment_status == "Follow-Up" && appointments.isConfirmed == false && appointments.approved_staff){%> 
+								<p class="text-muted mb-0 mt-2 center">Scheduled Appointment</p>
+								<div class="row mb-4 mt-4">
+									<div class="col-md-6 col-xs-6 col-sm-6">
+											<center>
+											<p class="text-muted mb-0">Date</p>
+											<h6><%= appointments.date %></h6>
+											</center>
+									</div>
+									<div class="col-md-6 col-xs-6 col-sm-6">
+											<center>
+											<p class="text-muted mb-0">Time</p>
+											<h6><%= appointments.time %></h6>
+											</center>
+									</div>
+								</div>
+								<hr>
+								<% } %> 
+								<% if(appointments.isConfirmed == true){%> 
+									<p class="text-success center">You have confirmed to go to the scheduled appointment on
+										<span class="font-weight-bold">May 2, 2022 </span>at <span class="font-weight-bold">10:00 AM</span></p>
+								<hr>
+								<% } %> 
+								
+								<p class="text-muted"  style="display:inline">Branch: </p>
+									<h6 class="black" style="display:inline"><%= appointments.branch %></h6>
+								<% if (appointments.exp_symptoms.length > 0) {%> 
+									<hr>
+
+								<div id="records-dropdown">
+									<a class="py-2 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary"
+									data-toggle="collapse" href="#symptoms" role="button">	
+									<div class="position-relative">
+										<small class="ml-1 font-weight-bold">Click to View Symptoms</small>
+										<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
+										<i class="fa fa-plus"></i>
+										</div>
+									</div>
+									</a>
+									<div class="collapse" id="symptoms">
+										<span id="symptoms-if-none"></span>
+										<p><%= appointments.exp_symptoms %></p>
+									</div>
+								</div>
+								<% } %> 
+								<hr>		
+								<div class="d-flex justify-content-between">
 									<% if(appointments.appointment_status == "Cancelled") { %> 
-										<span class="text-warning font-weight-bold"><%= appointments.appointment_status %></span>
-										<% } else { %> 
-											<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
-										<% } %> 
+										<span class="text-warning font-weight-bold mt-2"><%= appointments.appointment_status %></span>
+									<% } else { %> 
+										<span class="text-primary font-weight-bold mt-2"><%= appointments.appointment_status %></span>
+									<% } %> 
+									
+									<% if (appointments.appointment_status == "Approved" && appointments.isConfirmed == false || appointments.appointment_status == "Follow-Up" && appointments.isConfirmed == false && appointments.approved_staff){%> 
+										<div class="mb-1">
+										<form action="/confirm-appointment?_method=PUT" method="POST">
+											<input type="submit" class="button record-button going" value="Confirm Going">
+										</form>
+										</div>
+									<% } %> 
+
 								</div>
 							</div>
 						</div>
@@ -241,46 +320,38 @@
 					<% }) %> 
 			
 					<% diagnose.reverse().forEach(function(diagnosis){ %>
-
+						<div class="searchhide">
 						<div id="id<%= diagnosis.id%><%= diagnosis.appointment_status %>" class="diagnosis">
 								<div class="card p-3 mb-4">
-									<div class="d-flex justify-content-between mb-4">
-										<div class="user-info">
-											<div class="user-info__img">
-												<img src="uploads/<%= diagnosis.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
-											</div>
-											<div class="user-info__basic">
-												<h6 class="mb-0"><%= diagnosis.img_id %></h6>
-												<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %></h5>
-												<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %></p>
-												<p class="text-muted mb-0"><%= diagnosis.phone %></p>
-												<p class="text-muted mb-0">SecondNum</p>
-											</div><b></b>
-										</div>
-										<div class="dropdown open">
-											<a href="#!" class="px-2" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">
-												<i class="fa fa-expand"></i>
-											</a>
-										</div>
-									</div>
-									<% if (diagnosis.appointment_status == "Follow-Up"){%> 
-									<h4>Follow Up Check-Ups</h4>
+									<% if (diagnosis.appointment_status == "Follow-Up"){%>
+									<h4 class="center">Follow-up Checkups</h4>
+									<hr>
+									<h5 class="center text-success">You have a follow-up checkup!</h5>
 									<% } else { %> 
-									<h4>Finished Check-Ups</h4>
+									<p style="display: none;">card-at-top</p>
+									<h4 class="center">Finished Checkups</h4>
+									<hr>
+									<h5 class="center text-success">Here are all your diagnosed records!</h5>
 									<% } %> 
 									<hr>
 									<div class="follow-up-btn col-md-12">
 										<% if (diagnosis.appointment_status == "Follow-Up"){%> 
-											<div class="row checkstatus">
+											<div class="row secondbtn m-2">
+												<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Recent Records</a>
+											</div>
+											<% } else { %> 
+											<div class="row secondbtn m-2">
+												<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Completed Records</a>
+											</div>
+											<% } %> 
+										<% if (diagnosis.appointment_status == "Follow-Up"){%> 
+											<div class="row checkstatus mt-4">
 											<% appointment.reverse().forEach(function(appointments){ %>
 												<p hidden><%= appointments.appointment_status %></p>
 										<% }) %> 
-											<a class="button record-button" href="/set-appointment/follow-up">Request Appointment</a>
+											<a class="button going record-button" href="/set-appointment/follow-up">Request Appointment</a>
 										<% } %> 
-									</div>
-									<div class="row secondbtn">
-											<a class="button record-button" href="#!" id="triggerId1" data-toggle="modal" data-target="#zoom<%= diagnosis._id %><%= diagnosis.appointment_status %>" aria-haspopup="true" aria-expanded="false">View Records</a>
-										</div>
+											</div>
 									</div>
 									<script>
 										var list = document.querySelectorAll("#id<%= diagnosis.id%><%= diagnosis.appointment_status %>")
@@ -290,11 +361,11 @@
 									</script>
 							</div>
 						</div>
+					</div>
 					<% }) %> 
 					
 						
 					</div>
-
 					
 				</div>
 			</section>
@@ -316,7 +387,7 @@
 								<div class="user-info__basic">
 									<h6 class="mb-0"><%= diagnosis.img_id %> </h6>
 									<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %> </h5>
-									<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %>  | <%= diagnosis.phone %> </p>
+									<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %></p>
 								</div>
 							</div>
 							<div class="dropdown open">
@@ -368,7 +439,7 @@
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-lg-12 mb-4">
+											<div class="col-lg-12 mb-2">
 											<small class="ml-1 font-weight-bold">End of Record</small>
 												</div>
 										</div>
@@ -398,7 +469,7 @@
 								<div class="user-info__basic">
 									<h6 class="mb-0"><%= diagnosis.img_id %> </h6>
 									<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %> </h5>
-									<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %>  | <%= diagnosis.phone %> </p>
+									<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %></p>
 								</div>
 							</div>
 							<div class="dropdown open">
@@ -463,11 +534,74 @@
 					</div>
 				</div>
 			</div>
+
 	<% } %> 
-      
-	  
 	<% }) %> 
 			
+			<!-- ============================
+										ARE YOU SURE? CANCEL APPOINTMENT
+										============================== -->
+					
+					
+										<div class="modal fade time-slot modal-cancel" id="cancel-appointment-modal" tabindex="-1" role="dialog">
+											<div class="modal-dialog modal-dialog-centered" role="document">
+											  <div class="modal-content">
+												<div class="modal-header">
+												  <div class="col-md-12 text-center">
+													<img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
+													</div>
+												</div>
+					
+												<div class="modal-body text-center mt-2">
+												  <h5>Are you sure you want to cancel this appointment? This action can't be undone.</h5>
+
+												
+													<div class="d-flex justify-content-center mt-4 mb-4">
+														<div class="btn-records m-1">
+															<button class="button-action no-sure" href="#!">No</button>
+														</div>
+														<div class="btn-records m-1">
+															<button class="button-action yes-sure" href="#!">Yes</button>
+														</div>
+													</div>
+					
+												</div>
+											  </div>
+										   </div>
+										</div>
+
+										<!-- ============================
+										ARE YOU SURE? APPROVE APPOINTMENT
+										============================== -->
+					
+					
+										<div class="modal fade time-slot modal-approve" id="approve-appointment-modal" tabindex="-1" role="dialog">
+											<div class="modal-dialog modal-dialog-centered" role="document">
+											  <div class="modal-content">
+												<div class="modal-header">
+												  <div class="col-md-12 text-center">
+													<img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
+													</div>
+												</div>
+					
+												<div class="modal-body text-center mt-2">
+												  <h5>Are you sure you want to confirm the scheduled date and time? This action can't be undone.</h5>
+
+												
+												<div class="d-flex justify-content-center mt-4 mb-4">
+													<div class="btn-records m-1">
+														<button class="button-action no-sure" href="#!" aria-expanded="false">No</a>
+													</div>
+													<div class="btn-records m-1">
+														<button class="button-action yes-sure" href="#!" aria-expanded="false">Yes</a>
+													</div>
+												</div>
+					
+												</div>
+											  </div>
+										   </div>
+										</div>
+
 		</main>
 		<% } %> 
 	<!-- NAVBAR -->
@@ -548,5 +682,76 @@
 		};
 	});
 </script>
+
+<script>
+	$(document).ready(function(){
+		
+		$('.searchhide:contains("card-at-top")').appendTo('#appointment-card-at-top');
+		$('.card:contains("Follow-up")').appendTo('#appointment-pending');
+		$('.searchhide:contains("Approved")').appendTo('#appointment-approved');
+		$('.searchhide:contains("Pending")').appendTo('#appointment-pending');
+		$('.searchhide:contains("Cancelled")').appendTo('#appointment-cancelled');
+
+	});
+
+	$.expr[":"].contains = $.expr.createPseudo(function(arg) {
+		return function( elem ) {
+		return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+		};
+	});
+
+</script>
+
+<script>
+	let str = document.getElementById("exp-symptoms").innerHTML; 
+	let res = str.replace(/,/g, ", ");
+	document.getElementById("exp-symptoms").innerHTML = res;
+</script>
+
+<script>
+	var modalCancel = false;
+	$('.modal-info').on('hidden.bs.modal', function () {
+		if (modalCancel) {
+			$('.modal-cancel').modal('show');
+			modalCancel = false;
+		}
+	});
+	
+	$(".cancel-date-time-action").click(function() {
+		$('.modal-info').modal('hide');
+		modalCancel = true;
+	});
+	
+	var modalApprove = false;
+	$('.modal-info').on('hidden.bs.modal', function () {
+		if (modalApprove) {
+			$('.modal-approve').modal('show');
+			modalApprove = false;
+		}
+	});
+	
+	$(".approve-date-time-action").click(function() {
+		$('.modal-info').modal('hide');
+		modalApprove = true;
+	});
+</script>
+
+<script>
+	$('.modal').on('shown.bs.modal', function () {
+	  
+	  var documentScrollTop = $(document).scrollTop();
+	  $(document).on('scroll.noScroll', function() {
+		 $(document).scrollTop(documentScrollTop);
+		 return false;
+	  });
+	
+	}).on('hidden.bs.modal', function() {
+	
+	  $(document).off('scroll.noScroll');
+	
+	});
+	</script>
+	
+	
 </body>
 </html>

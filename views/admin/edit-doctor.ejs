@@ -584,14 +584,34 @@
 									
 									<button type="button" id="button-branch-1" class="btn btn__primary btn__rounded mt-3" onclick="showBranch2()" > Add Another Branch </button>
 									
-									<input type="submit" class="btn btn__primary btn__rounded mt-3" id="updatesched" value="Update Schedule" disabled = "disabled">
+									<input type="button" class="btn btn__primary btn__rounded mt-3" id="updatesched" value="Update Schedule" data-toggle="modal" data-target="#success_confirm" disabled = "disabled">
 
 									<!----------------------->
 								
-								</div>
-								
-							</form>
+								</div>			
+								<!--Modal-->
+								<div class="modal fade time-slot" id="success_confirm" tabindex="-1" role="dialog">
+									<div class="modal-dialog modal-dialog-centered" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+										<div class="col-md-12 text-center">
+											<img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
+										</div>
+										</div>
+						
+										<center>
+										<div class="col-md-10 modal-body text-center mt-3">
+										<p>Are you sure to update the doctor's schedule?</p>  
+										<input type="submit" class="btn btn__primary btn__rounded mt-3" name="Done" value="Ok">     
+										</div>
+										</center>
+										</div>
+						
+										</div>
+									</div>
+												</form>
 								<!----------->
+								
 							</div>
 						
 						
@@ -815,7 +835,18 @@ $('.endtime4').hide()
 $('.endtime5').hide()
 $('.endtime6').hide()
 $(document).ready(function() {
+
+	$( "#updatesched" ).click(function() {
+		$('.starttime1 select').removeAttr('disabled')
+		$('.starttime2 select').removeAttr('disabled')
+		$('.starttime3 select').removeAttr('disabled')
+		$('.starttime4 select').removeAttr('disabled')
+		$('.starttime5 select').removeAttr('disabled')
+		$('.starttime6 select').removeAttr('disabled')
+	});
+		
   $('.starttime1 select').on('change', function() {
+	$(".endtime1 option[value=None]").attr('selected', 'selected');
 	if ( $(".starttime1 select").val() != "None" ){
 		$('#updatesched').attr('disabled', 'disabled');
 		$('.starttime2 select').attr('disabled', 'disabled');

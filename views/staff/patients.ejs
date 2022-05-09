@@ -27,7 +27,6 @@
 		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
 		<ul class="side-menu">
 			<li><a href="/dashboard" ><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
-			<li><a href="/notification"><i class='bx bxs-bell icon' ></i> Notifications</a></li>
 			<li class="divider" data-text="main">Main</li>
 			
 			<li><a href="/appointments"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
@@ -96,8 +95,8 @@
 												<% } %>
 											</div>
 											<div class="user-info__basic">
-												<h5 class="text-highlight mb-0"><%= users.first_name %> <%= users.last_name %></h5>
-												<p class="text-muted mb-0"><%= users.age %> yrs | <%= users.sex %></p>
+												<h5 class="text-highlight mb-0"><%= users.first_name %> <%= users.middle_name %> <%= users.last_name %> <%= users.suffix %></h5>
+												<p class="text-muted mb-0" id="age<%= users._id %>"></p>
 											</div>
 										</div>
 														
@@ -143,8 +142,7 @@
 											<% } %>
 										</div>
 										<div class="user-info__basic">
-											<h2 class="text-highlight mb-0"><%= users.first_name %> <%= users.last_name %></h5>
-											<p class="text-muted mb-0"><%= users.age %> yrs | <%= users.sex %></p>
+											<h2 class="text-highlight mb-0"><%= users.first_name %> <%= users.middle_name %> <%= users.last_name %> <%= users.suffix %></h5>
 										</div>
 									</div>
 									<div class="dropdown open">
@@ -185,7 +183,7 @@
 											<div class="media">
 												<label>Age</label>
 											</div>
-											<p><%= users.age %></p>
+											<p id="view-age<%= users._id %>"></p>
 										</div>
 										<div class="col-md-6 mb-1">
 											<div class="media">
@@ -206,6 +204,14 @@
 						</div>
 						</div>
 					</div>
+					<script>
+						var now = Date.now();
+						var bday = new Date("<%= users.birthday%>");
+						var minus = now-bday
+						var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
+						document.getElementById("age<%= users._id %>").innerText = age + " yrs | <%= users.sex %>"
+						document.getElementById("view-age<%= users._id %>").innerText = age
+					</script>
 					<% }); %> 
 						
 					</div>

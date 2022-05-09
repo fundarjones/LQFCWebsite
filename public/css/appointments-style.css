@@ -8,7 +8,7 @@
   font-size: 1rem;
 }
 
-:root { 
+:root {
 	--grey: #F1F0F6;
 	--dark-grey: #8D8D8D;
 	--light: #fff;
@@ -7930,7 +7930,13 @@ main .btn-send:hover {
    background-position: center center; }
  
 
- 
+   .going{
+    background: #326280 !important;
+   }
+
+   .going:hover{
+    background-color: #2b546e !important;;
+      }
  /* Buttons */
  .button {
    cursor: pointer;
@@ -7940,7 +7946,6 @@ main .btn-send:hover {
    outline: none;
    font-size: 1rem;
    border-radius: 25px;
-   padding: 0.65rem 1.9rem;
    -webkit-transition: .2s ease all;
    -o-transition: .2s ease all;
    transition: .2s ease all;
@@ -7956,7 +7961,7 @@ main .btn-send:hover {
      outline: none; }
  
  .button:hover{
-   background-color: #0d1c42;
+   background-color: #003152;
      }
 
  #cancel-button {
@@ -8480,12 +8485,6 @@ nav .profile .profile-link button:hover {
   font-size: 0.8rem !important;
 }
 
-@media only screen and (max-width: 398px) {
-  .button{
-    padding: 20px 15px;
-  }
-}
-
 h4{
   font-size: 1.3rem;
   text-align: center;
@@ -8620,3 +8619,5 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 .black{
   color: #000 !important;
 }
+
+

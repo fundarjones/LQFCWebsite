@@ -3155,6 +3155,7 @@ app.put('/confirm-appointment', checkAuthenticated, async (req, res) => {
 
 app.put('/approve-appointment', checkAuthenticated, async (req, res) => {
     const user_id = req.body._id
+    const { date, time } = req.body
     let date_ob = new Date();
     let set_date = ("0" + date_ob.getDate()).slice(-2);
     let year = date_ob.getFullYear();
@@ -3184,8 +3185,9 @@ app.put('/approve-appointment', checkAuthenticated, async (req, res) => {
         first_name: approve.first_name,
         last_name: approve.last_name,
         branch: approve.branch,
-        time: approve.time,
-        date: approve.date,
+        time: time,
+        date: date,
+        service: approve.service,
         exp_symptoms: approve.exp_symptoms,
         date_timestamp: approve.date_timestamp,
         time_timestamp: approve.time_timestamp,
@@ -3203,25 +3205,25 @@ app.put('/approve-appointment', checkAuthenticated, async (req, res) => {
     })
 await response.save()
 const user_usertype = req.user.usertype
-const user_id = req.user.id
+const userlog_id = req.user.id
 const user_first_name = req.user.first_name
 const user_last_name = req.user.last_name
 const user_email = req.user.email
 const user_branch = req.user.branch
 const log = new Logs({
   usertype: user_usertype,
-  id: user_id,
+  id: userlog_id,
   first_name: user_first_name,
   last_name: user_last_name,
   email: user_email,
-  log_time: time_timestamp,
-  log_date: date_timestamp,
+  log_time: approve.time_timestamp,
+  log_date: approve.date_timestamp,
   branch: user_branch,
   action: "Approve Appointment"
 })
 await log.save()
 console.log( 'Approve Appointment logged', log)
-const delete_response = await Appointment.deleteOne({_id: user_id})
+const delete_response = await Appointment.deleteOne({_id: user_id, appointment_status: { $ne: "Cancelled" }})
 res.redirect('/appointments')
 sendApproveAppointment(approved_date, approved_time, approve.email, approve.date, approve.time, approve.first_name, approve.last_name)
 console.log('Pending appointment deleted successfully: ', delete_response)
@@ -3229,6 +3231,7 @@ console.log('Appointment approved successfully: ', response)
       
       
     } catch (err) {
+      console.log(err)
       const user_id = req.user._id
       const users = await Staff.findById(user_id)
       const patient = await User.find();
@@ -4359,7 +4362,7 @@ app.post('/request-appointment', checkAuthenticated, async (req, res) => {
     appointment.exp_symptoms = Array.isArray(req.body.exp_symptoms) ? req.body.exp_symptoms : [req.body.exp_symptoms]; 
   }
   const {exp_symptoms, service, branch, checker} = req.body
-  const {email, first_name, last_name, phone, sex, status, birthday} = req.user
+  const {email, first_name, last_name, phone, phone2, sex, status, birthday} = req.user
   
   if (!service) {
     const alert = "Please input a service for your appointment."
@@ -4410,6 +4413,7 @@ app.post('/request-appointment', checkAuthenticated, async (req, res) => {
                     sex,
                     status,
                     phone,
+                    phone2,
                     email,
                     pre_diagnose_result,
                     appointment_status

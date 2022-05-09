@@ -4766,7 +4766,6 @@ button:focus {
         content: none; }
   
   .modal-content {
-    font-size: larger;
     position: relative;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -4775,9 +4774,7 @@ button:focus {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-    width: 300px;
-    left: 50%;
-    transform: translate(-50%);
+    width: 100%;
     pointer-events: auto;
     background-color: #fff;
     background-clip: padding-box;
@@ -4876,7 +4873,6 @@ button:focus {
   @media (min-width: 1200px) {
     .modal-xl {
       max-width: 1140px; } }
-  
  
  .tooltip {
    position: absolute;
