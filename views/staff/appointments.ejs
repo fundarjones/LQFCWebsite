@@ -329,6 +329,10 @@
 														aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
 													</div>
 													<hr>
+													<% if(appointments.isConfirmed == true){%> 
+														<p class="text-success center"><b><%= appointments.first_name %></b> have confirmed to go to the scheduled appointment.
+													<hr>
+													<% } %> 
 													<div class="d-flex justify-content-between">
 														<% if(appointments.appointment_status == "Cancelled") {%>
 															<span class="text-warning font-weight-bold mt-3"><%= appointments.appointment_status %></span>
@@ -673,37 +677,6 @@
 																<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 															</div>
 														</div>
-																
-														<% if (appointments.appointment_status != "Cancelled") {%> 
-															<div class="dropdown open">
-																<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-																	<i class="fa fa-ellipsis-v"></i>
-																</a>
-																<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-													
-																	<input type="button" class="dropdown-item text-primary" id="triggerId1"
-																	data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true"
-																	aria-expanded="false" value="Set Appointment" onclick="editTimeDate()">
-
-																	<form action="/cancel-appointment?_method=PUT" method="POST">
-																		<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-																		<input class="dropdown-item text-danger" type="submit" value="Cancel">
-																	</form>
-																</div>
-															</div>
-															<% } else { %> 
-																<div class="dropdown open">
-																	<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-																		<i class="fa fa-ellipsis-v"></i>
-																	</a>
-																	<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-																		<form action="/deactivate" method="POST">
-																			<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-																			<input type="submit" class="dropdown-item text-danger" value="Remove">
-																		</form>
-																	</div>
-																</div>
-														<% } %> 
 													</div>
 
 													<div class="btn-records">
@@ -712,6 +685,10 @@
 														aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
 													</div>
 													<hr>
+													<% if(appointments.isConfirmed == true){%> 
+														<p class="text-success center"><b><%= appointments.first_name %></b> have confirmed to go to the scheduled appointment on
+													<hr>
+													<% } %> 
 													<div class="d-flex justify-content-between">
 														<% if(appointments.appointment_status == "Cancelled") {%>
 															<span class="text-warning font-weight-bold mt-3"><%= appointments.appointment_status %></span>

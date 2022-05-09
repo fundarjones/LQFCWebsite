@@ -275,33 +275,7 @@
 	}
 	</script>
 
-<script>
-	var modalCancel = false;
-	$('.modal-info').on('hidden.bs.modal', function () {
-		if (modalCancel) {
-			$('.modal-cancel').modal('show');
-			modalCancel = false;
-		}
-	});
 	
-	$(".cancel-date-time-action").click(function() {
-		$('.modal-info').modal('hide');
-		modalCancel = true;
-	});
-	
-	var modalApprove = false;
-	$('.modal-info').on('hidden.bs.modal', function () {
-		if (modalApprove) {
-			$('.modal-approve').modal('show');
-			modalApprove = false;
-		}
-	});
-	
-	$(".approve-date-time-action").click(function() {
-		$('.modal-info').modal('hide');
-		modalApprove = true;
-	});
-</script>
 
 </body>
 </html>

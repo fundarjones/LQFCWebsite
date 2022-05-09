@@ -271,7 +271,7 @@
 								<% } %> 
 								<% if(appointments.isConfirmed == true){%> 
 									<p class="text-success center">You have confirmed to go to the scheduled appointment on
-										<span class="font-weight-bold">May 2, 2022 </span>at <span class="font-weight-bold">10:00 AM</span></p>
+										<span class="font-weight-bold"><%= appointments.date %> </span>at <span class="font-weight-bold"><%= appointments.time %></span></p>
 								<hr>
 								<% } %> 
 								
@@ -362,6 +362,13 @@
 							</div>
 						</div>
 					</div>
+					<script>
+						var now = Date.now();
+						var bday = new Date("<%= appointments.birthday%>");
+						var minus = now-bday
+						var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
+						document.getElementById("age<%= appointments._id %>").innerText = age + " yrs | <%= appointments.sex %>"
+					</script>
 					<% }) %> 
 					
 						
@@ -387,7 +394,7 @@
 								<div class="user-info__basic">
 									<h6 class="mb-0"><%= diagnosis.img_id %> </h6>
 									<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %> </h5>
-									<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %></p>
+									<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 								</div>
 							</div>
 							<div class="dropdown open">
@@ -570,37 +577,7 @@
 										   </div>
 										</div>
 
-										<!-- ============================
-										ARE YOU SURE? APPROVE APPOINTMENT
-										============================== -->
-					
-					
-										<div class="modal fade time-slot modal-approve" id="approve-appointment-modal" tabindex="-1" role="dialog">
-											<div class="modal-dialog modal-dialog-centered" role="document">
-											  <div class="modal-content">
-												<div class="modal-header">
-												  <div class="col-md-12 text-center">
-													<img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
-													</div>
-												</div>
-					
-												<div class="modal-body text-center mt-2">
-												  <h5>Are you sure you want to confirm the scheduled date and time? This action can't be undone.</h5>
-
-												
-												<div class="d-flex justify-content-center mt-4 mb-4">
-													<div class="btn-records m-1">
-														<button class="button-action no-sure" href="#!" aria-expanded="false">No</a>
-													</div>
-													<div class="btn-records m-1">
-														<button class="button-action yes-sure" href="#!" aria-expanded="false">Yes</a>
-													</div>
-												</div>
-					
-												</div>
-											  </div>
-										   </div>
-										</div>
+										
 
 		</main>
 		<% } %> 
