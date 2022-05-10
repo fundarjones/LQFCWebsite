@@ -6,13 +6,13 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <% if (patient) { %>
 		<title><%= patient.first_name %> <%= patient.last_name %> | Lagman Qualicare Family Clinic</title>
-
+    <link href="assets/images/favicon/favicon.png" rel="icon">
   <link rel="stylesheet" href="../css/booking-style.css">
 
 	<link href="../js/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
 	<link href="../js/vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
   <link rel="stylesheet" href="../js/multi-step/bd-wizard.css">
-  <link href="assets/images/favicon/favicon.png" rel="icon">
+
   <link href="../js/vendor/select2/slimselect.min.css" rel="stylesheet" media="all">
 	<link href="../js/vendor/select2/select2.min.css" rel="stylesheet" media="all">
 	<link href="../js/vendor/datepicker/daterangepicker.css" rel="stylesheet" media="all">
@@ -20,7 +20,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
   
-</head>
+</head> 
 <body>
   <header>
     <nav class="navbar navbar-expand-sm navbar-light bg-white">
@@ -35,7 +35,7 @@
 
 
   </header>
-  <form action="/set-followup-appointment" method="POST">
+  <form action="/request-followup-appointment" method="POST">
   <main class="d-flex">
     
     <div class="container">
@@ -49,152 +49,188 @@
               </div> 
             <% } %> 
             <% } %> 
-          <h3>Branch Location</h3>
-          <section>
-                <h5 class="bd-wizard-step-title">Step: 1 of 2</h5>
-                <h2 class="section-heading">Date & Time</h2>
-                <p>Select the date and time for your appointment.</p>
-                
-                
-                <div class="purpose-radios-wrapper">
+          
+          <h3>Services</h3>
+            <section> 
+                        <div class="col-md-12 mt-5">
+                          
+                      <h5 class="bd-wizard-step-title">Step: 2 of 4</h5>
+                          <h4>What type of service are you looking for:</h4>
+                          <select id="services-database" name="service" class="mt-4" multiple required>
+                            <!--insert symptoms database-->
+                            <option value="Regular Health Checkup" >Regular Health Checkup</option>
+                            <option value="General Internal Medicine">General Internal Medicine</option>
+                            <option value="Diabetes Care">Diabetes Care</option>
+                            <option value="Hypertension">Hypertension</option>
+                            <option value="Cardiovascular Diseases">Cardiovascular Diseases</option>
+                            <option value="Ashtma, Ephysemema, Pneumonia">Ashtma, Ephysemema, Pneumonia</option>
+                            <option value="Adult Pediatric Immunization">Adult Pediatric Immunization</option>
+                            <option value="EENT">EENT</option>
+                            <option value="Pediatric Wellness">Pediatric Wellness</option>
+                            <option value="Anti Rabies Vaccine">Anti Rabies Vaccine</option>
+                            <option value="Flu Vaccine">Flu Vaccine</option>
+                          </select>
 
-                  <% if (branch) {%> 
-                  
-                    <section class="text-center">
-                      <div class="card-container">
-                            <div class="row row-space">
-                              <div class="col-md-12">
-                                <div class="text-group">
-                                   <label class="label">Date</label>
-                                   <div class="input-group-icon">
-                                      <input class="input--style-4 js-datepicker date-no-past<%= branch._id %>"  id="date-no-past" type="date" name="date" onchange="empty()">
-                                   </div>
+                        </div>
+                      <div class="col-md-12">
+                      <input type="button" class="bd-wizard-btn" data-step="previous" aria-label="Close" value="Previous">
+                      <input type="button" id="next" class="bd-wizard-btn" data-step="next" aria-label="Close" value="Next" disabled = "disabled">
+                      </div>
+             </section>     
 
-                                   <script>
-                                    var today = new Date();
-                                    var dd = String(today.getDate()).padStart(2, "0");
-                                    var mm = String(today.getMonth() + 1).padStart(2, "0");
-                                    var yyyy = today.getFullYear();
-                                    today = yyyy + "-" + mm + "-" + dd;
-                                    $(".date-no-past<%= branch._id %>").attr("min", today);
-                                  </script>
-                                  <script>
+             <h3>Symptoms</h3>
+             <section> 
+ 
+                        <div class="col-md-12 mt-5">
+                       <h5 class="bd-wizard-step-title">Step: 3 of 4</h5>
+           
+                           <h4>Do you currently experience any of the
+                            following symptoms?</h4>
 
-                                    $(document).ready(function(){
-                                      $('.time<%= branch._id %>').hide()
-                                    $('.date-no-past<%= branch._id %>').on("keyup change", function(e){
-                                      $('.time<%= branch._id %>').show()
-                                      var day = new Date(this.value).getUTCDay();
-                                        if ([6, 0].includes(day)) {
-                                            e.preventDefault();
-                                            this.value = "";
-                                            $(".time-slot").modal("hide");
-                                            $(".close-weekends").modal("show");
-                                        }
-                                        var date = $(this).val();
-                                        var selectedDate = document.getElementsByClassName('selectedDate');
-                                        for (var i = 0; i < selectedDate.length; ++i) {
-                                        var outputDate = selectedDate[i];  
-                                        outputDate.innerHTML = date + ' ';
+                            <div class="row mt-5 mb-5">
+                              <div class="span4">
+                                  <div class="container-fluid">
+                                      <div class="row-fluid">
+                                          <div class="span6">
+                                              <ul>
+                                                  <li>Fever</li>
+                                                  <li>Cough</li>
+                                              </ul>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="span4">
+                                  <div class="container-fluid">
+                                    <div class="row-fluid">
+                                        <div class="span6">
+                                            <ul>
+                                              <li>Difficulty Breathing</li>
+                                              <li>Colds</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                              <div class="span4">
+                                <div class="container-fluid">
+                                  <div class="row-fluid">
+                                      <div class="span6">
+                                          <ul>
+                                              <li>Sore Throat</li>
+                                          </ul>
+                                      </div>
+                                  </div>
+                              </div>
+                              </div>
+                              </div>
 
-                                          var array = [];
+                          <div class="purpose-radio radio-toolbar" data-step="next">
+                            <input type="radio" name="checker" id="no" value="no">
+                          <label for="no" class="purpose-radio-label">
+                            <span class="label-text">NO</span>
+                          </label>
+                          </div>
 
-                                          $('.database-date<%= branch._id %>').find('p').each(function(){
-                                            array.push($(this).text());
-                                          });
-
-                                        $(array ).each(function () {
-                                          $('.purpose-radio:contains(" '+date+'"):contains("'+this+'")').css({"color":"black", "pointer-events": "none", "opacity": 0.5}).attr("disabled", true);
-                                        });
-
-                                        // Clear Array Elements
-                                        array = [];
-                                        //
-
-
-                                        }
-
-
-                                        });
-                                        });
-
-                                        function empty() {
-                                            $('.purpose-radio').css({"pointer-events": "all", "opacity": 1});
-                                        }    
-
-                                        $(".close").click(function(){
-                                          $('.time<%= branch._id %>').hide()
-                                        });
-                                  </script>
-
+                          <div class="purpose-radio radio-toolbar">
+                              <input type="radio" name="checker" id="yes" value="yes" data-toggle="modal" data-target="#yes-symptoms">
+                              <label for="yes" class="purpose-radio-label">
+                              <span class="label-text">YES</span>
+                            </label>
+                          </div>
+      
+                           <!--Modal-->
+                            <div class="modal fade time-slot" id="yes-symptoms" tabindex="-1" role="dialog">
+                              <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <div class="col-md-12 text-center">
+                                      <i type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </i>
+                                      <img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
+                                  </div>
+                                  </div>
+      
+                                  <div class="modal-body text-center mt-3">
+                                    <p>Specify the symptoms you are experiencing.</p>
+                                  <section class="text-center">
+                                    <div class="card-container mt-4 mb-3">
+                                    
+                                      <div class="col-md-12">
+                                        <select id="symptoms-database" name="exp_symptoms" multiple>
+                                          <!--insert symptoms database-->
+                                          <option value="Fever">Fever</option>
+                                          <option value="Cough">Cough</option>
+                                          <option value="Difficulty Breathing">Difficulty Breathing</option>
+                                          <option value="Colds">Colds</option>
+                                          <option value="Sore Throat">Sore Throat</option>
+                                        </select>
+                                      </div>
+                                     
+                                      <input type="button" id="proceed" class="bd-wizard-btn" data-step="next" data-dismiss="modal" aria-label="Close" value="Proceed" disabled = "disabled">
+                                    </div>
+                                  </div>
+      
+                                  </div>
                                 </div>
                              </div>
+                           
+                          </div> 
+                            <div class="col-md-12">
+                            <input type="button" class="bd-wizard-btn" data-step="previous" aria-label="Close" value="Go Back">
                             </div>
-                            <label class="time<%= branch._id %> time">Time</label>
-                            
-                            <div class="time<%= branch._id %> time text-center mx-0">
-                              <div class="checker">
-                               <!--INSERT TIME DATABASE-->
-                               <% for(var i=0; i<branch.set_time.length; i++) {%>
-                                  <div class="col-md-4 col-4 my-1 px-2 purpose-radio<%= branch._id %> purpose-radio radio-toolbar">
-                                    <input type="radio" name="time" id="time<%= branch.id %><%= branch.set_time[i] %>" value="<%= branch.set_time[i] %>" >
-                                    <label for="time<%= branch.id %><%= branch.set_time[i] %>" class="cell py-1 rounded-lg">
-                                      <div class="selectedDate" style="display:none"></div><%= branch.set_time[i] %>
-                                      </label>
-                                  </div>
-                                <% } %> 
-                              </div>
-                            </div>
-                                <% appointment.forEach(function(appointments){ %>
-                                  <% if(appointments.branch == branch.branch_name && appointments.appointment_status == "Pending" || appointments.branch == branch.branch_name && appointments.appointment_status == "Approved" || appointments.branch == branch.branch_name && appointments.appointment_status == "Follow-Up"){ %> 
-                                    <div class="database-date<%= branch._id %> database-date" hidden>
-                                      <p id="valueInput<%= appointments.id%><%= branch._id %>"></p>
-                                    </div>
-                                  <script>
-                                    var date_ob = new Date('<%= appointments.date%>');
-                                    var year = date_ob.getFullYear();
-                                    var month = ("0" + (date_ob.getMonth()+1)).slice(-2);
-                                    var date = ("0" + date_ob.getDate()).slice(-2);
-                                    var appointed_dates = year + "-"+ month+"-"+ date + " " + "<%= appointments.time %>"; 
-                                    document.getElementById("valueInput<%= appointments.id%><%= branch._id %>").innerHTML = appointed_dates
-                                  </script>
-                                  
-                                  <% } %> 
-                                <% }) %> 
-                          <br><br> <input type="submit" class="bd-wizard-btn" name="Done" id="submit">
-                          <br><br>
-                        </div>
-                        </section>
-              </div>
-              <% } %> 
+                        
+              </section>   
+
+          <h3>Terms</h3>
+          <section>
+            <div class="card-container">
+              <h5 class="bd-wizard-step-title">Step: 4 of 4</h5>
+              <h2 class="section-heading">Terms & Conditions</h2>
+                    
+                      <div class="my-5">
+                        <body onload="disableSubmit()">
+                          <p><input type="checkbox" name="terms" id="terms" onchange="activateButton(this)">
+                          By booking an Appointment, I herebey accept the 
+                          <a href="/terms-conditions" target="_blank">Terms and Conditions</a></p>
+  
+                          <br>
+                        <input type="button" class="bd-wizard-btn" data-step="previous" value="Previous">
+                        <input type="button" class="bd-wizard-btn" id="submit" value="Submit" data-toggle="modal" data-target="#success_confirm">
+
+                         </body>
+                      </div>
+            </div>
           </section>
 
-          
+           <!--Modal-->
+           <div class="modal fade time-slot" id="success_confirm" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <div class="col-md-12 text-center">
+                    <img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
+                </div>
+                </div>
+
+                <center>
+                <div class="col-md-10 modal-body text-center mt-3">
+                  <p>You have successfuly requested a follow-up appointment, please wait for a while, our staff will call or text you to confirm your appointment.</p>  
+                  <input type="submit" class="bd-wizard-btn" name="Done" value="Ok">     
+                  </div>
+                </center>
+                </div>
+
+                </div>
+              </div>
+           </div>
 
           
         </div>
       </div>
     </div>
     <% } %> 
-    <!--Modal-->
-    <div class="modal fade close-weekends" id="alert" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <div class="col-md-12 text-center">
-              <button type="button" class="close" id="hide_modal" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-              <img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
-           </div>
-          </div>
-          <div class="modal-body text-center close-weekends">
-            Sorry to say but our clinic is closed on Saturday and Sunday.
-          </div>
-          </div>
-        </div>
-      </div>
-  <!---->
   </main>
   </form>
 
@@ -207,18 +243,57 @@
 
 
 
-	<script>
+  <script>
 		new SlimSelect({
-		  select: '#symptoms-database'
+		  select: '#symptoms-database',
+      closeOnSelect: false,
+      placeholder: 'Select Symptoms',
+      addable: function (value) {
+    // return false or null if you do not want to allow value to be submitted
+    if (value === 'bad') {return false}
+
+    // Return the value string
+    return value // Optional - value alteration // ex: value.toLowerCase()
+
+    // Optional - Return a valid data object. See methods/setData for list of valid options
+    return {
+      text: value,
+      value: value.toLowerCase()
+    }
+  }
+      
 		  });
-	</script>
+      
+  new SlimSelect({
+    select: '#services-database',
+    closeOnSelect: false,
+    placeholder: 'Select Services',
+    addable: function (value) {
+    // return false or null if you do not want to allow value to be submitted
+    if (value === 'bad') {return false}
+
+    // Return the value string
+    return value // Optional - value alteration // ex: value.toLowerCase()
+
+    // Optional - Return a valid data object. See methods/setData for list of valid options
+    return {
+      text: value,
+      value: value.toLowerCase()
+    }
+  }
+
+    });
+
+    $(document).ready(function() {  
+        $('#no').click(function() {  
+          return $('#symptoms-database option:selected').remove(); 
+        });
+      });
+    
+</script>
 
 <script>
-
-  $("#hide_modal").click(function(){
-    $(".modal-backdrop").hide();
-  });
-
+  
   function disableSubmit() {
    document.getElementById("submit").disabled = true;
   }
@@ -235,6 +310,38 @@
    }
  </script>
 
+<script>
+	$(document).ready(function() {
+  $('#symptoms-database').on('change', function() {
+    let empty = false;
+
+    $('#symptoms-database').each(function() {
+      empty = $(this).val().length == 0;
+    });
+
+    if (empty)
+      $('#proceed').attr('disabled', 'disabled');
+    else
+      $('#proceed').removeAttr('disabled')
+  });
+});
+
+$(document).ready(function() {
+  $('#services-database').on('change', function() {
+    let empty = false;
+
+    $('#services-database').each(function() {
+      empty = $(this).val().length == 0;
+    });
+
+    if (empty)
+      $('#next').attr('disabled', 'disabled');
+    else
+      $('#next').removeAttr('disabled')
+  });
+});
+</script>
+
 
 <script src="../js/global.js"></script>
 
@@ -243,20 +350,9 @@
 <script type='text/javascript' src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js'></script>
 <script type='text/javascript' src=''></script>
 <script type='text/javascript' src=''></script>
-<script type='text/Javascript'>$(document).ready(function(){
 
-$('.datepicker').datepicker({
-format: 'dd-mm-yyyy',
-autoclose: true,
-startDate: '0d'
-});
 
-$('.cell').click(function(){
-$('.cell').removeClass('select');
-$(this).addClass('select');
-});
 
-});</script>
 
 </body>
 </html>

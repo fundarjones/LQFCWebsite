@@ -126,7 +126,7 @@
 										<div class="user-info__basic">
 											<h6 class="mb-0"><%= appointments.img_id %></h6>
 											<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-											<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %></p>
+											<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 										</div>
 									</div>
 
@@ -174,9 +174,8 @@
 
 									<% if (appointments.appointment_status == "Approved" && appointments.isConfirmed == false || appointments.appointment_status == "Follow-Up" && appointments.isConfirmed == false && appointments.approved_staff){%> 	
 										<div>
-											<h5 class="mb-0 mb-n1">2:00 PM
-											</h5>
-											<medium class="mb-0">May 2, 2022</medium>
+											<h5 class="mb-0 mb-n1"><%= appointments.time %></h5>
+											<medium class="mb-0"><%= appointments.date %></medium>
 										</div>
 									<% } %> 
 								</div>
@@ -201,7 +200,6 @@
 										<div class="user-info__basic">
 											<h6 class="mb-0"><%= appointments.img_id %></h6>
 											<h2 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-											<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %></p>
 										</div>
 									</div>
 									<% if (appointments.appointment_status != "Cancelled") {%> 
@@ -317,6 +315,13 @@
 						</div>
 						</div>
 					</div>
+					<script>
+						var now = Date.now();
+						var bday = new Date("<%= appointments.birthday%>");
+						var minus = now-bday
+						var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
+						document.getElementById("age<%= appointments._id %>").innerText = age + " yrs | <%= appointments.sex %>"
+					</script>
 					<% }) %> 
 			
 					<% diagnose.reverse().forEach(function(diagnosis){ %>
@@ -362,13 +367,6 @@
 							</div>
 						</div>
 					</div>
-					<script>
-						var now = Date.now();
-						var bday = new Date("<%= appointments.birthday%>");
-						var minus = now-bday
-						var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
-						document.getElementById("age<%= appointments._id %>").innerText = age + " yrs | <%= appointments.sex %>"
-					</script>
 					<% }) %> 
 					
 						
@@ -394,7 +392,7 @@
 								<div class="user-info__basic">
 									<h6 class="mb-0"><%= diagnosis.img_id %> </h6>
 									<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %> </h5>
-									<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
+									<p class="text-muted mb-0" id="age<%= diagnosis._id %>"></p>
 								</div>
 							</div>
 							<div class="dropdown open">
@@ -460,6 +458,13 @@
 				</div>
 			</div>
 		<% } %> 
+		<script>
+			var now = Date.now();
+			var bday = new Date("<%= patient.birthday %>");
+			var minus = now-bday
+			var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
+			document.getElementById("age<%= diagnosis._id %>").innerText = age + " yrs | <%= patient.sex %>"
+		</script>
 	<% }) %> 
 	
 	<% diagnose.reverse().forEach(function(diagnosis){ %>
@@ -476,7 +481,7 @@
 								<div class="user-info__basic">
 									<h6 class="mb-0"><%= diagnosis.img_id %> </h6>
 									<h5 class="text-highlight mb-0"><%= diagnosis.first_name %> <%= diagnosis.last_name %> </h5>
-									<p class="text-muted mb-0"><%= diagnosis.age %> yrs | <%= diagnosis.sex %></p>
+									<p class="text-muted mb-0" id="age<%= diagnosis._id %>"></p>
 								</div>
 							</div>
 							<div class="dropdown open">
@@ -543,6 +548,13 @@
 			</div>
 
 	<% } %> 
+	<script>
+		var now = Date.now();
+		var bday = new Date("<%= patient.birthday%>");
+		var minus = now-bday
+		var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
+		document.getElementById("age<%= diagnosis._id %>").innerText = age + " yrs | <%= patient.sex %>"
+	</script>
 	<% }) %> 
 			
 			<!-- ============================

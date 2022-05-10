@@ -13,7 +13,7 @@
 	
 	<link href="../js/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
 	<link href="../js/vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
-
+	<script src="assets/js/vendor/jquery/jquery.min.js"></script>
 
 	<% if (staff) { %>
 		<title><%= staff.first_name %> <%= staff.last_name %> | Lagman Qualicare Family Clinic</title>
@@ -22,13 +22,12 @@
 	
 	<!-- SIDEBAR -->
 	<section id="sidebar">
-		
 		<a href="/dashboard" class="brand"><img class='logo' src="../../assets/images/logo/logo.png"></a>
 		<ul class="side-menu">
 			<li><a href="/dashboard"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
 			<li class="divider" data-text="main">Main</li>
-			
-			<li><a href="/appointments" class="active"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
+			<li><a href="/appointments"  class="active"><i class='bx bxs-book-heart icon' ></i> Appointments</a></li>
+			<li><a href="/diagnosed-records"><i class='bx bxs-book-content icon' ></i>Diagnosed<br>Records</a></li>
 			<li><a href="/patients"><i class='bx bxs-user icon' ></i> Patients</a></li>
 		</ul>
 	</section>
@@ -63,7 +62,7 @@
 			</div>
 		</nav>
 		<!-- NAVBAR -->
-
+		
 		<!-- MAIN -->
 		<main>
 			<% if(typeof alert != 'undefined') { %>
@@ -73,6 +72,24 @@
 			  </div>
 
 			<% } %>
+
+			<!-- START/END TIME/INTERVAL -->
+			<p id="time-interval" hidden>15</p>
+			<% if (branch) {%> 
+			<div style="display: none;">
+			<p id="weekday-start-time"><%= branch.opening_weekdays %></p>
+			<p id="weekday-end-time"><%= branch.closing_weekdays %></p>
+			
+			<p id="sat-start-time"><%= branch.opening_saturday %></p>
+			<p id="sat-end-time"><%= branch.closing_saturday %></p>
+			
+			<p id="sun-start-time"><%= branch.opening_sunday %></p>
+			<p id="sun-end-time"><%= branch.closing_sunday %></p>
+			</div>
+			<% } %> 
+			<!--------------------->
+
+
 			<section class="ftco-section">
 				<div class="container">
 			<h1 class="title">Appointments</h1>
@@ -100,8 +117,8 @@
 								<input type="radio" id="tab2" name="tab-control">
 								<hr>
 								<ul>
-								  <li title="normal"><label for="tab1" role="button"><span>Patients Who Don't Have Infectious Symptoms</span></label></li>
-								  <li title="positive"><label for="tab2" role="button"><span>Patients Who Has Infectious Symptoms</span></label></li>
+								  <li title="normal"><label for="tab1" role="button"><span>Without Infectious Symptoms</span></label></li>
+								  <li title="positive"><label for="tab2" role="button"><span>With Infectious Symptoms</span></label></li>
 									
 								</ul>
 								<hr>
@@ -149,7 +166,7 @@
 														
 																		<input type="button" class="dropdown-item text-primary" id="triggerId1"
 																		data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true"
-																		aria-expanded="false" value="Set Appointment" onclick="editTimeDate()">
+																		aria-expanded="false" value="Set Appointment" onclick="confirmTimeDate()">
 	
 																		<form action="/cancel-appointment?_method=PUT" method="POST">
 																			<input type="text" name="_id" value="<%= appointments._id %>" hidden>
@@ -186,6 +203,8 @@
 																	</h5>
 																	<medium class="mt-0"><%= appointments.date %></medium>
 																</div>
+															<% } else if(appointments.appointment_status =="Follow-Up") { %> 
+																<span class="text-primary font-weight-bold mt-2 mb-3">Pending | <small>Follow-Up</small></span>
 															<% }  else { %> 
 																<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
 															<% } %> 
@@ -222,7 +241,7 @@
 
 																	<input type="button" class="dropdown-item text-primary"
 																	data-target="#a<%= appointments._id %><%= appointments.appointment_status %>"
-																	value="Set Appointment" onclick="editTimeDate()">
+																	value="Set Appointment" onclick="confirmTimeDate()">
 
 																	<form action="/cancel-appointment?_method=PUT" method="POST">
 																		<input type="text" name="_id" value="<%= appointments._id %>" hidden>
@@ -272,15 +291,19 @@
 														<div class="col-md-6 col-xs-6 col-sm-6">
 																<center>
 																<p class="text-muted mb-0">Date</p>
-																<input class="input--style-4 mb-3" value="" name="date" id="date-no-past" type="date" required>
+																<input class="input--style-4 mb-3 date-no-past" value="" name="date" id="date-no-past<%= appointments._id %>" type="date" required>
 																</center>
 														</div>
 														<div class="col-md-6 col-xs-6 col-sm-6">
 																<center>
 																<p class="text-muted mb-0">Time</p>
-																<input class="input--style-4 mb-3" name="time" id="date-no-past" type="time" required>
+																<input class="input--style-4 mb-3 timepicker" value="" name="time" required>
 																</center>
 														</div>
+														</div>
+														<hr>
+														<div class="d-flex justify-content-between mt-2">
+															<p class="text-success font-weight-bold"><%= appointments.pre_diagnose_result %></p>
 														</div>
 														<hr>
 														<div class="d-flex justify-content-between mt-3">
@@ -293,13 +316,19 @@
 																</h5>
 																<medium class="mb-0"><%= appointments.date %></medium>
 															</div>
+														<% } else if(appointments.appointment_status =="Follow-Up") { %> 
+															<h6 class= "mt-3">Status: 
+																<span class="text-primary font-weight-bold mt-2 mb-3">Pending | <small>Follow-Up</small></span>
+															</h6>
+															<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+															<input type="submit" class="button confirm-button" href="#!" aria-expanded="false" style="display: none ;" value="Approve Appointment">
 														<% }  else { %> 
 															<h6 class= "mt-2">Status: 
 															<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
 															</h6>
 															
 															<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-															<input type="submit" class="button confirm-button" href="#!" id="confirm-date-time" aria-expanded="false" style="display: none ;" value="Approve Appointment">
+															<input type="submit" class="button confirm-button" href="#!" aria-expanded="false" style="display: none ;" value="Approve Appointment">
 														<% } %> 
 														</div>
 													</div>
@@ -307,7 +336,7 @@
 												</div>
 											</div>
 										</div>
-										<% } else if( appointments.pre_diagnose_result == "Patient Has Non Infectious Symptoms" && appointments.appointment_status == "Approved" && staff.branch == appointments.branch) { %> 
+										<% } else if( appointments.pre_diagnose_result == "Patient Has Non Infectious Symptoms" && appointments.appointment_status != "Cancelled" && staff.branch == appointments.branch && appointments.approved_staff) { %> 
 											<div class="searchhide not">
 												<div class="card p-3 mb-4">
 													<div class="d-flex justify-content-between mb-4">
@@ -321,6 +350,17 @@
 																<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 															</div>
 														</div>
+														<div class="dropdown open">
+															<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																<i class="fa fa-ellipsis-v"></i>
+															</a>
+															<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+	
+                                                                <input type="button" class="dropdown-item text-primary" id="triggerId1"
+																data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true"
+																aria-expanded="false" value="Edit Appointment" onclick="editTimeDate()">
+															</div>
+														</div>
 													</div>
 
 													<div class="btn-records">
@@ -329,21 +369,23 @@
 														aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
 													</div>
 													<hr>
-													<% if(appointments.isConfirmed == true){%> 
-														<p class="text-success center"><b><%= appointments.first_name %></b> have confirmed to go to the scheduled appointment.
-													<hr>
-													<% } %> 
 													<div class="d-flex justify-content-between">
 														<% if(appointments.appointment_status == "Cancelled") {%>
 															<span class="text-warning font-weight-bold mt-3"><%= appointments.appointment_status %></span>
+														<% } else if(appointments.appointment_status =="Follow-Up") { %> 
+															<span class="text-primary font-weight-bold mt-2">Approved | <small>Follow-Up</small></span>
 															<div>
-																<h5 class="mb-0"><%= appointments.time %>
+																<h5 class="mb-0" style="text-transform: uppercase; text-align: right;"><%= appointments.time %>
 																</h5>
-																<medium class="mt-0"><%= appointments.date %></medium>
+															<medium class="mt-0"><%= appointments.date %></medium>
 															</div>
 														<% }  else { %> 
-															<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
-															<medium class="mt-0"><%= appointments.date %> <br> <%= appointments.time %></medium>
+															<span class="text-primary font-weight-bold mt-3"><%= appointments.appointment_status %></span>
+															<div>
+																<h5 class="mb-0" style="text-transform: uppercase;"><%= appointments.time %>
+																</h5>
+																<medium class="mt-0" style="text-transform: uppercase;"><%= appointments.date %></medium>
+															</div>
 														<% } %> 
 													</div>
 												</div>
@@ -367,6 +409,17 @@
 															<h6 class="mb-0"><%= appointments.img_id %></h6>
 															<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
 															<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
+														</div>
+													</div>
+													<div class="dropdown open dropdown-set ">
+														<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															<i class="fa fa-ellipsis-v"></i>
+														</a>
+														<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+
+															<input type="button" class="dropdown-item text-primary"
+																	data-target="#a<%= appointments._id %><%= appointments.appointment_status %>"
+																	value="Edit Appointment" onclick="editTimeDate()">
 														</div>
 													</div>
 												</div>
@@ -395,20 +448,36 @@
 													</div>
 													<hr>
 													<div class="row mb-4 mt-4">
-													<div class="col-md-6 col-xs-6 col-sm-6">
+													<div class="already-setted col-md-6 col-xs-6 col-sm-6">
 														<center>
 															<p class="text-muted mb-0 mt-2">Date</p>
-															<h5><%= appointments.date %></h5>
+															<h5 style="text-transform: uppercase;"><%= appointments.date %></h5>
 															</center>
 													</div>
-													<div class="col-md-6 col-xs-6 col-sm-6">
+													<div class="already-setted col-md-6 col-xs-6 col-sm-6">
 														<center>
 															<p class="text-muted mb-0 mt-2">Time</p>
-															<h5><%= appointments.time %></h5>
+															<h5 style="text-transform: uppercase;"><%= appointments.time %></h5>
+															</center>
+													</div>
+													<div class="not-setted col-md-6 col-xs-6 col-sm-6">
+														<center>
+														<p class="text-muted mb-0">Date</p>
+														<input class="input--style-4 mb-3 date-no-past" value="<%= appointments.date %>" name="date" id="date-no-past<%= appointments._id %>" type="date" required>
+														</center>
+													</div>
+													<div class="not-setted col-xs-6 col-sm-6">
+															<center>
+															<p class="text-muted mb-0">Time</p>
+															<input class="input--style-4 mb-3 timepicker" value="<%= appointments.time %>" name="time" required>
 															</center>
 													</div>
 													</div>
 													<hr>
+														<div class="d-flex justify-content-between mt-2">
+															<p class="text-success font-weight-bold"><%= appointments.pre_diagnose_result %></p>
+														</div>
+														<hr>
 													<div class="d-flex justify-content-between mt-3">
 													<% if(appointments.appointment_status == "Cancelled") {%> 
 														<h6 class= "mt-3">Status: 
@@ -419,13 +488,19 @@
 															</h5>
 															<medium class="mb-0"><%= appointments.date %></medium>
 														</div>
+													<% } else if(appointments.appointment_status =="Follow-Up") { %> 
+															<h6 class= "mt-3">Status: 
+																<span class="text-primary font-weight-bold mt-2">Approved | <small>Follow-Up</small></span>
+															</h6>
+															<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+															<input type="submit" class="button confirm-button" href="#!" aria-expanded="false" style="display: none ;" value="Edit Appointment" onclick="setTimeDate()">
+														
 													<% }  else { %> 
 														<h6 class= "mt-2">Status: 
 														<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
 														</h6>
-														
 														<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-														<input type="submit" class="button confirm-button" href="#!" id="confirm-date-time" aria-expanded="false" style="display: none ;" value="Approve Appointment">
+															<input type="submit" class="button confirm-button" href="#!" aria-expanded="false" style="display: none ;" value="Edit Appointment" onclick="setTimeDate()">
 													<% } %> 
 													</div>
 												</div>
@@ -489,7 +564,7 @@
 														
 																		<input type="button" class="dropdown-item text-primary" id="triggerId1"
 																		data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true"
-																		aria-expanded="false" value="Set Appointment" onclick="editTimeDate()">
+																		aria-expanded="false" value="Set Appointment" onclick="confirmTimeDate()">
 
 																		<form action="/cancel-appointment?_method=PUT" method="POST">
 																			<input type="text" name="_id" value="<%= appointments._id %>" hidden>
@@ -521,11 +596,8 @@
 														<div class="d-flex justify-content-between">
 															<% if(appointments.appointment_status == "Cancelled") {%>
 																<span class="text-warning font-weight-bold mt-3"><%= appointments.appointment_status %></span>
-																<div>
-																	<h5 class="mb-0"><%= appointments.time %>
-																	</h5>
-																	<medium class="mt-0"><%= appointments.date %></medium>
-																</div>
+																<% } else if(appointments.appointment_status =="Follow-Up") { %> 
+																	<span class="text-primary font-weight-bold mt-2 mb-3">Pending | <small>Follow-Up</small></span>
 															<% }  else { %> 
 																<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
 															<% } %> 
@@ -562,7 +634,7 @@
 
 																	<input type="button" class="dropdown-item text-primary"
 																	data-target="#a<%= appointments._id %><%= appointments.appointment_status %>"
-																	value="Set Appointment" onclick="editTimeDate()">
+																	value="Set Appointment" onclick="confirmTimeDate()">
 
 																	<form action="/cancel-appointment?_method=PUT" method="POST">
 																		<input type="text" name="_id" value="<%= appointments._id %>" hidden>
@@ -612,13 +684,13 @@
 															<div class="col-md-6 col-xs-6 col-sm-6">
 																<center>
 																<p class="text-muted mb-0">Date</p>
-																<input class="input--style-4 mb-3" value="" name="date" id="date-no-past" type="date" required>
+																<input class="input--style-4 mb-3 date-no-past" value="" name="date" id="date-no-past<%= appointments._id %>" type="date" required>
 																</center>
 														</div>
 														<div class="col-md-6 col-xs-6 col-sm-6">
 																<center>
 																<p class="text-muted mb-0">Time</p>
-																<input class="input--style-4 mb-3" name="time" id="date-no-past" type="time" required>
+																<input class="input--style-4 mb-3 timepicker" value="" name="time" required>
 																</center>
 														</div>
 														</div>
@@ -650,12 +722,19 @@
 																</h5>
 																<medium class="mb-0"><%= appointments.date %></medium>
 															</div>
+															<% } else if(appointments.appointment_status =="Follow-Up") { %> 
+																<h6 class= "mt-3">Status: 
+																	<span class="text-primary font-weight-bold mt-2 mb-3">Pending | <small>Follow-Up</small></span>
+																</h6>
+																<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+																<input type="submit" class="button confirm-button" href="#!" aria-expanded="false" style="display: none ;" value="Approve Appointment">
+															
 														<% }  else { %> 
 															<h6 class= "mt-2">Status: 
 															<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
 															</h6>
 															<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-															<input type="submit" class="button confirm-button" href="#!" id="confirm-date-time" aria-expanded="false" style="display: none ;" value="Approve Appointment">
+															<input type="submit" class="button confirm-button" href="#!"  aria-expanded="false" style="display: none ;" value="Approve Appointment">
 														<% } %> 
 														</div>
 													</div>
@@ -663,7 +742,7 @@
 												</div>
 											</div>
 										</div>
-										<% } else if (appointments.pre_diagnose_result == "Patient Has Infectious Symptoms" && appointments.appointment_status == "Approved" && staff.branch == appointments.branch) { %>
+										<% } else if (appointments.pre_diagnose_result == "Patient Has Infectious Symptoms" && appointments.appointment_status != "Cancelled" && staff.branch == appointments.branch && appointments.approved_staff) { %>
 											<div class="searchhide yes">
 												<div class="card p-3 mb-4">
 													<div class="d-flex justify-content-between mb-4">
@@ -677,6 +756,18 @@
 																<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 															</div>
 														</div>
+														<div class="dropdown open">
+															<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																<i class="fa fa-ellipsis-v"></i>
+															</a>
+															<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+	
+                                                                <input type="button" class="dropdown-item text-primary" id="triggerId1"
+																data-toggle="modal" data-target="#a<%= appointments._id %><%= appointments.appointment_status %>" aria-haspopup="true"
+																aria-expanded="false" value="Edit Appointment" onclick="editTimeDate()">
+															</div>
+														</div>
+														
 													</div>
 
 													<div class="btn-records">
@@ -685,20 +776,23 @@
 														aria-haspopup="true" aria-expanded="false">View Appointment Info</a>
 													</div>
 													<hr>
-													<% if(appointments.isConfirmed == true){%> 
-														<p class="text-success center"><b><%= appointments.first_name %></b> have confirmed to go to the scheduled appointment on
-													<hr>
-													<% } %> 
 													<div class="d-flex justify-content-between">
 														<% if(appointments.appointment_status == "Cancelled") {%>
 															<span class="text-warning font-weight-bold mt-3"><%= appointments.appointment_status %></span>
-															<div>
-																<h5 class="mb-0"><%= appointments.time %>
-																</h5>
-																<medium class="mt-0"><%= appointments.date %></medium>
-															</div>
+															<% } else if(appointments.appointment_status =="Follow-Up") { %> 
+																	<span class="text-primary font-weight-bold mt-2">Approved | <small>Follow-Up</small></span>
+																	<div>
+																		<h5 class="mb-0" style="text-transform: uppercase; text-align: right;"><%= appointments.time %>
+																		</h5><br>
+																	<medium class="mt-0"><%= appointments.date %></medium>
+																	</div>
 														<% }  else { %> 
-															<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
+															<span class="text-primary font-weight-bold mt-3"><%= appointments.appointment_status %></span>
+															<div>
+															<h5 class="mb-0" style="text-transform: uppercase;"><%= appointments.time %>
+															</h5>
+															<medium class="mt-0"><%= appointments.date %></medium>
+															</div>
 														<% } %> 
 													</div>
 												</div>
@@ -724,36 +818,18 @@
 															<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 														</div>
 													</div>
-													<% if (appointments.appointment_status != "Cancelled") {%> 
-														<div class="dropdown open dropdown-set ">
-															<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-																<i class="fa fa-ellipsis-v"></i>
-															</a>
-															<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
+													<div class="dropdown open dropdown-set ">
+														<a href="#!" class="px-2" id="b<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															<i class="fa fa-ellipsis-v"></i>
+														</a>
+														<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
 
-																<input type="button" class="dropdown-item text-primary"
-																data-target="#a<%= appointments._id %><%= appointments.appointment_status %>"
-																value="Set Appointment" onclick="editTimeDate()">
-
-																<form action="/cancel-appointment?_method=PUT" method="POST">
-																	<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-																	<input class="dropdown-item text-danger" type="submit" value="Cancel Appointment">
-																</form>
-															</div>
+															<input type="button" class="dropdown-item text-primary"
+																	data-target="#a<%= appointments._id %><%= appointments.appointment_status %>"
+																	value="Edit Appointment" onclick="editTimeDate()">
 														</div>
-														<% } else { %> 
-															<div class="dropdown open">
-																<a href="#!" class="px-2" id="<%= appointments.id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-																	<i class="fa fa-ellipsis-v"></i>
-																</a>
-																<div class="dropdown-menu dropdown-menu-right" aria-labelledby="<%= appointments.id %>">
-																	<form action="/deactivate" method="POST">
-																		<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-																		<input type="submit" class="dropdown-item text-danger" value="Remove">
-																	</form>
-																</div>
-															</div>
-													<% } %> 
+													</div>
+													
 												</div>
 
 													<p class="font-weight-bold text-info center"><%= appointments.service %></p>
@@ -780,18 +856,30 @@
 													</div>
 													<hr>
 													<div class="row mb-4 mt-4">
-														<div class="col-md-6 col-xs-6 col-sm-6">
+														<div class="already-setted col-md-6 col-xs-6 col-sm-6">
+															<center>
+																<p class="text-muted mb-0 mt-2">Date</p>
+																<h5 style="text-transform: uppercase;"><%= appointments.date %></h5>
+																</center>
+														</div>
+														<div class="already-setted col-xs-6 col-sm-6">
+															<center>
+																<p class="text-muted mb-0 mt-2">Time</p>
+																<h5 style="text-transform: uppercase;"><%= appointments.time %></h5>
+																</center>
+														</div>
+														<div class="not-setted col-md-6 col-xs-6 col-sm-6">
 															<center>
 															<p class="text-muted mb-0">Date</p>
-															<input class="input--style-4 mb-3" value="" name="date" id="date-no-past" type="date" required>
+															<input class="input--style-4 mb-3 date-no-past" value="<%= appointments.date %>" name="date" id="date-no-past<%= appointments._id %>" type="date" required>
 															</center>
-													</div>
-													<div class="col-md-6 col-xs-6 col-sm-6">
-															<center>
-															<p class="text-muted mb-0">Time</p>
-															<input class="input--style-4 mb-3" name="time" id="date-no-past" type="time" required>
-															</center>
-													</div>
+														</div>
+														<div class="not-setted col-xs-6 col-sm-6">
+																<center>
+																<p class="text-muted mb-0">Time</p>
+																<input class="input--style-4 mb-3 timepicker" value="<%= appointments.time %>" name="time" required>
+																</center>
+														</div>
 													</div>
 													<hr>
 													<div id="records-dropdown">
@@ -821,12 +909,19 @@
 															</h5>
 															<medium class="mb-0"><%= appointments.date %></medium>
 														</div>
+													<% } else if(appointments.appointment_status =="Follow-Up") { %> 
+															<h6 class= "mt-3">Status: 
+																<span class="text-primary font-weight-bold mt-2 mb-3">Approved | <small>Follow-Up</small></span>
+															</h6>
+															<input type="text" name="_id" value="<%= appointments._id %>" hidden>
+															<input type="submit" class="button confirm-button" href="#!" aria-expanded="false" style="display: none ;" value="Edit Appointment" onclick="setTimeDate()">
+														
 													<% }  else { %> 
 														<h6 class= "mt-2">Status: 
 														<span class="text-primary font-weight-bold"><%= appointments.appointment_status %></span>
 														</h6>
 														<input type="text" name="_id" value="<%= appointments._id %>" hidden>
-														<input type="submit" class="button confirm-button" href="#!" id="confirm-date-time" aria-expanded="false" style="display: none ;" value="Approve Appointment">
+															<input type="submit" class="button confirm-button" href="#!" aria-expanded="false" style="display: none ;" value="Edit Appointment" onclick="setTimeDate()">
 													<% } %> 
 													</div>
 												</div>
@@ -866,16 +961,13 @@
 	<!-- NAVBAR -->
 	
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
-	<script src="assets/js/vendor/jquery/jquery.min.js"></script>
       <script src="assets/js/vendor/select2/select2.min.js"></script>
       <script src="assets/js/global.js"></script>
 	  <script src="assets/js/script.js"></script>
 
-	<!-- Patients JS -->
-
-	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+	  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+	<script src="https://jonthornton.github.io/jquery-timepicker/jquery.timepicker.js"></script>
 
 	<script>
 		window.onload = function(){
@@ -980,6 +1072,101 @@ $('.searchhide').show();
 	});
 </script>
 
+
+
+<script>
+	function editTimeDate() {
+	
+	$('.already-setted').hide();
+	$('.not-setted').show();
+	$('.dropdown-set').hide();
+	$('.confirm-button').show();
+	$('.input--style-4').prop('disabled', false);
+	$('.input--style-4').css({
+        'background-color': '#ECECEC',
+		'border': '1px solid black'
+    });
+	
+
+	}
+
+	function confirmTimeDate() {
+	
+	$('.dropdown-set').hide();
+	$('.confirm-button').show();
+	$('.input--style-4').prop('disabled', false);
+	$('.input--style-4').css({
+        'background-color': '#ECECEC',
+		'border': '1px solid black'
+    });
+	}
+
+	function setTimeDate() {
+	
+	$('.already-setted').show();
+	$('.not-setted').hide();
+
+	}
+
+	
+	$('.not-setted').hide();
+	$('.input--style-4').prop('disabled', true);
+
+</script>
+
+
+<!---TIMEPICKER-->
+<script>
+
+	var timeInterval = document.getElementById("time-interval").textContent;
+
+	var date = new Date();
+	switch(date.getDay()){
+    case 0:
+	var startTime = document.getElementById("sun-start-time").textContent;
+	var endTime = document.getElementById("sun-end-time").textContent;
+	; break;
+    case 6:
+	var startTime = document.getElementById("sat-start-time").textContent;
+	var endTime = document.getElementById("sat-end-time").textContent;
+	; break;
+    default:
+	var startTime = document.getElementById("weekday-start-time").textContent;
+	var endTime = document.getElementById("weekday-end-time").textContent;
+
+}
+
+	$('.timepicker').timepicker({
+		step: timeInterval,
+		minTime: startTime,
+		maxTime: endTime,
+		dynamic: false,
+		dropdown: true,
+		scrollbar: true
+	});
+	</script>
+<!--------->
+
+<script>
+	$('.modal').on("hide.bs.modal", function() {
+	
+	$('.already-setted').show();
+	$('.not-setted').hide();
+	$('.dropdown-set').show();
+	$('.confirm-button').hide();
+	$('.input--style-4').prop('disabled', true);
+	$('.input--style-4').css({
+		"border": "1px solid #ced4da",
+        'background-color': 'white',
+    });
+		
+	$('.input--style-4').prop('disabled', true);
+
+
+})
+
+</script>
+
 <script>
 	var today = new Date();
 			var dd = String(today.getDate()).padStart(2, '0');
@@ -987,43 +1174,9 @@ $('.searchhide').show();
 			var yyyy = today.getFullYear();
 	
 			today = yyyy + '-' + mm + '-' + dd;
-			$('#date-no-past').attr('min',today);
+			$('.date-no-past').attr('min',today);
 	
 </script>
-
-<script>
-	function editTimeDate() {
-		
-	$('.dropdown-set').hide();
-	$('#confirm-date-time').show();
-	$('.input--style-4').prop('disabled', false);
-	$('.input--style-4').css({
-        'background-color': '#ECECEC',
-		'border': '1px solid black'
-    });
-
-	}
-
-	function confirmTimeDate() {
-	
-	$('.dropdown-set').show();
-	$('#confirm-date-time').hide();
-	$('.input--style-4').prop('disabled', true);
-	$('.input--style-4').css({
-		"border": "1px solid #ced4da",
-        'background-color': 'white',
-    });
-	}
-	$('.input--style-4').prop('disabled', true);
-
-</script>
-
-<script>
-	let str = document.getElementById("exp-symptoms").innerHTML; 
-	let res = str.replace(/,/g, ", ");
-	document.getElementById("exp-symptoms").innerHTML = res;
-</script>
-
 
 </body>
 </html>

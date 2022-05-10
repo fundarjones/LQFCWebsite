@@ -15,6 +15,7 @@ const AppointmentSchema = new mongoose.Schema(
 		date_timestamp: { type: String, required: true },
 		time_timestamp: { type: String, required: true },
 		phone: { type: String, required: true },
+		phone2: { type: String },
 		email: { type: String, required: true },
 		exp_symptoms: { type: [String], enum: ["Fever", "Cough", "Difficulty Breathing", "Colds", "Sore Throat"] },
 		service: { type: [String], enum: ["Regular Health Checkup", "General Internal Medicine", "Diabetes Care", "Hypertension", "Cardiovascular Diseases", "Ashtma, Ephysemema, Pneumonia", "Adult Pediatric Immunization", "EENT", "Pediatric Wellness", "Anti Rabies Vaccine", "Flu Vaccine"], required: true },

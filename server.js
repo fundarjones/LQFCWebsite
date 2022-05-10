@@ -7,6 +7,7 @@ const express = require('express')
 const app = express()
 const bcrypt = require('bcrypt')
 const passport = require('passport')
+const XLSX = require('xlsx');
 const flash = require('express-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
@@ -24,7 +25,6 @@ const Diagnose = require('./model/diagnose')
 const multer = require('multer')
 const fs = require("fs")
 const nodemailer = require("nodemailer");
-const connectlivereload = require('connect-livereload')
 
 const bodyParser = require('body-parser')
 const { check, validationResult } = require('express-validator')
@@ -32,6 +32,7 @@ const { check, validationResult } = require('express-validator')
 const livereload = require("livereload")
 const { Router } = require('express')
 const e = require('express')
+const logs = require('./model/logs')
 
 const publicDirectory = path.join(__dirname, 'public')
 
@@ -73,7 +74,6 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(methodOverride('_method'))
 app.use(express.static(publicDirectory))
-app.use(connectlivereload())
 
 app.get('/dashboard', checkAuthenticated, async (req, res) => {
   const user_id = req.user._id
@@ -101,11 +101,11 @@ app.get('/dashboard', checkAuthenticated, async (req, res) => {
     
   }
   else if (req.user.usertype == "doctor"){
-    Appointment.countDocuments({branch:req.user.branch, appointment_status: "Approved"}, function (err, count1) {
+    Appointment.countDocuments({ $or: [ { branch:req.user.branch1, appointment_status: "Approved" }, { branch:req.user.branch2, appointment_status: "Approved" } ] }, function (err, count1) {
       if (err){
           console.log(err)
       }else{
-        Appointment.countDocuments({branch:req.user.branch, appointment_status: "Follow-Up"}, function (err, count2) {
+        Appointment.countDocuments({ $or: [ { branch:req.user.branch1, appointment_status: "Follow-Up" }, { branch:req.user.branch2, appointment_status: "Follow-Up" } ] }, function (err, count2) {
           if (err){
               console.log(err)
           }else{
@@ -198,8 +198,11 @@ app.get('/appointments', checkAuthenticated, async (req, res) => {
   const admins = await Admin.findById(user_id)
   const staffs = await Staff.findById(user_id)
   const appointments = await Appointment.find()
+  const assignedbranch = req.user.branch
+  const branches = await Branch.findOne({branch_name: assignedbranch})
   const patient_appointments = await Appointment.find({ img_id: req.user.id })
   const diagnosis = await Diagnose.find({ img_id: req.user.id })
+  const alldiagnosis = await Diagnose.find()
 
   if (req.user.usertype == "patient") {
     res.render('patient/appointments.ejs', { diagnose: diagnosis, appointment: patient_appointments, patient: patients, base: 'base64' })
@@ -208,7 +211,7 @@ app.get('/appointments', checkAuthenticated, async (req, res) => {
     res.render('doctor/appointments.ejs', { appointment: appointments, doctor: doctors, patients: patient, base: 'base64'  })
   }
   else if (req.user.usertype == "staff"){
-    res.render('staff/appointments.ejs', { appointment: appointments, staff: staffs, patients: patient, base: 'base64'  })
+    res.render('staff/appointments.ejs', { appointment: appointments, branch: branches, staff: staffs, patients: patient, diagnose: alldiagnosis, base: 'base64'  })
   }
   else if (req.user.usertype == "admin"){
     res.render('admin/appointments.ejs', { patient: patients, appointment: appointments, admin: admins, base: 'base64' })
@@ -707,13 +710,7 @@ app.get('/set-appointment', checkAuthenticated, async (req, res) => {
 
 app.get('/set-appointment/follow-up', checkAuthenticated, async (req, res) => {
   const user_id = req.user._id
-  const patients = await User.findById(user_id) 
-  const find = await Diagnose.findOne({id: user_id})
-  const found = find.branch
-  console.log(found)
-  const branches = await Branch.findOne({branch_name: found})
-  const allbranches = await Branch.find()
-  const appointments = await Appointment.find()
+  const patients = await User.findById(user_id)
   const diagnosis = await Diagnose.find()
   function userExists(img_id,appointment_status) {
     return diagnosis.some(function(el) {
@@ -721,7 +718,7 @@ app.get('/set-appointment/follow-up', checkAuthenticated, async (req, res) => {
     }); 
   }
   if (req.user.usertype == "patient" && userExists(req.user.id,"Follow-Up") == true ) {
-    res.render('patient/follow-up.ejs',{ allbranch: allbranches, appointment: appointments, branch: branches, patient: patients, base: 'base64'})
+    res.render('patient/follow-up.ejs',{ patient: patients, base: 'base64'})
   }
   else if (req.user.usertype == "doctor") {
     res.redirect("/dashboard")
@@ -765,19 +762,17 @@ app.get('/notification', checkAuthenticated, async (req, res) => {
 
 app.get('/diagnosed-records', checkAuthenticated, async (req, res) => {
   const user_id = req.user._id
-  const patients = await User.findById(user_id) 
   const doctors = await Doctor.findById(user_id)
-  const admins = await Admin.findById(user_id)
   const staffs = await Staff.findById(user_id)
   const diagnosis = await Diagnose.find()
   if (req.user.usertype == "patient") {
     res.redirect("/dashboard")
   }
   else if (req.user.usertype == "doctor") {
-    res.render('doctor/records.ejs', { diagnose: diagnosis, doctor: doctors, base: 'base64'  })
+    res.render('doctor/records.ejs', { diagnose: diagnosis, doctor: doctors, base: 'base64' })
   }
   else if (req.user.usertype == "staff") {
-    res.redirect("/dashboard")
+    res.render('staff/records.ejs', { diagnose: diagnosis, staff: staffs, base: 'base64' })
   }
   else if (req.user.usertype == "admin"){
     res.redirect("/dashboard")
@@ -3155,13 +3150,18 @@ app.put('/confirm-appointment', checkAuthenticated, async (req, res) => {
 
 app.put('/approve-appointment', checkAuthenticated, async (req, res) => {
     const user_id = req.body._id
-    const { date, time } = req.body
+    const input_date = req.body.date
+    const time = req.body.time
     let date_ob = new Date();
     let set_date = ("0" + date_ob.getDate()).slice(-2);
     let year = date_ob.getFullYear();
     let hours = date_ob.getHours();
     let min = ("0" + date_ob.getMinutes()).slice(-2);
     var midday = "AM";
+    var b = input_date.split(/\D/);
+    var date_temp = new Date(b[0], --b[1], b[2]);
+    let set_date_appointment = ("0" + date_temp.getDate()).slice(-2);
+    let year_appointment = date_temp.getFullYear();
     midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
     hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours);
     const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -3169,10 +3169,12 @@ app.put('/approve-appointment', checkAuthenticated, async (req, res) => {
     ];
     const approved_time = hours + ":" + min + " " + midday
     const approved_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+    const date = monthNames[date_temp.getMonth()] + " " + set_date_appointment + ", " + year_appointment
     const approved_staff = req.user.first_name + " " + req.user.last_name
     try {
       var appointment_status = " "
       const approve = await Appointment.findById(user_id)
+      console.log(approve.phone)
       if (approve.appointment_status == "Follow-Up") {
         appointment_status = "Follow-Up"
       }
@@ -3194,6 +3196,7 @@ app.put('/approve-appointment', checkAuthenticated, async (req, res) => {
         sex: approve.sex,
         status: approve.status,
         phone: approve.phone,
+        phone2: approve.phone2,
         email: approve.email,
         birthday: approve.birthday,
         symptoms_detected: approve.symptoms_detected,
@@ -3225,7 +3228,7 @@ await log.save()
 console.log( 'Approve Appointment logged', log)
 const delete_response = await Appointment.deleteOne({_id: user_id, appointment_status: { $ne: "Cancelled" }})
 res.redirect('/appointments')
-sendApproveAppointment(approved_date, approved_time, approve.email, approve.date, approve.time, approve.first_name, approve.last_name)
+sendApproveAppointment(approved_date, approved_time, approve.email, date, time, approve.first_name, approve.last_name)
 console.log('Pending appointment deleted successfully: ', delete_response)
 console.log('Appointment approved successfully: ', response)
       
@@ -3236,9 +3239,8 @@ console.log('Appointment approved successfully: ', response)
       const users = await Staff.findById(user_id)
       const patient = await User.find();
       const appointments = await Appointment.find()
-      res.render('staff/appointments.ejs', { appointment: appointments,
-        patients: patient, staff: users,
-        alert: err, base: 'base64' })
+      const branches = await Branch.findOne({branchname: req.user.branch})
+      res.render('staff/appointments.ejs', { appointment: appointments, branch: branches, patients: patient, staff: users, alert: err, base: 'base64' })
     }
         
   
@@ -4452,96 +4454,85 @@ app.post('/request-appointment', checkAuthenticated, async (req, res) => {
   
 })
 
-app.post('/set-followup-appointment', checkAuthenticated, async (req, res) => {
-  const time = req.body.time
-  const {email, first_name, last_name, phone, sex, status, birthday} = req.user
-  const temp_date = req.body.date
-  
-  if (!Date.parse(temp_date) || !time) {
-    const alert = "Please input a day and time of your appointment."
-    const patients = await User.findById(req.user._id) 
-    const branches = await Branch.find()
-    const appointments = await Appointment.find()
-    res.render('patient/follow-up.ejs',{ alert: alert, appointment: appointments, branch: branches, patient: patients, base: 'base64'})
-    console.log(alert)
-  } else {
-          try{
-            input_date = temp_date
-            const appointment_status = "Follow-Up"
-            let date_ob = new Date();
-            let set_date = ("0" + date_ob.getDate()).slice(-2);
-            let year = date_ob.getFullYear();
-            let hours = date_ob.getHours();
-            let min = ("0" + date_ob.getMinutes()).slice(-2);
-            var b = input_date.split(/\D/);
-            var date_temp = new Date(b[0], --b[1], b[2]);
-            let set_date_appointment = ("0" + date_temp.getDate()).slice(-2);
-            let year_appointment = date_temp.getFullYear();
-            var midday = "AM";
-            midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
-            hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
-  
-            const time_timestamp = hours + ":" + min + " " + midday
-            const monthNames = ["January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
-            const date_timestamp = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
-            const date = monthNames[date_temp.getMonth()] + " " + set_date_appointment + ", " + year_appointment
-            const id = req.user._id
-            const img_id = req.user.id
-            const followup = await Diagnose.findOne({id: id})
-            console.log(followup)
-            const branch = followup.branch
-            const symptoms_detected = followup.symptoms_detected
-            const exp_symptoms = followup.exp_symptoms
-            const pre_diagnose_result = followup.pre_diagnose_result
-            const response = new Appointment({
-                    id,
-                    img_id,
-                    first_name,
-                    last_name,
-                    branch,
-                    time,
-                    date,
-                    exp_symptoms,
-                    date_timestamp,
-                    time_timestamp,
-                    sex,
-                    status,
-                    phone,
-                    birthday,
-                    email,
-                    symptoms_detected,
-                    pre_diagnose_result,
-                    appointment_status
-                })
-          await response.save()
-          const { usertype, first_name, last_name, email } = req.user
-          const log = new Logs({
-            usertype,
-            id,
-            first_name,
-            last_name,
-            email,
-            log_time: time_timestamp,
-            log_date: date_timestamp,
-            branch,
-            action: "Set Follow-Up Appointment"
+app.post('/request-followup-appointment', checkAuthenticated, async (req, res) => {
+  const {email, first_name, last_name, phone, phone2, sex, status, birthday} = req.user
+  const { checker, service, exp_symptoms, } = req.body
+    try{
+      var pre_diagnose_result = " "
+      if (checker == "yes") {
+        pre_diagnose_result = "Patient Has Infectious Symptoms"
+      }
+      else{
+        pre_diagnose_result = "Patient Has Non Infectious Symptoms"
+      }
+      const appointment_status = "Follow-Up"
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+      hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      console.log(checker)
+      const time_timestamp = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+  ];
+      const date_timestamp = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const id = req.user._id
+      const img_id = req.user.id
+      const followup = await Diagnose.findOne({id: id})
+      const branch = followup.branch
+      const response = new Appointment({
+              id,
+              img_id,
+              first_name,
+              last_name,
+              branch,
+              service,
+              exp_symptoms,
+              date_timestamp,
+              time_timestamp,
+              sex,
+              status,
+              phone,
+              phone2,
+              birthday,
+              email,
+              pre_diagnose_result,
+              appointment_status
           })
-          await response.save()
-          console.log( 'Set follow-up appointment logged', log)
-          res.redirect('/appointments')
-          console.log('Follow Up Appointment created successfully: ', response)
-        } catch (err) {
-            res.redirect('/dashboard')
-            console.log(err)
-        }
-
+    await response.save()
+    const user_usertype = req.user.usertype
+    const user_id = req.user.id
+    const user_first_name = req.user.first_name
+    const user_last_name = req.user.last_name
+    const user_email = req.user.email
+    const user_branch = req.user.branch
+    const log = new Logs({
+      usertype: user_usertype,
+      id: user_id,
+      first_name: user_first_name,
+      last_name: user_last_name,
+      email: user_email,
+      log_time :time_timestamp,
+      log_date: date_timestamp,
+      branch: user_branch,
+      action: "Set Follow-up Appointment"
+    })
+    await log.save()
+    console.log( 'Set Follow-up Appointment logged', log)
+    res.redirect('/appointments')
+    console.log('Follow Up Appointment created successfully: ', response)
+  } catch (err) {
+      res.redirect('/dashboard')
+      console.log(err)
   }
 })
 
 app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
-  const {id, img_id, first_name, last_name, branch, date, time, sex, status, phone, email, pre_diagnose_result, diagnosed_disease, medicine, laboratory, approved_staff, next_checkup, next_checkup_note, notes} = req.body
+  const {id, img_id, first_name, last_name, branch, date, time, sex, status, phone, phone2, email, pre_diagnose_result, diagnosed_disease, medicine, laboratory, approved_staff, next_checkup, next_checkup_note, notes} = req.body
       try{
         let date_ob = new Date();
         let set_date = ("0" + date_ob.getDate()).slice(-2);
@@ -4562,6 +4553,7 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
         }
         const old = await Appointment.findOne({id:id, appointment_status: { $ne: "Cancelled" }})
         const exp_symptoms = old.exp_symptoms
+        const service = old.service
         const symptoms_detected = old.symptoms_detected
         const birthday = old.birthday
         console.log(symptoms_detected)
@@ -4573,6 +4565,7 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
                 branch,
                 time,
                 date,
+                service,
                 birthday,
                 exp_symptoms,
                 date_timestamp,
@@ -4660,6 +4653,144 @@ app.get('/login-success', checkAuthenticated, async (req,res) =>{
   console.log( 'Login logged', response)
   res.redirect("/dashboard")
 })
+
+app.post('/exportlogs', checkAuthenticated, async (req,res)=>{
+  const wb = XLSX.utils.book_new();
+  await Logs.find(async (err,data)=>{
+      if(err){
+          console.log(err)
+      }else{
+          try {
+
+            const { usertype, id, first_name, last_name, email, branch } = req.user
+            let date_ob = new Date();
+            let set_date = ("0" + date_ob.getDate()).slice(-2);
+            let year = date_ob.getFullYear();
+            let hours = date_ob.getHours();
+            let min = ("0" + date_ob.getMinutes()).slice(-2);
+            var midday = "AM";
+            midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+                    hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+            const log_time = hours + ":" + min + " " + midday
+            const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+            const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+            const password = req.body.password
+            const userpass = req.user.password
+            const checker = await bcrypt.compare(password, userpass)
+            if (checker == false) {
+              console.log("Password Not Matched")
+              const errbranch = await Branch.find();
+              const user_id = req.user._id
+              const admins = await Admin.findById(user_id)
+              const logs = await Logs.find()
+              res.render('admin/logs.ejs', { msg:"Password Not Matched", branches: errbranch , logs: logs, admin: admins , base: 'base64'})
+              const response = new Logs({
+                usertype,
+                id,
+                first_name,
+                last_name,
+                email,
+                log_time,
+                log_date,
+                branch,
+                action: "Download Logs Attempt"
+              })
+              await response.save()
+              console.log( 'Download Logs Attempt logged', response)
+            } else {
+              var temp = JSON.stringify(data);
+              const down = __dirname+'/logs/adminlogs'+Date.now()+".xlsx"
+              temp = JSON.parse(temp);
+              const ws = XLSX.utils.json_to_sheet(temp);
+              XLSX.utils.book_append_sheet(wb,ws,"sheet1");
+              await XLSX.writeFile(wb,down);
+              res.download(down);
+              const response = new Logs({
+                usertype,
+                id,
+                first_name,
+                last_name,
+                email,
+                log_time,
+                log_date,
+                branch,
+                action: "Download Logs"
+              })
+              await response.save()
+              console.log( 'Download Logs logged', response)
+            }
+
+          } catch (error) {
+            console.log("An error occured",err)
+            res.redirect("/logs")
+          }
+      }
+  });
+});
+
+app.post('/deletelogs', checkAuthenticated, async (req,res)=>{
+    try {
+      const { usertype, id, first_name, last_name, email, branch } = req.user
+      let date_ob = new Date();
+      let set_date = ("0" + date_ob.getDate()).slice(-2);
+      let year = date_ob.getFullYear();
+      let hours = date_ob.getHours();
+      let min = ("0" + date_ob.getMinutes()).slice(-2);
+      var midday = "AM";
+      midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+              hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+      const log_time = hours + ":" + min + " " + midday
+      const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+      const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+      const password = req.body.password
+      const userpass = req.user.password
+      const checker = await bcrypt.compare(password, userpass)
+      if (checker == false) {
+        console.log("Password Not Matched")
+        const errbranch = await Branch.find();
+        const user_id = req.user._id
+        const admins = await Admin.findById(user_id)
+        const logs = await Logs.find()
+        res.render('admin/logs.ejs', { msg:"Password Not Matched", branches: errbranch , logs: logs, admin: admins , base: 'base64'})
+        const response = new Logs({
+          usertype,
+          id,
+          first_name,
+          last_name,
+          email,
+          log_time,
+          log_date,
+          branch,
+          action: "Delete All Logs Attempt"
+        })
+        await response.save()
+        console.log( 'Delete All Logs Attempt logged', response)
+      } else {
+        const remove = await Logs.remove({})
+        console.log("Data Logs Successfully Removed: ",remove)
+        const response = new Logs({
+          usertype,
+          id,
+          first_name,
+          last_name,
+          email,
+          log_time,
+          log_date,
+          branch,
+          action: "Delete All Logs"
+        })
+        await response.save()
+        console.log( 'Delete All Logs logged', response)
+        res.redirect("/logs")
+      }
+
+      
+
+    } catch (error) {
+      console.log("An error occured", error)
+      res.redirect("/logs")
+    }
+});
 
 app.post('/patient-login', checkNotAuthenticated, passport.authenticate('patient-local', {
   successRedirect: '/login-success',

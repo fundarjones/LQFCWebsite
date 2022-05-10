@@ -75,6 +75,14 @@
 				<div class="container">
 					
 				<h1 class="title">Logs</h1>
+				<% if(typeof msg != 'undefined') { %>
+					<% if (msg){%> 
+						<div class="alert alert-danger alert-dismissible fade show" role="alert">
+						  <%= msg %> 
+						  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+						</div> 
+					  <% } %> 
+					  <% } %> 
 					<div class="row">
 							<div class="col-sm-6 col-md-9">
 								<form action="#">
@@ -83,13 +91,19 @@
 								</div>
 								</form>
 							</div>
-							
+
 							<div class="col-sm-6 col-md-3">
 								<p><input type="checkbox" class="m-3" id="showTodayOnly" onclick="showToday()">
 									Show today's logs only</p>
 							</div>
 						
+							<div class="col-sm-6 col-md-6 buttons">
+								<button class="button" data-toggle="modal" data-target="#download_logs">Download Logs</button>
+							</div>
 
+							<div class="col-sm-6 col-md-6 buttons">
+								<button class="button" data-toggle="modal" data-target="#delete_logs">Delete Logs</button>
+							</div>
 							
 						<div class="col-lg-12">
 						<div class="card p-3" style="overflow-y: scroll; height:600px;">
@@ -113,8 +127,7 @@
 										</div>
 									</div>
 									<div>
-										<p class='text-primary' style="float: right;"><%= logs.action %></p>
-										<br>
+										<p class='text-primary' style="float: right;"><%= logs.action %></p><br>
 										<medium class="mb-0 "><%= logs.log_date %></medium> |
 										<medium class="mb-0 inline"><%= logs.log_time %></medium>
 									</div>
@@ -125,6 +138,68 @@
 							<!---->
 
 							
+							<!--Modal-->
+									<div class="modal fade time-slot" id="delete_logs" tabindex="-1" role="dialog">
+										<form action="/deletelogs" method="POST">
+										<div class="modal-dialog modal-dialog-centered" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+											<div class="col-md-10 text-center">
+												<img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
+											</div>
+											<div class="col-md-2">
+												<div class="dropdown open">
+													<a href="#!" class="px-2" data-dismiss="modal" aria-haspopup="true" aria-expanded="false">
+														<i class="fa fa-close"></i>
+													</a>
+												</div>
+											</div>
+											</div>
+
+											<center>
+											<div class="col-md-10 modal-body text-center mt-3">
+											<p>To authorize the deletion of all logs, please re-enter your password.</p><br>
+											<input type="password" name="password" class="form-control" required>
+											<input type="submit" class="button action-logs" name="Done" value="Delete Logs">     
+											</div>
+											</center>
+											</div>
+											</div>
+										</form>
+										</div>
+									</div>
+
+							<!--Modal-->
+							<div class="modal fade time-slot" id="download_logs" tabindex="-1" role="dialog">
+								<form action="/exportlogs" method="POST">
+								<div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<div class="col-md-10 text-center">
+											<img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
+										</div>
+										<div class="col-md-2">
+											<div class="dropdown open">
+												<a href="#!" class="px-2" data-dismiss="modal" aria-haspopup="true" aria-expanded="false">
+													<i class="fa fa-close"></i>
+												</a>
+											</div>
+										</div>
+									</div>
+
+									<center>
+									<div class="col-md-10 modal-body text-center mt-3">
+									<p>To authorize the exporting of all logs into an excel file, please re-enter your password.</p><br>
+									<input type="password" name="password" class="form-control" required>
+									<input type="submit" class="button action-logs" name="Done" value="Download Logs">     
+									</div>
+									</center>
+									</div>
+
+									</div>
+								</form>
+								</div>
+							</div>
 							
 
 						</div>

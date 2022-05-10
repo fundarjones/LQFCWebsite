@@ -81,7 +81,7 @@
 										<img src="uploads/<%= doctor.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
 									</div>
 									<div class="user-info__basic">
-										<h5 class="text-highlight mb-0"><%= doctor.first_name %> <%= doctor.last_name %></h5>
+										<h5 class="text-highlight mb-0">Dr. <%= doctor.first_name %> <%= doctor.last_name %></h5>
 										<p class="text-muted mb-0"><%= doctor.specialization %></p>
 									</div>
 								</div>
@@ -95,10 +95,10 @@
 								</div>
 							</div>
 								<p><%= doctor.bio %></p>
-								<h6>Assigned Branch</h6>
+								<h6>Assigned Branches</h6>
 							<div class="row">
 								<div class="col-md-12">
-										<p><%= doctor.branch %></p>
+										<p><%= doctor.branch1 %> | <%= doctor.branch2 %></p>
 									</div>
 							</div>
 							<hr>
@@ -132,7 +132,7 @@
 							
 
 								<% appointment.reverse().forEach(function(appointments){ %>
-									<% if( appointments.appointment_status == "Approved" && doctor.branch == appointments.branch ) { %> 
+									<% if( appointments.appointment_status == "Approved" && doctor.branch1 == appointments.branch || appointments.appointment_status == "Approved" && doctor.branch2 == appointments.branch ) { %> 
 											<!--Notif Content-->
 											<div class="d-flex justify-content-between mb-4">
 												<div class="user-info">
@@ -148,23 +148,7 @@
 											</div>
 											<hr>
 											<!---->
-										<% } else if (appointments.appointment_status == "Cancelled" && doctor.branch == appointments.branch && appointments.approved_staff ){ %> 
-													<!--Notif Content-->
-												<div class="d-flex justify-content-between mb-4">
-													<div class="user-info">
-														<div class="user-info__img m-2">
-															<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
-														</div>
-														<div class="user-info__basic">
-															<p class="inline"><b class="text-highlight"><%= appointments.first_name %> <%= appointments.last_name %></b> appointment for <%= appointments.date %> at <%= appointments.time %> has been cancelled by <b><%= appointments.cancelled_by %></b>.</p>
-															<medium class="text-muted mb-0"><%= appointments.date_cancelled %></medium> |
-															<medium class="text-muted mb-0"><%= appointments.time_cancelled %></medium>
-														</div>
-													</div>
-												</div>
-												<hr>
-												<!---->
-											<% } else if (appointments.appointment_status == "Follow-Up" && doctor.branch == appointments.branch){ %> 
+										<% } else if (appointments.appointment_status == "Follow-Up" && doctor.branch1 == appointments.branch || appointments.appointment_status == "Follow-Up" && doctor.branch2 == appointments.branch){ %> 
 													<!--Notif Content-->
 													<div class="d-flex justify-content-between mb-4">
 														<div class="user-info">
