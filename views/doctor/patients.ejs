@@ -90,7 +90,7 @@
 											</div>
 											<div class="user-info__basic">
 												<h5 class="text-highlight mb-0"><%= users.first_name %> <%= users.last_name %></h5>
-												<p class="text-muted mb-0"><%= users.age %> yrs | <%= users.sex %></p>
+												<p class="text-muted mb-0" id="age<%= users._id %>"></p>
 											</div>
 										</div>
 														
@@ -139,7 +139,6 @@
 										</div>
 										<div class="user-info__basic">
 											<h2 class="text-highlight mb-0"><%= users.first_name %> <%= users.last_name %></h5>
-											<p class="text-muted mb-0" id="age<%= users._id %>"></p>
 										</div>
 									</div>
 									<div class="dropdown open">
@@ -203,7 +202,7 @@
 					</div>
 					<script>
 						var now = Date.now();
-						var bday = new Date("<%= users.birthday%>");
+						var bday = new Date("<%= users.birthday %>");
 						var minus = now-bday
 						var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
 						document.getElementById("age<%= users._id %>").innerText = age + " yrs | <%= users.sex %>"

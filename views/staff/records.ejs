@@ -122,11 +122,7 @@
 								</div>
 								<% } %> 
 								<script>
-									var now = Date.now();
-									var bday = new Date("<%= diagnosis.birthday%>");
-									var minus = now-bday
-									var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
-									document.getElementById("age<%= diagnosis._id %>").innerText = age + " yrs | <%= diagnosis.sex %>"
+									document.getElementById("age<%= diagnosis._id %>").innerText = "<%= diagnosis.sex %>"
 								</script>
 								<% }); %> 
 							</div>
@@ -165,11 +161,7 @@
 									}
 								</script>
 								<script>
-									var now = Date.now();
-									var bday = new Date("<%= diagnosis.birthday%>");
-									var minus = now-bday
-									var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
-									document.getElementById("age<%= diagnosis._id %>").innerText = age + " yrs | <%= diagnosis.sex %>"
+									document.getElementById("age<%= diagnosis._id %>").innerText = "<%= diagnosis.sex %>"
 								</script>
 								<% }); %> 
 							</div>
@@ -283,11 +275,7 @@
 			</div>
 		<% } %> 
 		<script>
-			var now = Date.now();
-			var bday = new Date("<%= diagnosis.birthday%>");
-			var minus = now-bday
-			var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
-			document.getElementById("view-age<%= diagnosis._id %>").innerText = age + " yrs | <%= diagnosis.sex %>"
+			document.getElementById("view-age<%= diagnosis._id %>").innerText = "<%= diagnosis.sex %>"
 		</script>
 	<% }) %> 
 	
@@ -372,11 +360,7 @@
 								</section>
 							<% } %>  
 							<script>
-								var now = Date.now();
-								var bday = new Date("<%= diagnosis.birthday%>");
-								var minus = now-bday
-								var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
-								document.getElementById("view-age<%= diagnosis._id %>").innerText = age + " yrs | <%= diagnosis.sex %>"
+								document.getElementById("view-age<%= diagnosis._id %>").innerText = "<%= diagnosis.sex %>"
 							</script>
 						<% }) %> 
 		

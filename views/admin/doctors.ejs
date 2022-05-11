@@ -127,7 +127,7 @@
 									</div>
 									<div class="user-info__basic">
 										<h5 class="text-highlight mb-0"><%= doctors.first_name %> <%= doctors.last_name %></h5>
-										<p class="text-muted mb-0"><%= doctors.age %> yrs | <%= doctors.sex %></p>
+										<p class="text-muted mb-0" id="age<%= doctors._id %>"></p>
 									</div>
 								</div>
 												
@@ -171,7 +171,7 @@
 										</div>
 										<div class="user-info__basic">
 											<h2 class="text-highlight mb-0"><%= doctors.first_name %> <%= doctors.last_name %></h5>
-											<p class="text-muted mb-0"><%= doctors.age %> yrs | <%= doctors.sex %></p>
+											<p class="text-muted mb-0" id="view-age<%= doctors._id %>"></p>
 										</div>
 									</div>
 									<div class="dropdown open">
@@ -213,7 +213,7 @@
 															<div class="media">
 																<label>Age</label>
 															</div>
-															<p><%= doctors.age %></p>
+															<p id="input-age<%= doctors._id %>"></p>
 														</div>
 														<div class="col-md-6">
 															<div class="media">
@@ -249,7 +249,15 @@
 							</div>
 						</div>
 						
-				
+						<script>
+							var now = Date.now();
+							var bday = new Date("<%= doctors.birthday%>");
+							var minus = now-bday
+							var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
+							document.getElementById("age<%= doctors._id %>").innerText = age + " yrs | <%= doctors.sex %>"
+							document.getElementById("view-age<%= doctors._id %>").innerText = age + " yrs | <%= doctors.sex %>"
+							document.getElementById("input-age<%= doctors._id %>").innerText = age
+						</script>
 					<% }); %> 
 				</div>	
 						
