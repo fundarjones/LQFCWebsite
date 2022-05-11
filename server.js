@@ -4844,33 +4844,39 @@ app.post('/doctor-login', checkNotAuthenticated, passport.authenticate('doctor-l
 }))
 
 app.delete('/logout', async (req, res) => {
-  const { usertype, id, first_name, last_name, email, branch } = req.user
-  let date_ob = new Date();
-  let set_date = ("0" + date_ob.getDate()).slice(-2);
-  let year = date_ob.getFullYear();
-  let hours = date_ob.getHours();
-  let min = ("0" + date_ob.getMinutes()).slice(-2);
-  var midday = "AM";
-  midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
-          hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
-  const log_time = hours + ":" + min + " " + midday
-  const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
-  const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
-  const response = new Logs({
-    usertype,
-    id,
-    first_name,
-    last_name,
-    email,
-    log_time,
-    log_date,
-    branch,
-    action: "Logout"
-  })
-  await response.save()
-  console.log( 'Logout logged', response)
-  req.logOut()
-  res.redirect('/')
+  try {
+    const { usertype, id, first_name, last_name, email, branch } = req.user
+    let date_ob = new Date();
+    let set_date = ("0" + date_ob.getDate()).slice(-2);
+    let year = date_ob.getFullYear();
+    let hours = date_ob.getHours();
+    let min = ("0" + date_ob.getMinutes()).slice(-2);
+    var midday = "AM";
+    midday = (hours >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+            hours = (hours == 0) ? 12 : ((hours > 12) ? (hours - 12): hours); /* assigning hour in 12-hour format */
+    const log_time = hours + ":" + min + " " + midday
+    const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+    const log_date = monthNames[date_ob.getMonth()] + " " + set_date + ", " + year
+    const response = new Logs({
+      usertype,
+      id,
+      first_name,
+      last_name,
+      email,
+      log_time,
+      log_date,
+      branch,
+      action: "Logout"
+    })
+    await response.save()
+    console.log( 'Logout logged', response)
+    req.logOut()
+    res.redirect('/')
+  } catch (error) {
+    res.redirect("/")
+    console.log(error)
+  }
+  
 })
 
 function checkAuthenticated(req, res, next) {
