@@ -1631,6 +1631,7 @@ app.get("/send-verification-email", checkAuthenticated, async(req,res) =>{
     await resetToken({token:token, email: req.user.email}).save();
     sendVerifyEmail(req.user.email, token)
     const patients = await User.findById(req.user._id)
+    const user_appointments = await Appointment.find({id: req.user_id})
     Appointment.countDocuments({img_id: req.user.id}, function (err, appointments) {
       if (err){
           console.log(err)
@@ -1639,8 +1640,10 @@ app.get("/send-verification-email", checkAuthenticated, async(req,res) =>{
           if (err){
               console.log(err)
           }else{
+            
             const ttl = appointments + diagnosed
-            res.render('patient/dashboard.ejs', { emailSent: true , total: ttl, patient: patients, base: 'base64' })
+            res.render('patient/dashboard.ejs', { emailSent: true , total: ttl,
+            verified: req.user.isVerified, total: ttl, appointment: user_appointments, patient: patients, base:'base64' })
           }
         })
       }
