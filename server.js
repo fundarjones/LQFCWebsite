@@ -203,12 +203,14 @@ app.get('/appointments', checkAuthenticated, async (req, res) => {
   const patient_appointments = await Appointment.find({ img_id: req.user.id })
   const diagnosis = await Diagnose.find({ img_id: req.user.id })
   const alldiagnosis = await Diagnose.find()
+  
 
   if (req.user.usertype == "patient") {
     res.render('patient/appointments.ejs', { diagnose: diagnosis, appointment: patient_appointments, patient: patients, base: 'base64' })
   }
   else if (req.user.usertype == "doctor"){
-    res.render('doctor/appointments.ejs', { appointment: appointments, doctor: doctors, patients: patient, base: 'base64'  })
+    const branchshown = doctors.branch1
+    res.render('doctor/appointments.ejs', { appointment: appointments, showbranch: branchshown, doctor: doctors, patients: patient, base: 'base64'  })
   }
   else if (req.user.usertype == "staff"){
     res.render('staff/appointments.ejs', { appointment: appointments, branch: branches, staff: staffs, patients: patient, diagnose: alldiagnosis, base: 'base64'  })
@@ -3369,11 +3371,12 @@ app.put('/edit-info', checkAuthenticated, urlencodedParser,[
 app.put('/edit-doctor-roles', checkAuthenticated, async (req, res) => {
   const { branch1, branch2, start_weekdays1, end_weekdays1, start_sat1, end_sat1, start_sun1 , end_sun1 , start_weekdays2 , end_weekdays2 , start_sat2 , end_sat2 , start_sun2 , end_sun2, _id } = req.body
   try {
-    if (start_weekdays1 != "None" && end_weekdays1 == "None" || start_sat1 != "None" && end_sat1 != "None" || start_sun1 != "None" && end_sun1 == "None" || start_weekdays2 != "None" && end_weekdays2 == "None" || start_sat2 != "None" && end_sat2 == "None" || start_sun2 != "None" && end_sun2 == "None") {
-      const msg = "Invalid schedule input, make sure to have a start time and end time same with the following days you are scheduling."
+    if (branch1 == "None" && start_weekdays1 != "None" || branch1 == "None" && start_sat1 != "None" || branch1 == "None" && start_sun1 != "None" || branch2 == "None" && start_weekdays2 != "None" || branch2 == "None" && start_sat2 != "None" || branch2 == "None" && start_sun2 != "None") {
+      const msg2 = "Invalid schedule input, make sure to enter a branch before entering a schedule."
       const doc = await Doctor.find();
+      console.log(msg2)
       const admins = await Admin.findById(req.user._id)
-      res.render('admin/doctors.ejs', { doctors: doc, msg: msg, type:"danger", admin: admins, base: 'base64' })
+      res.render('admin/doctors.ejs', { doctors: doc, msg: msg2, type:"danger", admin: admins, base: 'base64' })
     } else {
       const doctor = await Doctor.findById(_id)
       doctor.branch1 = branch1
@@ -4163,6 +4166,22 @@ app.post('/add-branch', checkAuthenticated, async (req, res) => {
     
 })
 
+app.post('/appointments', checkAuthenticated, async (req, res) => {
+  const { branch } = req.body
+      try{
+        const user_id = req.user._id
+        const patient = await User.find();
+        const doctors = await Doctor.findById(user_id)
+        const appointments = await Appointment.find()
+        const branchshown = branch
+        res.render('doctor/appointments.ejs', { appointment: appointments, showbranch: branchshown, doctor: doctors, patients: patient, base: 'base64'  })
+    } catch (err){
+      res.redirect('/dashboard')
+      console.log(err)
+    }
+    
+})
+
 const Storage = multer.diskStorage({
   destination: function(req, file, callback) {
     callback(null, "public/uploads");
@@ -4612,9 +4631,12 @@ app.post('/diagnose-patient', checkAuthenticated, async (req, res) => {
       })
       await log.save()
       console.log( 'Diagnosis logged', log)
-      const doctors = await Doctor.findById(req.user._id)
+      const user_id = req.user._id
+      const patient = await User.find();
+      const doctors = await Doctor.findById(user_id)
       const appointments = await Appointment.find()
-      res.render('doctor/appointments.ejs', { appointment: appointments, doctor: doctors, base: 'base64', msg: "Patient successfully diagnosed", type: "success"})
+      const branchshown = branch
+      res.render('doctor/appointments.ejs', { appointment: appointments, showbranch: branchshown, doctor: doctors, msg: "Patient successfully diagnosed", type: "success", patients: patient, base: 'base64'  })
       const delete_response = await Appointment.deleteOne({id:id, appointment_status: { $ne: "Cancelled" }})
       console.log( first_name," ",last_name,' appointment has been deleted successfully: ', delete_response)
       console.log( first_name," ",last_name,' has been diagnosed successfully: ', response)

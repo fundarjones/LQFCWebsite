@@ -85,18 +85,18 @@
 						<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
 						<p class="error-msg"><%= error.msg %></p>
 					</div>
+					<% }) %>
+					<% } %>
 
 					<% if (typeof msg != "undefined"){ %> 
 						<% if (msg){%> 
-						  <div class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
+							<div class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
 							<%= msg %> 
 							<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-						  </div> 
-						<% } %> 
-						<% } %> 
+							</div> 
+					<% } %> 
+					<% } %> 
 
-		   <% }) %>
-			<% } %>
 					<div class="row justify-content-center">
 						<div class="col-md-9">
 							<form action="#">

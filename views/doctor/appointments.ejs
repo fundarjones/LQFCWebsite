@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="../css/appointments-style.css">
+	<link rel="stylesheet" href="../css/appointments-for-doctor.css">
 	<link href="../js/vendor/select2/select2.min.css" rel="stylesheet" media="all">
 	<link href="assets/images/favicon/favicon.png" rel="icon">
 	<link href="../js/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
@@ -65,10 +65,34 @@
 
 		<!-- MAIN -->
 		<main>
+			
+			<!-- LAGAY START/END TIME/INTERVAL -->
+			
+			<div style="display: none;">
+				
+				<p id="time-interval">15</p>
+				<span id="viewingBranchNumber1"><%= doctor.branch1 %></span>
+				<span id="viewingBranchNumber2"><%= doctor.branch2 %></span>
+	
+				<p id="docTimeBranch1Start-Weekdays"><%= doctor.start_weekdays1 %></p>
+				<p id="docTimeBranch1End-Weekdays"><%= doctor.end_weekdays1 %></p>
+				<p id="docTimeBranch1Start-Sat"><%= doctor.start_sat1 %></p>
+				<p id="docTimeBranch1End-Sat"><%= doctor.end_sat1 %></p>
+				<p id="docTimeBranch1Start-Sun"><%= doctor.start_sun1 %></p>
+				<p id="docTimeBranch1End-Sun"><%= doctor.end_sun1 %></p>
+	
+				<p id="docTimeBranch2Start-Weekdays"><%= doctor.start_weekdays2 %></p>
+				<p id="docTimeBranch2End-Weekdays"><%= doctor.end_weekdays2 %></p>
+				<p id="docTimeBranch2Start-Sat"><%= doctor.start_sat2 %></p>
+				<p id="docTimeBranch2End-Sat"><%= doctor.end_sat2 %></p>
+				<p id="docTimeBranch2Start-Sun"><%= doctor.start_sun2 %></p>
+				<p id="docTimeBranch2End-Sun"><%= doctor.end_sun2 %></p>
+				</div>
+				<!--------------------->
 
 			<section class="ftco-section">
 			<div class="container">
-				<h1 class="title">Appointments</h1>
+				<h1 class="title">Appointments: <span class="title text-secondary" id="viewingBranch"><%= showbranch %></span></h1>
 				<% if(typeof msg != 'undefined') { %>
 					<% if(msg) { %>
 					<div class="alert-<%= type %>">
@@ -86,10 +110,44 @@
 							</form>
 						</div>
 						<div class="col-sm-3 col-md-3">
-							<p><input type="checkbox" class="mt-3 ml-2 custom-checkbox" id="showTodayOnly" onclick="showToday()">
-								Show today's appointments only</p>
+							<button class="button going record-button" id="triggerId1" 
+							data-toggle="modal" data-target="#selectBranch" aria-haspopup="true" aria-expanded="false">Change Branch</button>
+						</div>	
+					</div>
+					<div class="col-sm-12 col-md-12">
+						<p><input type="checkbox" class="mt-3 ml-2 custom-checkbox" id="showTodayOnly" onclick="showToday()">
+							Show today's appointments only</p>
+					</div>
+
+					<input class="form-control" id="timepicker" style="display: none;"/>
+					<div id="outige" style="display: none;"></div>
+					
+					<!--- LAGAY ---->
+					<div class="modal fade time-slot" id="selectBranch" tabindex="-1" role="dialog">
+						<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+						<div class="modal-header">
+						<div class="col-md-12 text-center">
+							<img src="../../assets/images/logo/logo.png" width="150px" class="logo-light" alt="logo">
+						</div>
+						</div>
+						<center>
+						<form action="/appointments" method="POST">
+							<div class="col-md-10 modal-body text-center mt-3">
+								<select id="select-branch" name="branch" class="form-control" required>
+									<option id="viewBranch1" value="<%= doctor.branch1 %>"><%= doctor.branch1 %></option>
+									<option id="viewBranch2" value="<%= doctor.branch2 %>"><%= doctor.branch2 %></option>
+								</select>
+								<input type="submit" class="button record-button mt-3" value="Change Branch">     
+								</div>
+						</form>
+						</center>
+						</div>
 						</div>
 					</div>
+
+					<!---->
+
 	
 
 			</div>
@@ -123,9 +181,10 @@
 														<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
 													</div>
 													<div class="user-info__basic">
+														<span style="display:none"><%= appointments.branch %></span>
 														<h6 class="mb-0"><%= appointments.img_id %></h6>
 														<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-														<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %></p>
+														<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 													</div>
 												</div>
 												<div class="dropdown open">
@@ -142,13 +201,19 @@
 											</div>
 											<hr>
 											<% if(appointments.isConfirmed == true){%> 
-												<p class="text-success center"><b><%= appointments.first_name %></b> have confirmed to go to the scheduled appointment.
+												<p class="text-success center">Patient has confirmed to go to the scheduled appointment.
 											<hr>
 											<% } %> 
 											<div class="d-flex justify-content-between">
-												<span class="text-primary font-weight-bold mt-3"><%= appointments.appointment_status %></span>
+												<% if(appointments.appointment_status == "Cancelled") {%>
+													<span class="text-warning font-weight-bold mt-3"><%= appointments.appointment_status %></span>
+												<% } else if(appointments.appointment_status =="Follow-Up") { %>
+													<span class="text-primary font-weight-bold mt-3">Approved | <small>Follow-Up</small></span>
+												<% }  else { %> 
+													<span class="text-primary font-weight-bold mt-3"><%= appointments.appointment_status %></span>
+												<% } %> 
 												<div>
-													<h5 class="mb-0"><%= appointments.time %>
+													<h5 class="mb-0" style="text-transform:uppercase;"><%= appointments.time %>
 													</h5>
 													<medium class="mb-0"><%= appointments.date %></medium>
 												</div>
@@ -174,7 +239,6 @@
 															<div class="user-info__basic">
 																<h6 class="mb-0"><%= appointments.img_id %></h6>
 																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %></p>
 															</div>
 														</div>
 														<div class="dropdown open">
@@ -198,12 +262,12 @@
 															<div class="col-md-6 col-xs-6 col-sm-6">
 																	<center>
 																	<p class="text-muted mb-0 mt-2">Secondary Phone</p>
-																	<h6 id="second_num"></h6>
+																	<h6 class="second_num"></h6>
 																	</center>
 																	<script>
-																		var second_num = document.getElementById("second_num").textContent;
+																		var second_num = document.getElementsByClassName("second_num").textContent;
 																		if (second_num.length === 0 ) {
-																		document.getElementById("second_num").innerHTML = "None";
+																		document.getElementsByClassName("second_num").innerHTML = "None";
 																		}
 																	</script>
 															</div>
@@ -212,14 +276,23 @@
 														<p class="text-muted"  style="display:inline">Branch: </p>
 														<h6 class="black" style="display:inline"><%= appointments.branch %></h6><br>
 														<hr>
-														<p class="text-success font-weight-bold text-primary"><%= appointments.pre_diagnose_result %></p>
+														<p class="font-weight-bold text-success"><%= appointments.pre_diagnose_result %></p>
 														<hr>
 												
 													<div class="d-flex justify-content-between">
-														<div>
-														<span class="text-primary font-weight-bold mt-4"><%= appointments.appointment_status %></span><br>
-														<small class="text-secondary font-weight-bold">by <%= appointments.approved_staff %></small>
-														</div>
+														<% if(appointments.appointment_status == "Cancelled") {%>
+															<span class="text-warning font-weight-bold mt-3"><%= appointments.appointment_status %></span>
+														<% } else if(appointments.appointment_status =="Follow-Up") { %> 
+															<div>
+															<span class="text-primary font-weight-bold mt-3">Approved | <small>Follow-Up</small></span><br>
+															<small class="text-secondary font-weight-bold">by <%= appointments.approved_staff %></small>
+															</div>
+														<% }  else { %> 
+															<div>
+															<span class="text-primary font-weight-bold mt-3"><%= appointments.appointment_status %></span><br>
+															<small class="text-secondary font-weight-bold">by <%= appointments.approved_staff %></small>
+															</div>
+														<% } %> 
 														<div>
 															<h5 class="mb-0"><%= appointments.time %>
 															</h5>
@@ -231,6 +304,13 @@
 									</div>
 								</div>
 									<%  } %> 
+									<script>
+										var now = Date.now();
+										var bday = new Date("<%= appointments.birthday%>");
+										var minus = now-bday
+										var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
+										document.getElementById("age<%= appointments._id %>").innerText = age + " yrs | <%= appointments.sex %>"
+									</script>
 								<% }); %> 
 									
 								</div>
@@ -252,9 +332,10 @@
 													<img src="uploads/<%= appointments.img_id %>.png" alt="User Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
 												</div>
 												<div class="user-info__basic">
+													<span style="display:none"><%= appointments.branch %></span>
 													<h6 class="mb-0"><%= appointments.img_id %></h6>
 													<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-													<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %></p>
+													<p class="text-muted mb-0" id="age<%= appointments._id %>"></p>
 												</div>
 											</div>
 															
@@ -272,11 +353,17 @@
 										</div>
 										<hr>
 										<% if(appointments.isConfirmed == true){%> 
-											<p class="text-success center"><b><%= appointments.first_name %></b> have confirmed to go to the scheduled appointment.
+											<p class="text-secondary center">Patient has confirmed to go to the scheduled appointment.
 										<hr>
 										<% } %> 
 										<div class="d-flex justify-content-between">
-											<span class="text-primary font-weight-bold mt-3"><%= appointments.appointment_status %></span>
+											<% if(appointments.appointment_status == "Cancelled") {%>
+												<span class="text-warning font-weight-bold mt-3"><%= appointments.appointment_status %></span>
+											<% } else if(appointments.appointment_status =="Follow-Up") { %> 
+												<span class="text-primary font-weight-bold mt-3">Approved | <small>Follow-Up</small></span>
+											<% }  else { %> 
+												<span class="text-primary font-weight-bold mt-3"><%= appointments.appointment_status %></span>
+											<% } %> 
 											<div>
 												<h5 class="mb-0"><%= appointments.time %>
 												</h5>
@@ -306,7 +393,6 @@
 															<div class="user-info__basic">
 																<h6 class="mb-0"><%= appointments.img_id %></h6>
 																<h5 class="text-highlight mb-0"><%= appointments.first_name %> <%= appointments.last_name %></h5>
-																<p class="text-muted mb-0"><%= appointments.age %> yrs | <%= appointments.sex %> | <%= appointments.phone %></p>
 															</div>
 														</div>
 																<div class="dropdown open">
@@ -330,12 +416,12 @@
 															<div class="col-md-6 col-xs-6 col-sm-6">
 																	<center>
 																	<p class="text-muted mb-0 mt-2">Secondary Phone</p>
-																	<h6 id="second_num1"></h6>
+																	<h6 class="second_num1"></h6>
 																	</center>
 																	<script>
-																		var second_num = document.getElementById("second_num1").textContent;
+																		var second_num = document.getElementsByClassName("second_num1").textContent;
 																		if (second_num.length === 0 ) {
-																		document.getElementById("second_num1").innerHTML = "None";
+																		document.getElementsByClassName("second_num1").innerHTML = "None";
 																		}
 																	</script>
 															</div>
@@ -347,8 +433,7 @@
 														<div id="records-dropdown">
 															<a class="py-2 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary"
 															data-toggle="collapse" href="#symptoms" role="button">	
-															<p class="text-success font-weight-bold text-primary"><%= appointments.pre_diagnose_result %></p>
-															<p>Detected Symptoms = <%= appointments.symptoms_detected %></p>
+															<p class="text-danger font-weight-bold"><%= appointments.pre_diagnose_result %></p>
 															<div class="position-relative">
 																<small class="ml-1 font-weight-bold">Click to View Symptoms</small>
 																<div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
@@ -363,10 +448,19 @@
 														</div>
 														<hr>
 														<div class="d-flex justify-content-between">
-															<div>
-															<span class="text-primary font-weight-bold mt-4"><%= appointments.appointment_status %></span><br>
-															<small class="text-secondary font-weight-bold">by <%= appointments.approved_staff %></small>
-															</div>
+															<% if(appointments.appointment_status == "Cancelled") {%>
+																<span class="text-warning font-weight-bold mt-3"><%= appointments.appointment_status %></span>
+															<% } else if(appointments.appointment_status =="Follow-Up") { %> 
+																<div>
+																<span class="text-primary font-weight-bold mt-3">Approved | <small>Follow-Up</small></span><br>
+																<small class="text-secondary font-weight-bold">by <%= appointments.approved_staff %></small>
+																</div>
+															<% }  else { %>
+																<div>
+																<span class="text-primary font-weight-bold mt-3"><%= appointments.appointment_status %></span><br>
+																<small class="text-secondary font-weight-bold">by <%= appointments.approved_staff %></small>
+																</div>
+															<% } %> 
 															<div>
 																<h5 class="mb-0"><%= appointments.time %>
 																</h5>
@@ -378,9 +472,15 @@
 											</div>
 										</div>
 								
-							</div>
 
 								<% } %> 
+								<script>
+									var now = Date.now();
+									var bday = new Date("<%= appointments.birthday%>");
+									var minus = now-bday
+									var age = Math.floor(minus / 1000 / 60 / 60 / 24 / 365);
+									document.getElementById("age<%= appointments._id %>").innerText = age + " yrs | <%= appointments.sex %>"
+								</script>
 							<% }); %> 
 								
 							</div>
@@ -406,8 +506,9 @@
 
 	<!-- Patients JS -->
 
-	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+	<script src="https://jonthornton.github.io/jquery-timepicker/jquery.timepicker.js"></script>
 
 	<script>
 		window.onload = function(){
@@ -415,12 +516,112 @@
 			for (var i=0;i<el.length; i++) {
 			el[i].click();
 		}
+
+		document.getElementById('timepicker').click();
 		
 		}
 		</script>
 
 <script>
-	$(document).ready(function(){
+	// in case of bootstrap modal example:
+	$('.modal').on('shown.bs.modal', function () {
+	  
+	  var documentScrollTop = $(document).scrollTop();
+	  $(document).on('scroll.noScroll', function() {
+		 $(document).scrollTop(documentScrollTop);
+		 return false;
+	  });
+	
+	}).on('hidden.bs.modal', function() {
+	
+	  $(document).off('scroll.noScroll');
+	
+	});
+</script>
+
+<script>
+	
+	
+	var selectedBranch = document.getElementById("viewingBranch").textContent;
+		$('.searchhide').hide();
+		$('.searchhide:contains("'+selectedBranch+'")').show();
+	
+	var viewingBranchNumber1 = document.getElementById("viewingBranchNumber1").textContent;
+	var viewingBranchNumber2 = document.getElementById("viewingBranchNumber2").textContent;
+
+	var date = new Date();
+	switch(date.getDay()){
+    case 0:
+	if (viewingBranchNumber1 == selectedBranch) {
+		var docTimeStart = document.getElementById("docTimeBranch1Start-Sun").textContent;
+		var docTimeEnd = document.getElementById("docTimeBranch1End-Sun").textContent;
+	} else if (viewingBranchNumber2 == selectedBranch) {
+		var docTimeStart = document.getElementById("docTimeBranch2Start-Sun").textContent;
+		var docTimeEnd = document.getElementById("docTimeBranch2End-Sun").textContent;
+	}else {
+	}; break;
+    case 6:
+	if (viewingBranchNumber1 == selectedBranch) {
+		var docTimeStart = document.getElementById("docTimeBranch1Start-Sat").textContent;
+		var docTimeEnd = document.getElementById("docTimeBranch1End-Sat").textContent;
+	} else if (viewingBranchNumber2 == selectedBranch) {
+		var docTimeStart = document.getElementById("docTimeBranch2Start-Sat").textContent;
+		var docTimeEnd = document.getElementById("docTimeBranch2End-Sat").textContent;
+	}else {
+	}; break;
+    default:
+	if (viewingBranchNumber1 == selectedBranch) {
+		var docTimeStart = document.getElementById("docTimeBranch1Start-Weekdays").textContent;
+		var docTimeEnd = document.getElementById("docTimeBranch1End-Weekdays").textContent;
+	} else if (viewingBranchNumber2 == selectedBranch) {
+		var docTimeStart = document.getElementById("docTimeBranch2Start-Weekdays").textContent;
+		var docTimeEnd = document.getElementById("docTimeBranch2End-Weekdays").textContent;
+	}else {
+	};
+}
+		
+	$(function() {
+	$('#timepicker').timepicker({
+		step: 15,
+		minTime: docTimeStart,
+		maxTime: docTimeEnd,
+		dynamic: false,
+		dropdown: true,
+		scrollbar: true
+	});
+	});
+
+		
+		$('.searchhide').hide();
+        $('#timepicker').on('click', function(){
+           setTimeout(list_time, 500);                    
+          });
+      
+          function list_time() {
+      
+			  $('.ui-timepicker-list').find('li').each(function(i, obj) {
+            	$(obj).appendTo($('#outige'));
+                }); 
+			setTimeout(outige_time, 500);       
+          }
+
+		  function outige_time() {
+      
+		var array = [];
+
+		$('#outige').find('li').each(function(){
+			array.push($(this).text());
+		});
+
+
+		$(array).each(function () {
+		$('.searchhide:contains("'+selectedBranch+'"):contains("'+this+'")').closest('.searchhide').show();
+		});
+
+		// Clear Array Elements
+		array = [];  
+		}
+
 		$('#search').keyup(function(){
 		
 		// Search text
@@ -429,21 +630,28 @@
 		// Hide all content class element
 		$('.searchhide').hide();
 
-		// Search 
-		$('.searchhide:contains("'+text+'")').closest('.searchhide').show();
+		var timeArray = [];
+
+			$('#outige').find('li').each(function(){
+				timeArray.push($(this).text());
+			});
+
+		$(timeArray).each(function () {
+		$('.searchhide:contains("'+text+'"):contains("'+selectedBranch+'"):contains("'+this+'")').closest('.searchhide').show();
 		
+		// Clear Array Element
 		});
-	});
+		timeArray = []; 
+		
 
 	$.expr[":"].contains = $.expr.createPseudo(function(arg) {
 		return function( elem ) {
 		return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
 		};
 	});
-</script>
+});
 
-<script>
-	function showToday() {
+function showToday() {
 	  var checkBox = document.getElementById("showTodayOnly");
 
 	  if (checkBox.checked == true){
@@ -459,14 +667,38 @@
 		// Hide all content class element
 		$('.searchhide').hide();
 
-		// Search 
-		$('.searchhide:contains("'+today+'")').closest('.searchhide').show();
+		var timeOnlyArray = [];
+
+			$('#outige').find('li').each(function(){
+				timeOnlyArray.push($(this).text());
+			});
+
+		$(timeOnlyArray ).each(function () {
+		$('.searchhide:contains("'+today+'"):contains("'+selectedBranch+'"):contains("'+this+'")').closest('.searchhide').show();
+		
+		// Clear Array Elements
+		});
+		timeOnlyArray1 = []; 
 		
 	  } else {
-		$('.searchhide').show();
+		var timeOnlyArray = [];
+
+			$('#outige').find('li').each(function(){
+				timeOnlyArray1.push($(this).text());
+			});
+
+		$(timeOnlyArray1 ).each(function () {
+		$('.searchhide:contains("'+selectedBranch+'"):contains("'+this+'")').closest('.searchhide').show();
+		
+		// Clear Array Elements
+		timeOnlyArray1 = []; 
+
+		});
 	
 	  }
 	}
+
+	
 </script>
 
 </body>
