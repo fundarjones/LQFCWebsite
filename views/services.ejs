@@ -47,7 +47,10 @@
                 <a href="/contact" class="nav__item-link">Contact</a>
               </li><!-- /.nav-item -->
               <li class="nav__item">
-                <a href="/services" class="nav__item-link active">Services & Branches</a>
+                <a href="/services" class="nav__item-link active">Services</a>
+              </li><!-- /.nav-item -->
+              <li class="nav__item">
+                <a href="/lqfc-branches" class="nav__item-link">Branches</a>
               </li><!-- /.nav-item -->
               <li class="nav__item">
                 <a href="/lqfc-doctors" class="nav__item-link">Doctors</a>
@@ -211,109 +214,6 @@
       </div><!-- /.container -->
     </section><!-- /.Services Layout 1 -->
 
-  
-    <!-- ======================
-     Work Process 
-    ========================= -->
-    <section class="work-process work-process-carousel pt-130 pb-80">
-      <div class="bg-img"><img src="../assets/images/backgrounds/1.png" alt="background"></div>
-      <div class="container">
-        <div class="row heading-layout2">
-          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-5">
-            <h3 class="heading__title">5 Branches for Your Medical Needs
-            </h3>
-            <p class="heading__desc font-weight-bold mb-40">We have
-              put protocols to protect our patients and staff while continuing to provide medically necessary care.
-            </p>
-            <a href="" class="btn btn__primary btn__rounded" data-toggle="modal" data-target="#make-appointment">
-              <span>Book Appointment</span> <i class="icon-arrow-right"></i>
-                </a>
-          </div><!-- /.col-xl-5 -->
-          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 offset-xl-1">
-            <p class="heading__desc font-weight-bold mb-40">Our clinic has touched the live of patients and provides
-              care for the sickest in the community. We will work with you to develop individualised care plans,
-              including management of chronic diseases. If we cannot assist, we can provide referrals or
-              advice about the type of practitioner you require. We treat all enquiries sensitively and in the strictest confidence.
-            </p>
-            <ul class="list-items list-items-layout2 list-horizontal list-unstyled font-weight-bold">
-              <li>Minimum Health Protocols</li>
-              <li>Cutting Edge Facility</li>
-              <li>Quality Equipment</li>
-              <li>Priority Safety Measures</li>
-              <li>Disinfection & Serilization</li>
-            </ul>
-          </div><!-- /.col-xl-6 -->
-        </div><!-- /.row -->
-
-        
-
-        
-        <div class="row">
-          <div class="col-12">
-            <div class="mt-90">
-              <div class="slick-carousel"
-                data-slick='{"slidesToShow": 4, "slidesToScroll": 1, "autoplay": false, "infinite":false, "arrows": false, "dots": false, "responsive": [{"breakpoint": 1200, "settings": {"slidesToShow": 3}}, {"breakpoint": 992, "settings": {"slidesToShow": 2}}, {"breakpoint": 767, "settings": {"slidesToShow": 2}}, {"breakpoint": 480, "settings": {"slidesToShow": 1}}]}'>
-                <!-- process item #1 -->
-                <% branch.forEach(function(branches){ %>
-                <div class="process-item center">
-                  <h4 class="process__title"><%= branches.branch_name %> </h4>
-                  <p class="process__desc justify"><%= branches.address %> </p>
-                  <hr>
-                  
-                  <% if(branches.opening_weekdays != "Closed"){ %> 
-                    <span>Weekdays</span>
-                    <ul class="black list-vertical list-unstyled font-weight-bold">
-                      <li><%= branches.opening_weekdays %> - <%= branches.closing_weekdays%></li>
-                    </ul>
-                  <% } else { %> 
-                    <span>Weekdays</span>
-                    <ul class="black list-vertical list-unstyled font-weight-bold">
-                      <li>Closed</li>
-                    </ul>
-                  <% } %> 
-
-                  <% if(branches.opening_saturday != "Closed"){ %> 
-                    <span>Saturday</span>
-                    <ul class="black list-vertical list-unstyled font-weight-bold">
-                      <li><%= branches.opening_saturday %> - <%= branches.closing_saturday %></li>
-                    </ul>
-                  <% } else { %> 
-                    <span>Saturday</span>
-                    <ul class="black list-vertical list-unstyled font-weight-bold">
-                      <li>Closed</li>
-                    </ul>
-                  <% } %> 
-
-                  <% if(branches.opening_sunday != "Closed"){ %> 
-                    <span>Sunday</span>
-                    <ul class="black list-vertical list-unstyled font-weight-bold">
-                      <li><%= branches.opening_sunday %> - <%= branches.closing_sunday %></li>
-                    </ul>
-                  <% } else { %> 
-                    <span>Sunday</span>
-                    <ul class="black list-vertical list-unstyled font-weight-bold">
-                      <li>Closed</li>
-                    </ul>
-                  <% } %> 
-
-                    
-
-                    <hr>
-                  <a href="https://goo.gl/maps/Kyn3rFzt5stUWV939" target="_blank" class="btn btn__secondary btn__link">
-                    <span class="location">View Location</span>
-                    <i class="icon-arrow-right"></i>
-                  </a><br><br>
-                </div>
-                <% }) %> 
-                <!-- /.process-item -->
-              </div><!-- /.carousel -->
-            </div>
-          </div><!-- /.col-12 -->
-        </div><!-- /.row -->
-      </div><!-- /.container -->
-
-    </section><!-- /.Work Process -->
-
  <!-- ========================
       Footer
     ========================== -->
@@ -337,7 +237,7 @@
                     <li><a href="/contact">Contact Us</a></li>
                     <li><a href="/lqfc-doctors">Our Doctors</a></li>
                     <li><a href="/services">Our Services</a></li>
-                    <li><a href="/services">Our Branches</a></li>
+                    <li><a href="/branches">Our Branches</a></li>
                 </ul>
               </div><!-- /.footer-widget__content -->
             </div><!-- /.col-lg-2 -->

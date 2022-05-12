@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
-<!-- Mirrored from 7oroof.com/demos/medcity/doctors-grid.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 06 Apr 2022 14:14:18 GMT -->
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <meta name="description" content="Medcity - Medical Healthcare HTML5 Template">
   <link href="../assets/images/favicon/favicon.png" rel="icon">
-  <title>Doctors | Lagman Qualicare Family Clinic</title>
+  <title>Services & Branches | Lagman Qualicare Family Clinic</title>
 
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&amp;family=Roboto:wght@400;700&amp;display=swap">
@@ -24,7 +22,7 @@
       <div class="loading"><span></span><span></span><span></span><span></span></div>
     </div><!-- /.preloader -->
 
-       <!-- =========================
+   <!-- =========================
         Header
     =========================== -->
     <header class="header header-layout1">
@@ -52,10 +50,10 @@
                 <a href="/services" class="nav__item-link">Services</a>
               </li><!-- /.nav-item -->
               <li class="nav__item">
-                <a href="/lqfc-branches" class="nav__item-link">Branches</a>
+                <a href="/lqfc-branches" class="nav__item-link active">Branches</a>
               </li><!-- /.nav-item -->
               <li class="nav__item">
-                <a href="/lqfc-doctors" class="nav__item-link active">Doctors</a>
+                <a href="/lqfc-doctors" class="nav__item-link">Doctors</a>
               </li><!-- /.nav-item -->
               
             </ul><!-- /.navbar-nav -->
@@ -101,7 +99,7 @@
       </div>
     </div>
 
-          <!-- ============================
+      <!-- ============================
         Modal 2
     ============================== -->
 
@@ -127,57 +125,102 @@
         </div>
       </div>
     </div>   
-
-    
-    <!-- ========================
-        Team layout 3
-    ========================== -->
-    <section class="team-layout3 pb-40 mt-90">
+  
+    <!-- ======================
+     Branches 
+    ========================= -->
+    <section class="work-process work-process-carousel pt-130 pb-80">
+      <div class="bg-img"><img src="../assets/images/backgrounds/1.png" alt="background"></div>
       <div class="container">
+        <div class="row heading-layout2">
+          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-5">
+            <h3 class="heading__title">5 Branches for Your Medical Needs
+            </h3>
+            <p class="heading__desc font-weight-bold mb-40">We have
+              put protocols to protect our patients and staff while continuing to provide medically necessary care.
+            </p>
+            <a href="" class="btn btn__primary btn__rounded" data-toggle="modal" data-target="#make-appointment">
+              <span>Book Appointment</span> <i class="icon-arrow-right"></i>
+                </a>
+          </div><!-- /.col-xl-5 -->
+          <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 offset-xl-1">
+            <p class="heading__desc font-weight-bold mb-40">Our clinic has touched the live of patients and provides
+              care for the sickest in the community. We will work with you to develop individualised care plans,
+              including management of chronic diseases. If we cannot assist, we can provide referrals or
+              advice about the type of practitioner you require. We treat all enquiries sensitively and in the strictest confidence.
+            </p>
+            <ul class="list-items list-items-layout2 list-horizontal list-unstyled font-weight-bold">
+              <li>Minimum Health Protocols</li>
+              <li>Cutting Edge Facility</li>
+              <li>Quality Equipment</li>
+              <li>Priority Safety Measures</li>
+              <li>Disinfection & Serilization</li>
+            </ul>
+          </div><!-- /.col-xl-6 -->
+        </div><!-- /.row -->
+
+        
+
+        
         <div class="row">
-          <!-- Member #1 -->
-          <% doctor.forEach(function(doctors){ %>
-          <div class="col-sm-6 col-md-4 col-lg-4">
-            <div class="member">
-              <div class="member__img">
-                <img src="uploads/<%= doctors.id %>.png" alt="Doctor Img" onerror="this.onerror=null;this.src='files/male-avatar.png';">
-              </div><!-- /.member-img -->
-              <div class="member__info">
-                <h5 class="member__name"><%= doctors.first_name %> <%= doctors.last_name %></h5>
-                <p class="member__job"><%= doctors.specialization %></p>
-                <p class="member__desc"><%= doctors.bio %></p>
-                <div class="mt-20 d-flex flex-wrap justify-content-between align-items-center">
-                  <a href="/doctors-profile/<%= doctors._id %>" class="btn btn__secondary btn__link btn__rounded">
-                    <span>View Profile</span>
-                    <i class="icon-arrow-right"></i>
-                  </a>
+          <div class="col-12">
+            <div class="mt-90">
+              <div class="slick-carousel"
+                data-slick='{"slidesToShow": 4, "slidesToScroll": 1, "autoplay": false, "infinite":false, "arrows": false, "dots": false, "responsive": [{"breakpoint": 1200, "settings": {"slidesToShow": 3}}, {"breakpoint": 992, "settings": {"slidesToShow": 2}}, {"breakpoint": 767, "settings": {"slidesToShow": 2}}, {"breakpoint": 480, "settings": {"slidesToShow": 1}}]}'>
+                <!-- process item #1 -->
+                <% branch.forEach(function(branches){ %>
+                <div class="process-item center">
+                  <h4 class="process__title"><%= branches.branch_name %> </h4>
+                  <p class="process__desc justify"><%= branches.address %> </p>
+                  <hr>
+                  
+                  <% if(branches.opening_weekdays != "Closed"){ %> 
+                    <span>Weekdays</span>
+                    <ul class="black list-vertical list-unstyled font-weight-bold">
+                      <li><%= branches.opening_weekdays %> - <%= branches.closing_weekdays%></li>
+                    </ul>
+                  <% } else { %> 
+                    <span>Weekdays</span>
+                    <ul class="black list-vertical list-unstyled font-weight-bold">
+                      <li>Closed</li>
+                    </ul>
+                  <% } %> 
+
+                  <% if(branches.opening_saturday != "Closed"){ %> 
+                    <span>Saturday</span>
+                    <ul class="black list-vertical list-unstyled font-weight-bold">
+                      <li><%= branches.opening_saturday %> - <%= branches.closing_saturday %></li>
+                    </ul>
+                  <% } else { %> 
+                    <span>Saturday</span>
+                    <ul class="black list-vertical list-unstyled font-weight-bold">
+                      <li>Closed</li>
+                    </ul>
+                  <% } %> 
+
+                  <% if(branches.opening_sunday != "Closed"){ %> 
+                    <span>Sunday</span>
+                    <ul class="black list-vertical list-unstyled font-weight-bold">
+                      <li><%= branches.opening_sunday %> - <%= branches.closing_sunday %></li>
+                    </ul>
+                  <% } else { %> 
+                    <span>Sunday</span>
+                    <ul class="black list-vertical list-unstyled font-weight-bold">
+                      <li>Closed</li>
+                    </ul>
+                  <% } %> 
                 </div>
-              </div><!-- /.member-info -->
-            </div><!-- /.member -->
-          </div><!-- /.col-lg-4 -->
-          <% }) %> 
-        </div> <!-- /.row -->
-        <!--
-
-        <div class="row">
-          <div class="col-12 text-center">
-            <nav class="pagination-area">
-              <ul class="pagination justify-content-center">
-                <li><a class="current" href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#"><i class="icon-arrow-right"></i></a></li>
-              </ul>
-            </nav>
-          </div>
-        </div>-->
-
+                <% }) %> 
+                <!-- /.process-item -->
+              </div><!-- /.carousel -->
+            </div>
+          </div><!-- /.col-12 -->
+        </div><!-- /.row -->
       </div><!-- /.container -->
-    </section><!-- /.Team layout 3  -->
+
+    </section><!-- /.Work Process -->
 
  <!-- ========================
-      Footer
-    ========================== -->
-    <!-- ========================
       Footer
     ========================== -->
     <footer class="footer">
@@ -258,6 +301,4 @@
   <script src="../assets/js/main.js"></script>
 </body>
 
-
-<!-- Mirrored from 7oroof.com/demos/medcity/doctors-grid.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 06 Apr 2022 14:14:18 GMT -->
 </html>

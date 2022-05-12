@@ -850,7 +850,7 @@ app.get('/lqfc-doctors', checkNotAuthenticated, async (req,res) => {
 app.get('/doctors-profile/:_id', checkNotAuthenticated, async (req,res) => {
   const user_id = req.params._id
   const doctors = await Doctor.findById(user_id)
-  const branches = await Branch.findOne({branch_name: doctors.branch})
+  const branches = await Branch.find()
   res.render('doctors-profile.ejs', {doctor: doctors, branch: branches})
 })
 
@@ -861,6 +861,11 @@ app.get('/terms-conditions', (req,res) => {
 app.get('/services', checkNotAuthenticated, async(req,res) => {
   const branches = await Branch.find()
   res.render('services.ejs', {branch: branches})
+})
+
+app.get('/lqfc-branches', checkNotAuthenticated, async(req,res) => {
+  const branches = await Branch.find()
+  res.render('branches.ejs', {branch: branches})
 })
 
 const sendResetEmail = async(email,token) =>{

@@ -47,7 +47,10 @@
                 <a href="/contact" class="nav__item-link">Contact</a>
               </li><!-- /.nav-item -->
               <li class="nav__item">
-                <a href="/services" class="nav__item-link">Services & Branches</a>
+                <a href="/services" class="nav__item-link">Services</a>
+              </li><!-- /.nav-item -->
+              <li class="nav__item">
+                <a href="/lqfc-branches" class="nav__item-link">Branches</a>
               </li><!-- /.nav-item -->
               <li class="nav__item">
                 <a href="/lqfc-doctors" class="nav__item-link active">Doctors</a>
@@ -144,7 +147,6 @@
                   </div><!-- /.member-img -->
                   <div class="member__info">
                     <h5 class="member__name"><a href="/doctors-profile/<%= doctor._id %>"><%= doctor.first_name %> <%= doctor.last_name %></a></h5>
-                    <p class="member__job"><%= doctor.specialization %> </p>
                       <div class="mt-20 d-flex flex-wrap justify-content-between align-items-center">
                         <a href="#" class="btn btn__primary btn__rounded" data-toggle="modal" data-target="#make-appointment">
                           <span>Book Appointment</span>
@@ -157,18 +159,70 @@
               <div class="widget widget-schedule">
                 <div class="widget-content">
                   <h4 class="widget__title">Schedules</h4>
-
-                  <p><%= doctor.branch %></p>
+                  <hr>
+                  <p class="font-weight-bold"><%= doctor.branch1 %></p>
                   <span>Monday - Friday</span>
-                    <ul class="black list-vertical list-unstyled">
-                    <% if(branch) {%> 
-                      <li><%= branch.set_time[0] %>  - <%= branch.set_time[branch.set_time.length-1] %></li>
-                    </ul>
+                    <% if (doctor.start_weekdays1 != "None") {%> 
+                      <ul class="black list-vertical list-unstyled">
+                        <li><%= doctor.start_weekdays1 %> - <%= doctor.end_weekdays1 %></li>
+                      </ul>
+                    <% } else { %> 
+                      <ul class="black list-vertical list-unstyled">
+                        <li>None</li>
+                      </ul>
                     <% } %> 
-                    <span>Saturday - Sunday</span>
+                  <span>Saturday</span>
+                  <% if (doctor.start_sat1 != "None") {%> 
+                    <ul class="black list-vertical list-unstyled">
+                      <li><%= doctor.start_sat1 %> - <%= doctor.end_sat1 %></li>
+                    </ul>
+                  <% } else { %> 
                     <ul class="black list-vertical list-unstyled">
                       <li>None</li>
                     </ul>
+                  <% } %> 
+                  <span>Sunday</span>
+                  <% if (doctor.start_sun1 != "None") {%> 
+                    <ul class="black list-vertical list-unstyled">
+                      <li><%= doctor.start_sun1 %> - <%= doctor.end_sun1 %></li>
+                    </ul>
+                  <% } else { %> 
+                    <ul class="black list-vertical list-unstyled">
+                      <li>None</li>
+                    </ul>
+                  <% } %> 
+                  <hr>
+                  <p class="font-weight-bold"><%= doctor.branch2 %></p>
+                  <span>Monday - Friday</span>
+                    <% if (doctor.start_weekdays2 != "None") {%> 
+                      <ul class="black list-vertical list-unstyled">
+                        <li><%= doctor.start_weekdays2 %> - <%= doctor.end_weekdays2 %></li>
+                      </ul>
+                    <% } else { %> 
+                      <ul class="black list-vertical list-unstyled">
+                        <li>None</li>
+                      </ul>
+                    <% } %> 
+                  <span>Saturday</span>
+                  <% if (doctor.start_sat2 != "None") {%> 
+                    <ul class="black list-vertical list-unstyled">
+                      <li><%= doctor.start_sat2 %> - <%= doctor.end_sat2 %></li>
+                    </ul>
+                  <% } else { %> 
+                    <ul class="black list-vertical list-unstyled">
+                      <li>None</li>
+                    </ul>
+                  <% } %> 
+                  <span>Sunday</span>
+                  <% if (doctor.start_sun2 != "None") {%> 
+                    <ul class="black list-vertical list-unstyled">
+                      <li><%= doctor.start_sun2 %> - <%= doctor.end_sun2 %></li>
+                    </ul>
+                  <% } else { %> 
+                    <ul class="black list-vertical list-unstyled">
+                      <li>None</li>
+                    </ul>
+                  <% } %> 
 
                 </div><!-- /.widget-content -->
               </div><!-- /.widget-schedule -->
@@ -179,14 +233,6 @@
               <h5 class="text-block__title">Bio</h5>
               <p class="text-block__desc mb-20"><%= doctor.bio %> </p>
             </div><!-- /.text-block -->
-            <ul class="details-list list-unstyled mb-60">
-              <li>
-                <h5 class="details__title">Specialization</h5>
-                <div class="details__content">
-                  <p class="mb-0"><%= doctor.specialization %></p>
-                </div>
-              </li>
-            </ul>
            
             </section><!-- /.contact layout 2 -->
           </div><!-- /.col-lg-8 -->
@@ -213,11 +259,11 @@
             <div class="col-sm-6 col-md-6 col-lg-2 offset-lg-1">
               <div class="footer-widget-nav">
                   <ul class=" list-unstyled list-items-light">
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="doctors.html">Our Doctors</a></li>
-                    <li><a href="services.html">Our Services</a></li>
-                    <li><a href="services.html">Our Branches</a></li>
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="/contact">Contact Us</a></li>
+                    <li><a href="/lqfc-doctors">Our Doctors</a></li>
+                    <li><a href="/services">Our Services</a></li>
+                    <li><a href="/branches">Our Branches</a></li>
                 </ul>
               </div><!-- /.footer-widget__content -->
             </div><!-- /.col-lg-2 -->
@@ -228,31 +274,14 @@
                   with any general or medical enquiry.
                 </p>
                 <ul class="contact-list list-horizontal list-unstyled">
+                  <% branch.forEach(function(branches){ %>
                   <li>
-                    Sta. Cruz | Porac Branch<br>
-                    <a href="tel:+09171051731">
-                      <i class="icon-phone"></i> <span>0917-105-1731</span>
+                    <%= branches.branch_name %><br>
+                    <a href="tel:+<%= branches.phone %>">
+                      <i class="icon-phone"></i> <span><%= branches.phone %></span>
                     </a>
                   </li>
-                  
-                  <li>
-                    Sandra Mall | Angeles City Branch<br>
-                    <a href="tel:+tel:+09175026577">
-                      <i class="icon-phone"></i> <span>0917-502-6577</span>
-                    </a>
-                  </li>
-                  <li>
-                    Super 8 | Angeles City Branch<br>
-                    <a href="tel:+09178470719">
-                      <i class="icon-phone"></i> <span>0917-847-0719</span>
-                    </a>
-                  </li>
-                  <li>
-                    San Francisco | Magalang Branch<br>
-                    <a href="tel:+09178470719">
-                      <i class="icon-phone"></i> <span>0917-169-9131</span>
-                    </a>
-                  </li> 
+                  <% }) %>
                 </ul>
                 
 
@@ -271,12 +300,12 @@
           <div class="row align-items-center">
             <div class="col-sm-12 col-md-6 col-lg-6">
               <span class="fz-14">&copy; </span>
-              <a class="fz-14 color-primary" href="../index.html">2022 Lagman Qualicare Family Clinic</a>
+              <a class="fz-14 color-primary" href="/">2022 Lagman Qualicare Family Clinic</a>
             </div><!-- /.col-lg-6 -->
             <div class="col-sm-12 col-md-6 col-lg-6">
               <nav>
                 <ul class="list-unstyled footer__copyright-links d-flex flex-wrap justify-content-end mb-0">
-                  <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                  <li><a href="/terms-conditions">Terms & Conditions</a></li>
                 </ul>
               </nav>
             </div><!-- /.col-lg-6 -->

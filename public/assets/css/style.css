@@ -4167,9 +4167,21 @@ input[type=radio] {
 	opacity: 1
 }
 
+.contact-logo{
+	max-width: 500px !important;
+}
+
+.contact-div{
+	display: block !important; 
+	text-align: center !important;
+}
+
+
 @media (min-width:1200px) {
 	.footer .footer-widget-about,
 	.footer .footer-widget-nav {
+		display: block;
+		text-align: center;
 		margin-top: 40px
 	}
 }
