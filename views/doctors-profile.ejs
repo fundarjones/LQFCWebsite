@@ -7,7 +7,8 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <meta name="description" content="Medcity - Medical Healthcare HTML5 Template">
   <link href="../assets/images/favicon/favicon.png" rel="icon">
-  <title>Doctor's Name | Lagman Qualicare Family Clinic</title>
+  <% if (doctor) {%> 
+  <title><%= doctor.first_name %> <%=doctor.last_name %> | Lagman Qualicare Family Clinic</title>
 
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&amp;family=Roboto:wght@400;700&amp;display=swap">
@@ -134,7 +135,7 @@
       <div class="bg-img"><img src="../assets/images/banners/3.jpg" alt="background"></div>
 
     </section><!-- /.page-title -->
-    <% if (doctor) {%> 
+    
     <section class="pt-120 pb-80 mt-70">
       <div class="container">
         <div class="row">
@@ -143,7 +144,7 @@
               <div class="widget widget-member shifted-top">
                 <div class="member mb-0">
                   <div class="member__img ">
-                    <img src="../files/male-avatar.png" alt="member img">
+                    <img src="../uploads/<%= doctor.id %>.png" alt="User Img" onerror="this.onerror=null;this.src='../files/male-avatar.png';">
                   </div><!-- /.member-img -->
                   <div class="member__info">
                     <h5 class="member__name"><a href="/doctors-profile/<%= doctor._id %>"><%= doctor.first_name %> <%= doctor.last_name %></a></h5>
