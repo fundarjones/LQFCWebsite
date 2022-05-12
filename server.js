@@ -2641,11 +2641,14 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
             const doctor = await Doctor.findById(user_id)
             doctor.email = email
             doctor.first_name = first_name
+            doctor.middle_name = middle_name
             doctor.last_name = last_name
+            doctor.suffix = suffix
             doctor.birthday = birthday
             doctor.sex = sex
             doctor.status = status
             doctor.phone = phone
+            doctor.phone2 = phone2
             doctor.bio = bio
             await doctor.save()
             const response = doctor
@@ -2656,11 +2659,14 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
             const staff = await Staff.findById(user_id)
             staff.email = email
             staff.first_name = first_name
+            staff.middle_name = middle_name
             staff.last_name = last_name
+            staff.suffix = suffix
             staff.birthday = birthday
             staff.sex = sex
             staff.status = status
             staff.phone = phone
+            staff.phone2 = phone2
             staff.bio = bio
             await staff.save()
             const response = staff
@@ -2671,11 +2677,14 @@ app.put('/update-info', checkAuthenticated, urlencodedParser,[
             const admin = await Admin.findById(user_id)
             admin.email = email
             admin.first_name = first_name
+            admin.middle_name = middle_name
             admin.last_name = last_name
+            admin.suffix = suffix
             admin.birthday = birthday
             admin.sex = sex
             admin.status = status
             admin.phone = phone
+            admin.phone2 = phone2
             admin.bio = bio
             await admin.save()
             const response = admin
@@ -3262,7 +3271,7 @@ app.put('/edit-info', checkAuthenticated, urlencodedParser,[
     .isEmail()
     .normalizeEmail()
 ], async (req, res) => {
-  const { email, first_name, last_name, birthday, bio, sex, status, phone, _id, usertype} = req.body
+  const { email, first_name, middle_name, suffix, phone2, last_name, birthday, bio, sex, status, phone, _id, usertype} = req.body
   const errors = validationResult(req)
   if(!errors.isEmpty()) {
     const alert = errors.array()
@@ -3277,11 +3286,14 @@ app.put('/edit-info', checkAuthenticated, urlencodedParser,[
       const doctor = await Doctor.findById(_id)
       doctor.email = email
       doctor.first_name = first_name
+      doctor.middle_name = middle_name
       doctor.last_name = last_name
+      doctor.suffix = suffix
       doctor.birthday = birthday
       doctor.sex = sex
       doctor.status = status
       doctor.phone = phone
+      doctor.phone2 = phone2
       doctor.bio = bio
       await doctor.save()
       const user_usertype = req.user.usertype
