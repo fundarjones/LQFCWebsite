@@ -854,8 +854,9 @@ app.get('/doctors-profile/:_id', checkNotAuthenticated, async (req,res) => {
   res.render('doctors-profile.ejs', {doctor: doctors, branch: branches})
 })
 
-app.get('/terms-conditions', (req,res) => {
-  res.render('terms-conditions.ejs')
+app.get('/terms-conditions', async (req,res) => {
+  const branches = await Branch.find()
+  res.render('terms-conditions.ejs', {branch: branches})
 })
 
 app.get('/services', checkNotAuthenticated, async(req,res) => {
@@ -2332,7 +2333,15 @@ app.post('/add-doctors', checkAuthenticated, urlencodedParser,[
           const user_id = req.user._id
           const admins = await Admin.findById(user_id)
           res.render('admin/add-doctor.ejs', { branch: branches, msg: message, type: "danger", doctors: doc, admin: admins , base: 'base64'})
-        } else {
+        } else if (branch1 == "None" && branch2 == "None") {
+          const message = "Please input a designated branch for the doctor."
+          const doc = await Doctor.find();
+          const branches = await Branch.find();
+          const user_id = req.user._id
+          const admins = await Admin.findById(user_id)
+          res.render('admin/add-doctor.ejs', { branch: branches, msg: message, type: "danger", doctors: doc, admin: admins , base: 'base64'})
+          } else {
+          
           const password = await bcrypt.hash(plainTextPassword, 10)
           const response = new Doctor({
                   usertype: "doctor",
