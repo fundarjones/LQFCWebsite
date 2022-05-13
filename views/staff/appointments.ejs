@@ -93,6 +93,14 @@
 			<section class="ftco-section">
 				<div class="container">
 			<h1 class="title">Appointments</h1>
+			<% if(typeof msg != 'undefined') { %>
+				<% if(msg) { %>
+				<div class="alert alert-danger">
+					<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+					<p class="error-msg"><%= msg %></p>
+				</div>
+				<% } %>
+				<% } %>
 					<div class="row">
 						<div class="col-sm-12 col-md-12">
 							<form action="#">

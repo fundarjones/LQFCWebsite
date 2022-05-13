@@ -3200,9 +3200,20 @@ app.put('/approve-appointment', checkAuthenticated, async (req, res) => {
     const date = monthNames[date_temp.getMonth()] + " " + set_date_appointment + ", " + year_appointment
     const approved_staff = req.user.first_name + " " + req.user.last_name
     try {
-      var appointment_status = " "
       const approve = await Appointment.findById(user_id)
-      console.log(approve.phone)
+      const datetime_checker =  await Appointment.findOne({branch: approve.branch, date:date, time:time})
+      if (datetime_checker) {
+        console.log("Appointment slot has already occupied")
+        const patient = await User.find();
+        const staffs = await Staff.findById(req.user._id)
+        const appointments = await Appointment.find()
+        const assignedbranch = req.user.branch
+        const branches = await Branch.findOne({branch_name: assignedbranch})
+        const alldiagnosis = await Diagnose.find()
+        res.render('staff/appointments.ejs', { appointment: appointments, branch: branches, staff: staffs, msg:"Appointment slot has already occupied", patients: patient, diagnose: alldiagnosis, base: 'base64'  })
+      } else {
+        var appointment_status = " "
+      
       if (approve.appointment_status == "Follow-Up") {
         appointment_status = "Follow-Up"
       }
@@ -3233,34 +3244,33 @@ app.put('/approve-appointment', checkAuthenticated, async (req, res) => {
         approved_time,
         approved_date,
         approved_staff
-    })
-await response.save()
-const user_usertype = req.user.usertype
-const userlog_id = req.user.id
-const user_first_name = req.user.first_name
-const user_last_name = req.user.last_name
-const user_email = req.user.email
-const user_branch = req.user.branch
-const log = new Logs({
-  usertype: user_usertype,
-  id: userlog_id,
-  first_name: user_first_name,
-  last_name: user_last_name,
-  email: user_email,
-  log_time: approve.time_timestamp,
-  log_date: approve.date_timestamp,
-  branch: user_branch,
-  action: "Approve Appointment"
-})
-await log.save()
-console.log( 'Approve Appointment logged', log)
-const delete_response = await Appointment.deleteOne({_id: user_id, appointment_status: { $ne: "Cancelled" }})
-res.redirect('/appointments')
-sendApproveAppointment(approved_date, approved_time, approve.email, date, time, approve.first_name, approve.last_name)
-console.log('Pending appointment deleted successfully: ', delete_response)
-console.log('Appointment approved successfully: ', response)
-      
-      
+      })
+      await response.save()
+      const user_usertype = req.user.usertype
+      const userlog_id = req.user.id
+      const user_first_name = req.user.first_name
+      const user_last_name = req.user.last_name
+      const user_email = req.user.email
+      const user_branch = req.user.branch
+      const log = new Logs({
+        usertype: user_usertype,
+        id: userlog_id,
+        first_name: user_first_name,
+        last_name: user_last_name,
+        email: user_email,
+        log_time: approve.time_timestamp,
+        log_date: approve.date_timestamp,
+        branch: user_branch,
+        action: "Approve Appointment"
+      })
+      await log.save()
+      console.log( 'Approve Appointment logged', log)
+      const delete_response = await Appointment.deleteOne({_id: user_id, appointment_status: { $ne: "Cancelled" }})
+      res.redirect('/appointments')
+      sendApproveAppointment(approved_date, approved_time, approve.email, date, time, approve.first_name, approve.last_name)
+      console.log('Pending appointment deleted successfully: ', delete_response)
+      console.log('Appointment approved successfully: ', response)
+      }
     } catch (err) {
       console.log(err)
       const user_id = req.user._id
