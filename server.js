@@ -3201,7 +3201,7 @@ app.put('/approve-appointment', checkAuthenticated, async (req, res) => {
     const approved_staff = req.user.first_name + " " + req.user.last_name
     try {
       const approve = await Appointment.findById(user_id)
-      const datetime_checker =  await Appointment.findOne({branch: approve.branch, date:date, time:time})
+      const datetime_checker =  await Appointment.findOne({branch: approve.branch, date:date, time:time, appointment_status: { $ne: "Cancelled" }})
       if (datetime_checker) {
         console.log("Appointment slot has already occupied")
         const patient = await User.find();

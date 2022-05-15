@@ -89,6 +89,31 @@
 			<% } %> 
 			<!--------------------->
 
+			<!---LAGAY UNAVAILABLE TIME--------------->
+			<div id="time-slot" hidden>
+			<% appointment.forEach(function(appointments){ %>
+				<% if(appointments.branch == staff.branch && appointments.appointment_status == "Pending" || appointments.branch == staff.branch && appointments.appointment_status == "Approved" || appointments.branch == staff.branch && appointments.appointment_status == "Follow-Up"){ %> 
+				
+			
+				<p id="valueInput<%= appointments._id%>"></p>
+			<script>
+				var date_ob = new Date('<%= appointments.date %>');
+				var year = date_ob.getFullYear();
+				var month = ("0" + (date_ob.getMonth()+1)).slice(-2);
+				var date = ("0" + date_ob.getDate()).slice(-2);
+				var appointed_dates = year + "-"+ month+"-"+ date + " " + "<%= appointments.time %>"; 
+				document.getElementById("valueInput<%= appointments._id%>").innerHTML = appointed_dates
+			</script>
+				<% } %> 
+			<% }) %> 
+			</div>
+
+			
+			<span id="sched-date" hidden></span>
+			<span id="sched-time" hidden></span>
+
+			<!---------------------->
+
 
 			<section class="ftco-section">
 				<div class="container">
@@ -295,7 +320,7 @@
 															</div>
 														</div>
 														<hr>
-														<div class="row mb-4 mt-4">
+														<div class="row mb-4 mt-4 justify-content-center">
 														<div class="col-md-6 col-xs-6 col-sm-6">
 																<center>
 																<p class="text-muted mb-0">Date</p>
@@ -308,6 +333,7 @@
 																<input class="input--style-4 mb-3 timepicker" value="" name="time" required>
 																</center>
 														</div>
+														<center><medium class="sched-unavailable" id="sched-unavailable"></medium></center>
 														</div>
 														<hr>
 														<div class="d-flex justify-content-between mt-2">
@@ -455,7 +481,7 @@
 														</div>
 													</div>
 													<hr>
-													<div class="row mb-4 mt-4">
+													<div class="row mb-4 mt-4 justify-content-center">
 													<div class="already-setted col-md-6 col-xs-6 col-sm-6">
 														<center>
 															<p class="text-muted mb-0 mt-2">Date</p>
@@ -471,15 +497,18 @@
 													<div class="not-setted col-md-6 col-xs-6 col-sm-6">
 														<center>
 														<p class="text-muted mb-0">Date</p>
-														<input class="input--style-4 mb-3 date-no-past" value="<%= appointments.date %>" name="date" id="date-no-past<%= appointments._id %>" type="date" required>
+														<input class="input--style-4 mb-3 date-no-past" value="" name="date" id="date-no-past<%= appointments._id %>" type="date" required>
 														</center>
+														<span class="sched-date" hidden></span>
 													</div>
 													<div class="not-setted col-xs-6 col-sm-6">
 															<center>
 															<p class="text-muted mb-0">Time</p>
-															<input class="input--style-4 mb-3 timepicker" value="<%= appointments.time %>" name="time" required>
+															<input class="input--style-4 mb-3 timepicker" value="" name="time" required>
 															</center>
+															<span class="sched-date" hidden></span>
 													</div>
+													<center><medium class="not-setted sched-unavailable center"></medium></center>
 													</div>
 													<hr>
 														<div class="d-flex justify-content-between mt-2">
@@ -688,19 +717,20 @@
 															</div>
 														</div>
 														<hr>
-														<div class="row mb-4 mt-4">
+														<div class="row mb-4 mt-4 justify-content-center">
 															<div class="col-md-6 col-xs-6 col-sm-6">
 																<center>
 																<p class="text-muted mb-0">Date</p>
 																<input class="input--style-4 mb-3 date-no-past" value="" name="date" id="date-no-past<%= appointments._id %>" type="date" required>
 																</center>
+																<span class="sched-date"></span>
 														</div>
 														<div class="col-md-6 col-xs-6 col-sm-6">
 																<center>
-																<p class="text-muted mb-0">Time</p>
 																<input class="input--style-4 mb-3 timepicker" value="" name="time" required>
 																</center>
 														</div>
+														<center><medium class="sched-unavailable center">k</medium></center>
 														</div>
 														<hr>
 														<div id="records-dropdown">
@@ -863,7 +893,7 @@
 														</div>
 													</div>
 													<hr>
-													<div class="row mb-4 mt-4">
+													<div class="row mb-4 mt-4 justify-content-center">
 														<div class="already-setted col-md-6 col-xs-6 col-sm-6">
 															<center>
 																<p class="text-muted mb-0 mt-2">Date</p>
@@ -879,15 +909,16 @@
 														<div class="not-setted col-md-6 col-xs-6 col-sm-6">
 															<center>
 															<p class="text-muted mb-0">Date</p>
-															<input class="input--style-4 mb-3 date-no-past" value="<%= appointments.date %>" name="date" id="date-no-past<%= appointments._id %>" type="date" required>
+															<input class="input--style-4 mb-3 date-no-past" value="" name="date" id="date-no-past<%= appointments._id %>" type="date" required>
 															</center>
+															<span class="sched-date"></span>
 														</div>
 														<div class="not-setted col-xs-6 col-sm-6">
 																<center>
-																<p class="text-muted mb-0">Time</p>
-																<input class="input--style-4 mb-3 timepicker" value="<%= appointments.time %>" name="time" required>
+																<input class="input--style-4 mb-3 timepicker" value="" name="time" required>
 																</center>
 														</div>
+														<center><medium class="not-setted sched-unavailable center">k</medium></center>
 													</div>
 													<hr>
 													<div id="records-dropdown">
@@ -1085,6 +1116,10 @@ $('.searchhide').show();
 <script>
 	function editTimeDate() {
 	
+		
+	$('.sched-unavailable').text(' ');
+	$('.date-no-past').val('');
+	$('.timepicker').val('');
 	$('.already-setted').hide();
 	$('.not-setted').show();
 	$('.dropdown-set').hide();
@@ -1100,7 +1135,9 @@ $('.searchhide').show();
 
 	function confirmTimeDate() {
 	
-	$('.dropdown-set').hide();
+	$('.date-no-past').val('');
+	$('.timepicker').val('');
+	$('.sched-unavailable').hide()
 	$('.confirm-button').show();
 	$('.input--style-4').prop('disabled', false);
 	$('.input--style-4').css({
@@ -1111,6 +1148,8 @@ $('.searchhide').show();
 
 	function setTimeDate() {
 	
+		
+	$('.sched-unavailable').hide()
 	$('.already-setted').show();
 	$('.not-setted').hide();
 
@@ -1128,21 +1167,9 @@ $('.searchhide').show();
 
 	var timeInterval = document.getElementById("time-interval").textContent;
 
-	var date = new Date();
-	switch(date.getDay()){
-    case 0:
-	var startTime = document.getElementById("sun-start-time").textContent;
-	var endTime = document.getElementById("sun-end-time").textContent;
-	; break;
-    case 6:
-	var startTime = document.getElementById("sat-start-time").textContent;
-	var endTime = document.getElementById("sat-end-time").textContent;
-	; break;
-    default:
 	var startTime = document.getElementById("weekday-start-time").textContent;
 	var endTime = document.getElementById("weekday-end-time").textContent;
 
-}
 
 	$('.timepicker').timepicker({
 		step: timeInterval,
@@ -1156,6 +1183,47 @@ $('.searchhide').show();
 <!--------->
 
 <script>
+
+$('.date-no-past').change(function(){
+		// Search text
+		var datepicked = $(this).val();
+		var pickedtime = document.getElementById("sched-time").textContent;
+		if ($("#time-slot").find(":contains(" +datepicked+ " " +pickedtime+ ")").length){
+			$('.sched-unavailable').show()
+			$('.sched-unavailable').text('Date/time not available!').css("color", "red");
+			$('.confirm-button').prop( "disabled", true ).css({"opacity": "0.5", "pointer-events": "none"})
+		}
+		else {
+			$('.sched-unavailable').hide()
+			$('.confirm-button').prop( "disabled", false ).css({"opacity": "1", "pointer-events": "auto"})
+		}
+
+		$('#sched-date').text(datepicked)
+		
+		});
+
+$('.timepicker').change(function(){
+		// Search text
+		var timepicked = $(this).val();
+		
+		var pickeddate = document.getElementById("sched-date").textContent;
+		if ($("#time-slot").find(":contains(" +pickeddate+ " " +timepicked+ ")").length){
+			$('.sched-unavailable').show()
+			$('.sched-unavailable').text('Date/time not available!').css("color", "red");
+			$('.confirm-button').prop( "disabled", true ).css({"opacity": "0.5", "pointer-events": "none"})
+		}
+		else {
+			$('.sched-unavailable').hide()
+			$('.confirm-button').prop( "disabled", false ).css({"opacity": "1", "pointer-events": "auto"})
+		}
+
+		$('#sched-time').text(timepicked)
+
+		});
+
+</script>
+
+<script>
 	$('.modal').on("hide.bs.modal", function() {
 	
 	$('.already-setted').show();
@@ -1167,8 +1235,10 @@ $('.searchhide').show();
 		"border": "1px solid #ced4da",
         'background-color': 'white',
     });
-		
+	$('.date-no-past').val('');
+	$('.timepicker').val('');
 	$('.input--style-4').prop('disabled', true);
+	$('.sched-unavailable').hide()
 
 
 })

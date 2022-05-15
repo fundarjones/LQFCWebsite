@@ -8637,6 +8637,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 	margin: 0;
 }
 
+
 .ui-timepicker-wrapper.ui-timepicker-with-duration {
 	width: 13em;
 }
@@ -8697,4 +8698,12 @@ li.ui-timepicker-selected .ui-timepicker-duration,
 .ui-timepicker-list li.ui-timepicker-disabled:hover,
 .ui-timepicker-list li.ui-timepicker-selected.ui-timepicker-disabled {
 	background: #f2f2f2;
+}
+
+
+input[type=date]:required:invalid::-webkit-datetime-edit {
+  color: transparent;
+}
+input[type=date]:focus::-webkit-datetime-edit {
+  color: black !important;
 }
